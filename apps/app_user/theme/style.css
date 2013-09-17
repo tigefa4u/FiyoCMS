@@ -1,0 +1,95 @@
+/* user login */
+#user {
+
+}
+#user div{
+	overflow:hidden;
+	line-height: 2em;
+	margin: 2px 0 0;
+}
+
+#user span{
+	float: left;
+	width: 20%;
+}
+#user input[type="text"], #user input[type="password"] {
+	min-width:200px;
+}
+#user .security {
+	min-width:100px !important;
+	width:140px !important;
+}
+
+#user .user-link a{
+	font-size:80%;
+	margin: 0 0 0 10px;
+}
+
+/* notification */
+
+.notice-info, .notice-error{ 
+	text-shadow: 0 0 0 #fff;
+	margin: 5px 0 10px !important;
+	font-size: 110%;
+	padding: 5px 5px 5px 41px;	
+	font-weight: bold;
+}
+
+.notice-info{ 
+	margin: 5px 0;
+	color: rgb(255, 255, 255);
+	padding: 7px 5px 6px 41px;
+	border: 1px solid rgb(56, 120, 150);
+	background: url(images/notice-info.png) no-repeat 5px 5px rgb(139, 167, 209);
+	font-size: 110%;
+	font-weight: bold;
+}
+.notice-error{ 
+	margin: 5px 0;
+	color: #8e0000;
+	padding: 6px 5px 6px 41px;
+	border: 1px solid rgba(142, 0, 0, 0.12);
+	background: url(images/notice-error.png) no-repeat 5px 3px #ffecec;
+	font-size: 110%;
+	font-weight: bold;
+}
+
+
+.profile-box {
+	border: 1px solid #ccc;
+	padding:10px;
+	margin: 0 0 20px;
+
+
+}
+form#user { 
+	overflow:hidden; 
+	border-top:1px solid #ccc; 
+	margin:5px 0;
+	padding:5px 0;}
+form#user div { overflow:hidden; margin:5px;}
+form#user span { width:100px; float:left}
+form#user .input{ margin-right:40px;}
+
+/* -- !Password Strength Meter -- */ 
+    #psr_score {
+		margin-left:5px;
+		padding: 0;
+		width: 150px;
+		position: absolute;
+    }    
+	.psr_Weak,.psr_Medium,.psr_Strong, .psr_Excellent {
+		background: transparent url(images/toolbar/bg-password-strength.png) no-repeat -20px 0;
+		display: block;
+		margin: 2p 0 0.2em 5px;
+		padding: 6px 0;
+	}	
+	.psr_Medium {
+		background-position:-30px -50px;
+	}	
+	.psr_Strong {
+		background-position:-30px -100px;
+	}	
+	.psr_Excellent {
+		background-position:-30px -150px;
+	}

@@ -1,0 +1,10 @@
+.mod-article-archive {
+	margin: 0;
+}
+.mod-article-archive  li {
+	list-style: none;
+	font-weight:normal;
+}
+.mod-article-archive  li.acc {
+	font-weight: bold;
+}
