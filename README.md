@@ -20,7 +20,8 @@ Fiyo CMS id Very easy to make template CMS
 
 - [FiyoCMS](http://www.fiyo.org)
 - [Follow @FiyoCMS](http://twitter.com/FiyoCMS)
+- [@tigefa4u](http://tigefa4u.github.io)
 
 ## License
 
-- [the GPL-V3 license](LICENCE.txt)
+- [the GPL-V3 license](LICENSE.txt)
