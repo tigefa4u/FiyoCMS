@@ -1,6 +1,8 @@
 FiyoCMS
 =======
 
+![FiyoCMS](media/images/brush.png "FiyoCMS")
+
 Fiyo CMS id Very easy to make template CMS 
 
 - [Checkout Demo](http://demo.fiyo.org) 
@@ -21,6 +23,7 @@ Fiyo CMS id Very easy to make template CMS
 - [FiyoCMS](http://www.fiyo.org)
 - [Follow @FiyoCMS](http://twitter.com/FiyoCMS)
 - [@tigefa4u](http://tigefa4u.github.io)
+- [latest releases](https://sourceforge.net/projects/fiyo-cms/files/)
 
 ## License
 
