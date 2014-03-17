@@ -23,6 +23,7 @@ define ("Save", "Save");
 define ("Sent", "Submit");
 define ("Login", "Login");
 define ("Logout", "Logout");
+define ("Register", "Register");
 define ("Readmore", "Read More");
 define ("Save_and_Quit", "Save and exit");
 define ("Apply", "Save changes");
@@ -36,6 +37,9 @@ define ("Print", "Print");
 define ("Send", "Submit");
 define ("Download", "Download");
 define ("Featured", "seed");
+define ("Comment","Comment");
+define ("Comments","Comments");
+define ("Send_Comment","Send Comment");
 define ("Click_for_helps", "Click for help");
 define ("Click_to_edit", "Click to edit");
 define ("_Public", "public");
@@ -87,6 +91,14 @@ define ("Set_enable", "Activate");
 define ("Add_New_Item", "Add new data");
 define ("Plugin_Name", "Plugin Name");
 
+/************************************
+* 		 	  Article  				*
+*************************************/
+define ("second_ago", "hour(s) ago");
+define ("minutes_ago", "minute(s) ago");
+define ("hours_ago", "hour(s) ago");
+define ("days_ago", "day(s) ago");
+define ("Article_cant_access", "<h2>Oops!</h2>Sorry you do not have permission to view this content. <br> Perhaps you have not logged in or are not given permission.");
 
 /************************************
 * 		 	Form Login 				*

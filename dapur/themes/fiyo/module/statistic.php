@@ -8,46 +8,66 @@
 **/
 
 defined('_FINDEX_') or die('Access Denied');
- 
-$newVisitor = $allVisitor = $dateList = '';
-for($x = 10; $x >= 0; $x--) {
+
+$db = new FQuery();  
+$db -> connect();	
+
+$uniqueVisitor = $allVisitor = $newVisitor = $dateList = '';
+for($x = 9; $x >= 0; $x--) {
 	$dateList .= "'".date('d M',strtotime("-$x days"))."'";
 	if($x != 0) $dateList .= ",";
 }
 
-for($x = 10; $x >= 0; $x--) {
+for($x = 9; $x >= 0; $x--) {
 	$dtf = date('Y-m-d 00:00:00',strtotime("-$x days"));
 	$z = $x-1;
 	$dts = date('Y-m-d 00:00:00',strtotime("-$z days"));	
 	$v = FQuery('statistic',"time BETWEEN '$dtf' AND '$dts'","","","time ASC");
+	$v = FQuery('statistic',"time BETWEEN '$dtf' AND '$dts'","","","time ASC");
 	if(empty($v))  $allVisitor .= 0; else $allVisitor .= $v;
 	if($x != 0) $allVisitor .= ",";
 }
-$z = 1;
+$z = 0;
 for($x = 10; $x >= 0; $x--) {
-	$dtf = date('Y-m-d 00:00:00',strtotime("-$x days"));
+	$ytf = date('Y-m-d 00:00:00',strtotime("-$x days"));
 	$t = $x-1;
-	$dtf = date('Y-m-d 00:00:00',strtotime("-$t days"));	
-	
+	$dtf = date('Y-m-d 00:00:00',strtotime("-$t days"));
 
 	$db = new FQuery();  
-	$db -> connect();	
+	$db -> connect();
 	$sql = $db->select(FDBPrefix."statistic","*,COUNT(DISTINCT ip) AS q","time < '$dtf'","time ASC");
-	$row = mysql_fetch_array($sql); 
-		$unique = $row['q'] - $z; 
-		if($unique < 0 ) $unique = 0;
-	$z = $row['q'];
-	if(empty($unique))  $newVisitor .= 0; else $newVisitor .= $unique;
-	if($x != 0) $newVisitor .= ",";
+		
+	$row = mysql_fetch_array($sql);
+	$unique = $row['q'] - $z; 
+	if($unique < 0 ) $unique = 0;
+		$z = $row['q'];
 
+	
+	if(empty($unique))  
+		$uniqueVisitor .= 0; 
+	else if($x != 10)
+		$uniqueVisitor .= $unique;
+	if($x != 0 AND $x != 10) $uniqueVisitor .= ",";
 }
- 
+
+for($x = 9; $x >= 0; $x--) {
+	$dtz = date('Y-m-d 00:00:00',strtotime("-$x days"));
+	$t = $x-1;
+	$dtf = date('Y-m-d 00:00:00',strtotime("-$t days"));
+	
+	$sql = $db->query("select COUNT( DISTINCT ip )  AS q FROM ".FDBPrefix."statistic WHERE time BETWEEN '$dtz' AND '$dtf'");
+	$row = mysql_fetch_array($sql);
+	if(empty($row['q']))  $newVisitor .= 0; else $newVisitor .= $row['q'];
+	if($x != 0) $newVisitor .= ",";
+}
+
 echo "
 <script>
 $(function () {
     var chart;
 	var allVisitor = [$allVisitor];
-	var newVisitor = [$newVisitor];
+	var uniqueVisitor = [$uniqueVisitor];
+	var reVisitor = [$newVisitor];
 	var dateList = [$dateList];
     $(document).ready(function() {
         chart = new Highcharts.Chart({
@@ -79,8 +99,11 @@ $(function () {
                 name: 'All Visitors',				
                 data: allVisitor,
             },{
-                name: 'New Visitor(s)',
-                data: newVisitor,
+                name: 'Unique Visitors',				
+                data: reVisitor,
+            },{
+                name: 'New Visitors',
+                data: uniqueVisitor,
             }]
         });
     });
@@ -89,7 +112,7 @@ $(function () {
 </script>";
 ?>
 <li>
-	<h3>Website Information</h3>
+	<h3>Visitor Statistics</h3>
 	<div class="isi">
 		<span class='hide' id="dateStatistic"><?php date('d')-10;?></span>
 		<div class="acmain open">

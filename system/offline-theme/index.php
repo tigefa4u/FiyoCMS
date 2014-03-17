@@ -8,25 +8,28 @@
 
 $OffTheme = FUrl.'/system/offline-theme';;
 
-if(isset($_POST['fiyo_login']))	{
-	$db = new FQuery();  
-	$db->connect();		
-	$sql = $db->select(FDBPrefix."user","*","status=1 AND user='$_POST[user]' AND password='".MD5($_POST['pass'])."'"); 
-	$qr = mysql_fetch_array($sql);
+$db = new FQuery();  
+$db->connect(); 
+if(isset($_POST['login'])) {	
+	$qr = $db->select(FDBPrefix."user","*","status=1 AND user='$_POST[user]' AND password='".MD5($_POST['pass'])."'"); 
+	$qr = mysql_fetch_array($qr);
 	$jml = mysql_affected_rows();
 	if($jml > 0) {
-		$_SESSION['fiyoid']	   = $qr['id'];
-		$_SESSION['fiyouser']  = $qr['user'];
-		$_SESSION['fiyolevel'] = $qr['level'];
-		$_SESSION['fiyoemail'] = $qr['email'];
-			
-		$del=$db->delete(FDBPrefix."session_login","user_id=$qr[id]");			
-		if($del) {
-			$qrs = $db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));
-		}
-	}		
+		$_SESSION['USER_ID']  	= $qr['id'];
+		$_SESSION['USER'] 		= $qr['user'];
+		$_SESSION['USER_NAME']  = $qr['name'];
+		$_SESSION['USER_EMAIL']	= $qr['email'];	
+		$_SESSION['USER_LEVEL'] = $qr['level'];
+		$_SESSION['USER_LOG'] 	= date('Y-m-d H:i:s');
+		$db->select(FDBPrefix."session_login","*","user_id=$qr[id]");
+		if($qr['id'] > 0) {
+			$db->delete(FDBPrefix."session_login","id=$qr[id]");
+			$qrs=$db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));  
+		}	
 	if(isset($qrs))
 		redirect(getUrl());
+	}
+	else $failed = "Username or password is incorrect!";
 }
 ?>
 
@@ -35,50 +38,61 @@ if(isset($_POST['fiyo_login']))	{
 <head>
 	<title>Website Maintenance</title>
 	<link rel="shortcut icon" href="favicon.png" />
-	<link rel="stylesheet" href="<?php echo $OffTheme; ?>/css/form.css" type="text/css">
+	<link rel="stylesheet" href="<?php echo $OffTheme; ?>/css/login.css" type="text/css">
 	<script type="text/javascript" src="<?php echo $OffTheme; ?>/js/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo $OffTheme; ?>/js/sliding.form.js"></script>
 	<script type="text/javascript">
-     $(document).ready(function() {		
-		var loadings = $("#status");
-		loadings.hide();
-		loadings.fadeIn(800);	
+	$(function() {	
+		$(".submit").click(function(e) {	
+			var name = $(".name").val();
+			var pass = $(".pass").val();
+			if(pass !== '' && name !== '') {
+				$(this).html("Loading...");	
+				}
+			else {	
+				if(name === '') {
+				$(".name").focus();
+				}
+				else if(pass === '') {
+				$(".pass").focus();
+				}
+				e.preventDefault();
+				return false;
+			}
+		});			
+		
+		$(".notice").click(function() {	
+			$(this).fadeOut();
+		});
 		setTimeout(function(){
-			$('#status').fadeOut(1000, function() {
+			$('.notice').fadeOut(2000, function() {
 			});				
 		}, 3000);	
 	});	
-</script>	
+	</script>		
 </head>
 
-<body>
-
-        
-    <div>
-        <H1>Website Maintenance</H1>
-		<div id="wrapper">
-                <div id="steps">
-                    <form id="formElem" method="post" action="">
-                        <fieldset class="step">
-                            <legend>Login Form</legend>
-                            
-                            <P>
-                                <LABEL>Username</LABEL>
-                                <INPUT name="user" autocomplete="OFF"  type="text">
-                            </P>
-                            <P>
-                                <LABEL>Password</LABEL>
-                                <INPUT name="pass" type="password">
-                            </P>
-                            <P class="submit">
-                                <BUTTON id="registerButton" type="submit" name="fiyo_login">Log in</BUTTON>
-                            </P>
+<body>        
+	<div id="content">
+        <div id="steps">
+	<?php if(isset($failed )) : ?>
+		<div class="notice error"><?php echo $failed; ?></div>
+	<?php endif; ?>
+             <form id="formElem" method="post">
+                <fieldset class="step">
+                    <p class="legend"><img src="<?php echo $OffTheme; ?>/images/fiyo.png" width="50"><br>Website Maintenance</p>
+                    <p>
+                       <input name="user" autocomplete="OFF" type="text" class="name" placeholder="Username" />
+                   	</p>
+                    <p>
+                        <input name="pass" type="password" class="pass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" /> 						
+					</p>
+                    <p class="button">
+                        <button type="submit" name="login" class="submit">Login</button>
+                    </p>
                       </fieldset>
-					</form>
-                    			
+				</form>	
                     
-                </div>
-        </div>
+         </div>
     </div>
 </body>
 </html>

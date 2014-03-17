@@ -10,11 +10,10 @@
 defined('_FINDEX_') or die('Access Denied');
 
 // Access only for Administrator
-if($_SESSION['USER_LEVEL'] > 2)
+if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] > 2)
 	redirect('index.php');
 	
 $db = new FQuery();  
-$db->connect();
 
 /****************************************/
 /*			 Add Category Menu			*/
@@ -249,7 +248,7 @@ function sub_menu($parent_id,$pre,$nos) {
 			<input type='text' value='$qr[id]' id='id' class='invisible'><input type='text' value='stat' id='type' class='invisible'>
 		</p>";												
 							
-		$name = "<a class='tooltip ctedit' title='Click to edit menu \"$qr[name]\"' href='?app=menu&act=edit&id=$qr[id]'>$pre|_ $qr[name]</a>";
+		$name = "<a class='tooltip ctedit' title='Edit' href='?app=menu&act=edit&id=$qr[id]'>$pre|_ $qr[name]</a>";
 							
 		$checkbox = "<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
 							
@@ -290,19 +289,15 @@ function option_sub_menu($parent_id,$sub = NULL,$pre) {
 }
 
 	
-function option_sub_cat($parent_id,$pre) {
+function option_sub_cat($parent_id,$pre,$link) {
 	$db = new FQuery();  
 	$db ->connect(); 
 	$sql=$db->select(FDBPrefix."article_category","*","parent_id=$parent_id AND id!=$_REQUEST[id]"); 
 	while($qr=mysql_fetch_array($sql)){
-		//select article 'info'rmation
-		$sql2=$db->select(FDBPrefix.'article','*',"id=$_REQUEST[id]"); 
+		$sql2=$db->select(FDBPrefix.'menu','*',"link='$link'"); 
 		$at=mysql_fetch_array($sql2);
-		//select article category 'info'rmation		
-		$sql3=$db->select(FDBPrefix.'article_category','*',"id=$_REQUEST[id]"); 
-		$pd = mysql_fetch_array($sql3);
-		if($pd['parent_id']==$qr['id'] or $at['category']==$qr['id'])$s ="selected";else $s="";
+		if("?app=article&view=category&id=$qr[id]"== $link)$s ="selected";else $s="";
 		echo "<option value='$qr[id]' $s>$pre |_ $qr[name]</option>";
-		option_sub_cat($qr['id'],$pre."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		option_sub_cat($qr['id'],$pre."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",$link);
 	}		
 }

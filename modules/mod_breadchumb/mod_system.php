@@ -8,20 +8,13 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-
 class Breadcrumb {
 	public function catLink($output) {
 		if(app_param('view') == 'category')
 			$id = categoryInfo('id');
 		else	
 			$id = articleInfo('category');
-		$result = menuInfo("$output","?app=article&view=category&id=$id");
-		if(empty($result))
-			$result = menuInfo("$output","?app=article&view=category&id=$id&format=default");
-		if(empty($result))
-			$result = menuInfo("$output","?app=article&view=category&id=$id&format=list");
-		if(empty($result))
-			$result = menuInfo("$output","?app=article&view=category&id=$id&format=blog");
+		$result = FQuery("menu","link LIKE '?app=article&view=category&id=$id&type=%' AND home != 1","id");
 		return $result;
 	}
 
@@ -69,7 +62,7 @@ class Breadcrumb {
 					$result = $this -> catLink('id');
 					return $this -> creatLink($result);
 				}			
-				else if(app_param('view') == 'item') {					
+				else if(app_param('view') == 'item') {	
 					$result = $this -> artLink('id');
 						if(empty($result))
 					$result = $this -> catLink('id');

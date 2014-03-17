@@ -17,27 +17,28 @@ $count	= mysql_affected_rows();
 if($count != 0 ) :
 if($count < 2) $count = "$count Comment"; else $count = "$count Comments"; 
 
-echo "<h3>$count</h3>";
-?>
+if(checkOnline()) : ?>
+
 <script>
 	$(document).ready(function() {
 		if (navigator.onLine) {
 			$('.cmn-gravatar[data-gravatar-hash]').prepend(function(index){
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="48" height="48" alt="" src="http://www.gravatar.com/avatar/'+hash+'?size=48">'
-			})
-		}
-		else 
-		{
+				return '<img width="48" height="48" alt="" src="http://gravatar.com/avatar/'+hash+'?size=48">'
+			});
+		} else {
 			$('.cmn-gravatar[data-gravatar-hash]').prepend(function(index){
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="48" height="48" alt="" src="<?php echo FUrl; ?>apps/app_comment/theme/images/user.png" >'
-			})	
+				return '<img width="48" height="48" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
+			});			
 		}
 	});
 </script>
+<?php endif; ?>
+<div class="comment-entry">
 <?php
-$no=1;					
+echo "<h3>$count</h3>";	
+$no=1;				
 while($com=mysql_fetch_array($sql)){
 	$autmail= strtolower($com['email']); 
 	$autmail = md5($autmail);
@@ -65,8 +66,10 @@ while($com=mysql_fetch_array($sql)){
 				
 	echo "<div class='inner-comment$s' id='comment-$no'>";
 	echo "<div class='avatar-comment'>$img</div>";
-	echo "<div class='right-comment'>$name | $com[date]<div class='main-comment'><span><i><a href='".getLink()."#comment-$no' title='comment permalink'>#$no</a></i></span>$comment </div></div>";	
+	echo "<div class='right-comment'><b>$name</b> on $com[date]<div class='main-comment'><span><i><a href='".getLink()."#comment-$no' title='comment permalink'>#$no</a></i></span>$comment </div></div>";	
 	echo "</div>";
 	$no++;	
-}
-endif;
+}; ?>
+
+</div>
+<?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		1.4.0
+* @version		1.5.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -93,8 +93,6 @@ if(isset($_POST['edit_group']) or isset($_POST['save_group'])){
 		alert('error',Status_Invalid);	
 	}			
 }
-
-	
 	
 /****************************************/
 /*				Add User				*/
@@ -102,16 +100,19 @@ if(isset($_POST['edit_group']) or isset($_POST['save_group'])){
 if(isset($_POST['save']) or isset($_POST['applysave'])){
 	$us=strlen("$_POST[user]");
 	$ps=strlen("$_POST[password]");
+	$user = $_POST['user'];
+	$name = $_POST['name'];
+	preg_match('/[^a-zA-Z0-9]+/', $user, $matches);
 	if(!empty($_POST['password']) AND 
 		!empty($_POST['user'])AND 
 		!empty($_POST['name'])AND 
 		!empty($_POST['email'])AND 
 		!empty($_POST['level'])AND 
 		$_POST['password']==$_POST['kpassword'] AND 
-		$us>2 AND $ps>3 AND @ereg("^.+@.+\\..+$",$_POST['email'])) {
+		$us>2 AND $ps>3 AND @ereg("^.+@.+\\..+$",$_POST['email']) AND !$matches) {
 		
-		$qr=$db->insert(FDBPrefix.'user',array("","$_POST[user]","$_POST[name]",MD5("$_POST[password]"),"$_POST[email]","$_POST[status]","$_POST[level]",date('Y-m-d H:i:s'),"$_POST[bio]")); 
-		if($qr AND isset($_POST['savea'])){		
+		$qr=$db->insert(FDBPrefix.'user',array("","$user","$name",MD5("$_POST[password]"),"$_POST[email]","$_POST[status]","$_POST[level]",date('Y-m-d H:i:s'),'',"$_POST[bio]")); 
+		if($qr AND isset($_POST['save'])){		
 			alert('loading');	
 			alert('info',User_Added);
 			htmlRedirect('?app=user',2);
@@ -123,7 +124,7 @@ if(isset($_POST['save']) or isset($_POST['applysave'])){
 			alert('info',User_Added);
 			htmlRedirect('?app=user&act=edit&id='.$qr['id'],2);
 		}
-		else {				
+		else {		
 			alert('error',Status_Fail);
 		}					
 	}
@@ -138,14 +139,17 @@ if(isset($_POST['save']) or isset($_POST['applysave'])){
 /****************************************/
 if(isset($_POST['edit']) or isset($_POST['applyedit'])){
 		$us=strlen("$_POST[user]");
-		$ps=strlen("$_POST[password]");			
-		if(!empty($_POST['user'])AND !empty($_POST['name'])AND !empty($_POST['email'])AND !empty($_POST['level']) AND $us>2 AND @ereg("^.+@.+\\..+$",$_POST['email'])) 
+		$ps=strlen("$_POST[password]");	
+		$user = $_POST['user'];
+		$name = $_POST['name'];
+		preg_match('/[^a-zA-Z0-9]+/', $user, $matches);
+		if(!empty($_POST['user'])AND !empty($_POST['name'])AND !empty($_POST['email'])AND !empty($_POST['level']) AND $us>2 AND @ereg("^.+@.+\\..+$",$_POST['email']) AND !$matches) 
 		{
-			if($_POST['id'] == $_SESSION['userId']) $_POST['status'] = 1;
+			if($_POST['id'] == userInfo('id')) $_POST['status'] = 1;
 			if(empty($_POST['password'])){
 				$qrq=$db->update(FDBPrefix.'user',array(				
-				"user"=>"$_POST[user]",
-				"name"=>"$_POST[name]",
+				"user"=>"$user",
+				"name"=>"$name",
 				"email"=>"$_POST[email]",
 				"status"=>"$_POST[status]",
 				"about"=>"$_POST[bio]",
@@ -153,8 +157,8 @@ if(isset($_POST['edit']) or isset($_POST['applyedit'])){
 				"id=$_POST[id]"); }
 			elseif($_POST['password']==$_POST['kpassword']){
 				$qrq=$db->update(FDBPrefix.'user',array(				
-				"user"=>"$_POST[user]",
-				"name"=>"$_POST[name]",
+				"user"=>"$user",
+				"name"=>"$name",
 				"password"=>MD5("$_POST[password]"),
 				"email"=>"$_POST[email]",
 				"about"=>"$_POST[bio]",

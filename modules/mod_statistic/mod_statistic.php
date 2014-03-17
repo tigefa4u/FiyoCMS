@@ -27,49 +27,49 @@ require_once("mod_system.php");
 		<?php if($td) { ?>
 		<tr>
 			<td style="width: 70%">
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_green.png" alt="flag" width="16" height="16"> <b><i>Hari Ini</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_green.png" alt="flag" width="16" height="16"> Hari Ini</td>
 			<td style="text-align:right"><?php echo $today; ?><!-- visitor --></td>
 		</tr>		
 		<?php } ?>
 		<?php if($yd) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_green2.png" alt="flag" width="16" height="16"> <b><i>Kemarin</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_green2.png" alt="flag" width="16" height="16"> Kemarin</td>
 			<td style="text-align:right"><?php echo $yesterday; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
 		<?php if($tw) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_yellow.png" alt="flag" width="16" height="16"> <b><i>Minggu Ini</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_yellow.png" alt="flag" width="16" height="16"> Minggu Ini</td>
 			<td style="text-align:right"><?php echo $thisweek; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
 		<?php if($lw) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_red.png" alt="flag" width="16" height="16"> <b><i>Minggu Lalu</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_red.png" alt="flag" width="16" height="16"> Minggu Lalu</td>
 			<td style="text-align:right"><?php echo $lastweek; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
 		<?php if($tm) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_blue.png" alt="flag" width="16" height="16"> <b><i>Bulan Ini</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_blue.png" alt="flag" width="16" height="16"> Bulan Ini</td>
 			<td style="text-align:right"><?php echo $thismonth; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
 		<?php if($lm) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_purple.png" alt="flag" width="16" height="16"> <b><i>Bulan Lalu</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_purple.png" alt="flag" width="16" height="16"> Bulan Lalu</td>
 			<td style="text-align:right"><?php echo $lastmonth; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
 		<?php if($tg) { ?>
 		<tr>
 			<td>
-				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_2.png" alt="flag" width="16" height="16"> <b><i>Total</i></b></td>
+				<img src="<?php echo FUrl; ?>modules/mod_statistic/images/flag_2.png" alt="flag" width="16" height="16"> Total</td>
 			<td style="text-align:right"><?php echo $total; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>

@@ -18,7 +18,7 @@ $(document).ready(function() {
 	$('.link').click(function(e){
 		if( e.which != 2 ) {
 		loading.fadeIn();
-		   }
+		}
 	});
 		
 	$('.ctedit').click(function(e){
@@ -57,14 +57,6 @@ $(document).ready(function() {
 		});		
 	});
 		
-	$(".popup").click(function() {
-		$.ajax({
-			url: "system/updater.php",
-			success: function(data){
-				$("#updater #updater_id").html(data);
-			}
-		});
-	});	
 	
 	$('.alphanumeric').alphanumeric();
 	$('.nocaps').alpha({nocaps:true});

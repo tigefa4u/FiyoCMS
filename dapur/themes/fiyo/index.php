@@ -27,23 +27,6 @@ defined('_FINDEX_') or die('Access Denied');
 		addJs(AdminPath.'/js/inputtext.js'); 
 		require_once('plugins.php'); 	
 	?>
-	<script language="javascript" type="text/javascript">
-		$(window).load(function () {
-			if (navigator.onLine) {
-				$('.gravatar[data-gravatar-hash]').prepend(function(index){
-					var hash = $(this).attr('data-gravatar-hash')
-					return '<img width="100" height="100" alt="" src="http://www.gravatar.com/avatar.php?size=100&gravatar_id=' + hash + '">'
-				})
-			}
-			else 
-			{
-				$('.gravatar[data-gravatar-hash]').prepend(function(index){
-					var hash = $(this).attr('data-gravatar-hash')
-					return '<img width="100" height="100" alt="" src="<?php echo FUrl; ?>apps/app_comment/theme/images/user.png" >'
-				})			
-			}
-		});
-	</script>
 </head>
 <body>
 <div id="loading"></div>
@@ -54,7 +37,7 @@ defined('_FINDEX_') or die('Access Denied');
 		<h1><a href="index.php" title="Fix It Your Own!">Fiyo CMS</a></h1>
 	</div>
 	<ul id="nav">
-		<li><a href="index.php" class='link' >Admin Panel</a>
+		<li><a href="index.php" class='link' >Dashboard</a>
 		  <ul class="subnav">
 			<li <?php if($_SESSION['USER_LEVEL'] != 1) echo 'class="endsub"'; ?>><a href="?app=media" class='link' >Media Manager</a></li>
 			<?php if($_SESSION['USER_LEVEL'] == 1) : ?>
@@ -170,13 +153,13 @@ defined('_FINDEX_') or die('Access Denied');
 			
 		<div id="profil">			
 			<ul id="nav">				
-				<li><a class='link' href="?app=user&act=edit&id=<?php echo $_SESSION['userId'] ?>" class="user"><?php echo $_SESSION['User']; ?></a><div class="img">
+				<li><a class='link' href="?app=user&act=edit&id=<?php echo $_SESSION['USER_ID'] ?>" class="user"><?php echo $_SESSION['USER']; ?></a><div class="img">
 				<?php
-				$autmail=	md5($_SESSION['userEmail']);
+				$autmail=	md5($_SESSION['USER_EMAIL']);
 					echo "<span class='gravatar' data-gravatar-hash=\"$autmail\"></span>";
 				?></div>
 					<ul class="subnav">
-						<li><a class='link'  href="?app=user&act=edit&id=<?php echo $_SESSION['userId'];?>">Edit Profile</a></li>
+						<li><a class='link'  href="?app=user&act=edit&id=<?php echo $_SESSION['USER_ID'];?>">Edit Profile</a></li>
 						<!-- <li><a class='link'  href="#">Your Article</a></li> -->
 						<li class="endsub"><form method="post"><input type="submit" name="fiyo_logout" value="Log Out" title="Click to logout" /></form></li>
 					</ul>
@@ -209,5 +192,23 @@ defined('_FINDEX_') or die('Access Denied');
 		?>	
 	</div>
 </div>
+
+<script language="javascript" type="text/javascript">
+	$(window).load(function () {
+		if (navigator.onLine) {
+			$('.gravatar[data-gravatar-hash]').prepend(function(index){
+				var hash = $(this).attr('data-gravatar-hash')
+				return '<img width="100" height="100" alt="" src="http://gravatar.com/avatar.php?size=100&gravatar_id=' + hash + '">'
+				})
+		}
+		else {
+			$('.gravatar[data-gravatar-hash]').prepend(function(index){
+				var hash = $(this).attr('data-gravatar-hash')
+				return '<img width="100" height="100" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
+			})			
+		}
+	});
+</script>
+
 </body>
 </html>

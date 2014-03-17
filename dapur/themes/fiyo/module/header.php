@@ -1,6 +1,6 @@
 <?php 
 /**
-* @version		1.4.0
+* @version		1.5.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -8,28 +8,22 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-$version = null;
-$open_file = fopen ("system/version.log", "r");
-if($open_file) 
-	{
-		while(!feof($open_file))
-		{
-			$data = fgets($open_file,50);
-			$version.= $data;
-		}	
-	}
-	else
-	{
-		$version = "<i>Failed to check global version!</i>";
-	}
+$version = siteConfig('version');
+$sup = strpos(siteConfig('version')," ");
+if($sup) {
+	$sup = str_replace(" ","<sup>",siteConfig('version'));
+	$sup = $sup."</sup>";
+	$version = $sup;
+}
+	else $version;
 
-if(isset($_SESSION['userLog'])) $sessionLogin = $_SESSION['userLog'];
+if(isset($_SESSION['USER_LOG'])) $sessionLogin = $_SESSION['USER_LOG'];
 else $sessionLogin = date("d-m-y H:i:s");
 $newArticle 	= FQuery('article',"date > '$sessionLogin'" );
 $totalArticle 	= FQuery('article');
 $unComment 		= FQuery('comment',"status != 1" );
 $totalComment 	= FQuery('comment');
-$newUser 		= FQuery('user',"time_reg > '$sessionLogin'" );
+$newUser 		= FQuery('user',"time_reg > '$sessionLogin'AND status != 1" );
 $totalUser 		= FQuery('user');
 
 if(siteConfig('lang') == 'id') {

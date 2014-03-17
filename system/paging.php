@@ -12,7 +12,6 @@
  * Class nicePaging
  */
 class paging{
-
 	private $conn;
 	private $page;
 	private $totalPages;
@@ -21,7 +20,7 @@ class paging{
 	public function __construct($conn=null){
 		$this->conn=$conn;
 		$this->separator="";
-		$this->maxPages=5;
+		$this->maxPages=3;
 	}
 	
 	public function setSeparator($char){
@@ -100,8 +99,8 @@ class paging{
 		$end=((($start+$this->maxPages-1)<=$this->totalPages) ? ($start+$this->maxPages-1) : $this->totalPages);
 		
 		$paging='<ul class="paging">';
-		if($this->page>1){
-			$paging.='<li><a href="'.$link.$this->separator.'page=1" title="First page">&lt;&lt;</a></li>';
+		if($this->page>1){			
+			$paging.='<li><a href="'.str_replace("?","",$link).'" title="First page">&lt;&lt;</a></li>';
 			$paging.='<li><a href="'.$link.$this->separator.'page='.($this->page-1).'" title="Previous page">&lt;</a></li>';
 		}
 		
@@ -111,7 +110,10 @@ class paging{
 		
 		for($i=$start;$i<=$end;$i++){
 			if($this->page==$i){
-				$paging.='<li class="current">'.$i.'</li>';
+				$paging.='<li class="current active"><a>'.$i.'</a></li>';
+			}
+			else if($i == 1){
+				$paging.='<li><a href="'.str_replace("?","",$link).'" title="Page '.$i.'">'.$i.'</a></li>';
 			}
 			else{
 				$paging.='<li><a href="'.$link.$this->separator.'page='.$i.'" title="Page '.$i.'">'.$i.'</a></li>';

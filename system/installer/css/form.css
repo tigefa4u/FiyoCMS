@@ -5,7 +5,8 @@
 
 body {
 	color:#fff;
-	background:#fefefe url(../images/1.jpg);	
+	background:#080808  url(../images/bg.jpg) top center no-repeat;
+	background-size: 100%;
 	font:1em arial;}
 
 #content{
@@ -17,7 +18,7 @@ body {
     padding:0px;
 }
 
-h1 {	margin:40 30px 20px;
+h1 {	margin:90px 30px 30px;
 	font-family:lobster;
 	text-align:center;
     color:#fff;
@@ -33,8 +34,7 @@ h1 {	margin:40 30px 20px;
 	-moz-border-radius-bottomleft: 5px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
-	box-shadow:0 0 8px #222;
-    border:2px solid #363636;
+	box-shadow:0 2px 8px #000;
     width:400px;
     overflow:hidden;   
 	margin:0 auto;
@@ -117,16 +117,16 @@ span.checked{
 }
 #steps form legend{
     text-align:left;
-    background:#404040;
+    background:#222;
     color:#eee;
     font-size:18px;
     float:left;
     width:590px;
-    padding:8px 0px 8px 10px;
+    padding:9px 0px 9px 10px;
     margin-bottom:20px;
 	margin-top:-2px;
-    border-bottom:1px solid #fff;
     border-top:1px solid #d9d9d9;
+	box-shadow: 0 1px 3px #888;
 	
 } 
 #steps form not{
@@ -283,20 +283,29 @@ a { cursor:pointer}
 	right: 36%; 
 	top:45px; 
 }
-.errorfly,.infofly {display:block;  margin:0 auto;padding:10px 0 10px 48px; font-size:13px; font-weight:bold; position:absolute;left: 36%;right: 36%; top:80px;  z-index:9999;
-	border: 2px  solid #fff; 
-	color:#fff;  -moz-border-radius:7px;
-	-webkit-border-radius:7px;
-	border-radius:7px;
-	-moz-box-shadow:0 1px 2px #aaa; 
-	-webkit-box-shadow:0 1px 2px #aaa;  
-	box-shadow:0 1px 2px #aaa; 
+.errorfly,.infofly {display:block;  
+	margin:0 auto;
+	padding:10px 0 10px 48px; 
+	font-size:13px; 
+	font-weight:bold; 
+	position:absolute;
+	left: 36%;
+	right: 36%; 
+	top:95px;  
+	z-index:9999; 
+	color:#fff;  
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	-moz-box-shadow:0 1px 2px #000; 
+	-webkit-box-shadow:0 1px 2px #000;  
+	box-shadow:0 1px 2px #000; 
 	behavior:ie.htc}
 .errorfly { 
-	background:url(../images/toolbar/notice-error.png) no-repeat #d83d49 10px; 
+	background:url(../images/toolbar/notice-error.png) no-repeat #bd2531 10px; 
 	}
 .infofly{ 
-	background:url(../images/toolbar/notice-info.png) no-repeat #4c96e0 10px 5px;
+	background:url(../images/toolbar/notice-info.png) no-repeat #1768b8 10px 3px;
 }
 .tip  {
 	position:absolute;

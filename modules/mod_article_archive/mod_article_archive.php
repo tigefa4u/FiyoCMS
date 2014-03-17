@@ -1,7 +1,7 @@
 <?php
 /**
-* @version		1.4.0
-* @package		Fiyo CMS
+* @version		1.5.0
+* @package		Article Related
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 **/
@@ -17,4 +17,5 @@ switch($type) {
 	default :
 		require ("type/default.php");
 }
-?>
+
+@include_once('js.php');

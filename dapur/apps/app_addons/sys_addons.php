@@ -12,7 +12,7 @@ defined('_FINDEX_') or die('Access Denied');
 /*
 * Access only for Super Administrator
 */
-if($_SESSION['USER_LEVEL'] != 1)
+if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] != 1)
 	redirect('index.php');
 	
 $db = new FQuery();  
@@ -23,8 +23,12 @@ $db->connect();
 */
 function insert_new_apps($name,$folder,$author,$type) {
 	$db = new FQuery();  
-	$db -> connect();
 	$qr = $db->insert(FDBPrefix.'apps',array("","$name","$folder","$author","$type")); 
+	return $qr;
+}
+function insert_new_plg($folder,$param = null) {
+	$db = new FQuery();  
+	$qr = $db->insert(FDBPrefix.'plugin',array("","$folder","1","$param")); 
 	return $qr;
 }
 

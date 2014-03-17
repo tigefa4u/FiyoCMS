@@ -72,7 +72,7 @@ defined('_FINDEX_') or die('Access Denied');
 				$qr2=$db->select(FDBPrefix.'menu','*',"category='$qr[category]'"); 
 				$jml2= mysql_affected_rows();						
 				$checkbox ="<input type='checkbox' name='check[]' value='$qr[category]' rel='ck'>";	
-				$name ="<a class='tooltip ctedit' title='".Click_to_edit."' href='?app=menu&act=edit_category&id=$qr[id]'>$qr[title]</a>";
+				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=menu&act=edit_category&id=$qr[id]'>$qr[title]</a>";
 				echo "<tr>";
 				echo "<td><b>$no</b></td><td align='center'>$checkbox</td><td>$name</td><td>$qr[category]</td><td align='center'>$jml2</td><td>$qr[description]</td><td align='center'>$qr[id]</td>";
 				echo "</tr>";

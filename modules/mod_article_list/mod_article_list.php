@@ -42,7 +42,7 @@ while($qr=mysql_fetch_array($sql)){
 	$month = substr($date,5,2);
 	$day = substr($date,8,2);
 	$year = substr($date,2,2);
-	$article ="<div class='title'><a title='$qr[title]' href='$link' class='tooltip'>$qr[title]</a></div>";
+	$article ="<div class='title'><a title='$qr[title]' href='$link'>$qr[title]</a></div>";
 	$date = "<div class='mod-article-date'><div>$day<span>$month/$year</span></div></div>";				
 	if($type=="hits DESC") {
 	$h = $qr['hits'];
@@ -60,6 +60,9 @@ while($qr=mysql_fetch_array($sql)){
 	
 	
 	if($info) $date = $date; else $date = '';
+	if(!empty($date))
+	echo "<li class='no-list'>$date $article </li>";
+	else
 	echo "<li>$date $article </li>";
 }	
 	$link="?app=article&view=category&id=$value";	

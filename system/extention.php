@@ -8,7 +8,7 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-if(siteConfig('site_status') or !empty($_SESSION['fiyoid'])) {
+if(siteConfig('site_status') or !empty($_SESSION['USER_ID'])) {
 	require_once ('user.php'); 
 	require_once ('site.php'); 
 	require_once ('html.php'); 

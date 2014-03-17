@@ -48,13 +48,23 @@ else {
 			if(isset($m) AND $m != $archveRow['category'] ) {
 				echo "</ul></li></ul>";				
 			}			
-			if(@$m != $archveRow['category'] ) {	echo "
-				<ul class='mod-article-archive accordion'>
-					<li class='acc'>$catname  ($s)
-				<ul>";			
+			
+			if(@$m != $archveRow['category'] ) {	
+				$open ='';
+				if(app_param('app') == 'article' AND (app_param('view') == 'category' or app_param('view') == 'item'))
+					if(articleInfo('category') == "$archveRow[category]")
+						$open = " open";
+				echo "
+				<ul class='mod-article-archive'>
+					<li class='archive-head'><a class='archive-head-a'>$catname  ($s)</a>
+				<ul class='archive-list$open'>";
 			}						
 			if($archveRow['status']==1) {
-				$article ="<a title='Read \"$archveRow[title]\"' href='$link' >$archveRow[title]</a>";
+				$active = '';
+				if(app_param('app') == 'article' AND app_param('view') == 'item')
+					if(articleInfo('id') == "$archveRow[id]")
+						$active = "active";
+				$article ="<a title='Read \"$archveRow[title]\"' href='$link' class='$active'>$archveRow[title]</a>";
 				echo "<li>$article</li>";	
 				$x++;		
 			}

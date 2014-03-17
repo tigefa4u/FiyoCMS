@@ -90,7 +90,7 @@ $db->connect();
 		<div class="warp_app_header">		
 		  <div class="app_title"><?php echo Article_Manager; ?></div>
 		  <div class="app_link">			
-			<a class="lbt add tooltip link" Value="Create" href="?app=article&act=add" title="<?php echo Add_new_article; ?>"></a>
+			<a class="lbt add tooltip link" Value="Create" href="?app=article&act=add" title="<?php echo Add_new_article; ?>"><?php echo Add_new_article; ?></a>
 			<input type="submit" class="lbt delete tooltip" title="<?php echo Delete; ?>" value="<?php echo Delete; ?>" value="ok" name="delete"/>	
 			<hr class="lbt sparator tooltip">
 			<a class="lbt help popup tooltip" href="#helper" title="<?php echo Help; ?>">Help</a>	
@@ -102,15 +102,15 @@ $db->connect();
 		<thead>
 			<tr>							
 				<th style="width:1% !important;" class="no">#</th>	
-				<th style="width:3% !important;" class="no" colspan="0" id="ck">  
+				<th style="width:1% !important;" class="no" colspan="0" id="ck">  
 					<input type="checkbox" id="checkall"></th>		
 				<th style="width:30% !important;"><?php echo Article_Title; ?></th>
 				<th style="width:8% !important;" class="no" align="center"><?php echo Featured; ?></th>
-				<th style="width:8.5% !important;" class="no" align="center">Status</th>
-				<th style="width:14% !important;"><?php echo Category; ?></th>
+				<th style="width:8% !important;" class="no" align="center">Status</th>
+				<th style="width:10% !important;"><?php echo Category; ?></th>
 				<th style="width:10% !important;"><?php echo Author; ?></th>
-				<th style="width:14% !important;" ><?php echo Date; ?></th>
-				<th style="width:3% !important;">Hits</th>
+				<th style="width:13% !important;" align='center'><?php echo Date; ?></th>
+				<th style="width:5% !important;" align='center'>Hits</th>
 			</tr>
 		</thead>		
 		<tbody>
@@ -120,7 +120,7 @@ $db->connect();
 			else
 				$cat = $_REQUEST['cat'] = null;
 				
-				$sql = $db->select(FDBPrefix."article","*,DATE_FORMAT(date,'%Y-%m-%d <i>%H:%i:%s</i>') as date","$cat",'date DESC'); 
+			$sql = $db->select(FDBPrefix."article","*,DATE_FORMAT(date,'%Y-%m-%d <i>%H:%i:%s</i>') as date","$cat",'date DESC'); 
 			$no = 1;
 			
 			while($qr=@mysql_fetch_array($sql)) {
@@ -191,7 +191,7 @@ $db->connect();
 				
 							
 							
-				echo "<tr><td>$no</td><td align='center'>$checkbox</td><td>$name</td><td align='center'>$featured</td><td  align='center'>$status</td><td>$category</td><td>$author</td><td>$qr[date]</td><td align='center'>$qr[hits]</td></tr>";
+				echo "<tr><td>$no</td><td align='center'>$checkbox</td><td>$name</td><td align='center'>$featured</td><td  align='center'>$status</td><td>$category</td><td>$author</td><td align='center'>$qr[date]</td><td align='center'>$qr[hits]</td></tr>";
 				$no++;	
 			}					
 			?>				

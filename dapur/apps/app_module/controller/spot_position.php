@@ -32,7 +32,9 @@ else {
 	$name = siteConfig('site_theme');
 	$html = file_get_html("../../../../themes/$name/index.php");
 	$pos = str_replace("loadModule('","{",$html);
+	$pos = str_replace("loadModule(\"","{",$pos);
 	$pos = str_replace("')","}",$pos);
+	$pos = str_replace("\")","}",$pos);
 	
 	preg_match_all('/\{(.*?)\}/',$pos,$position);  
 	if(!empty($position[1])) {

@@ -15,6 +15,9 @@ require_once ('config.php');
 require_once ('system/query.php');
 require_once ('system/function.php');
 
+//set default timezone
+date_default_timezone_set(siteConfig('timezone'));
+
 /*
 * Load extentions
 */ 

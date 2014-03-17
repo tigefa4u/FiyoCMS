@@ -10,7 +10,7 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-if(!siteConfig('new_member')) :
+if(!siteConfig('member_registration')) :
 	echo "<h1>User Register</h1>";
 	echo "<p>";
 	echo RegisterNotAllowed__;
@@ -26,7 +26,8 @@ function reloadCaptcha() {
 <div id="user">
 	<input type="hidden" id="url" value="<?php echo FUrl; ?>" />
 	<form method="post" action="">	
-		<h1>User Register</h1>
+		<h1>User Register</h1>	
+		<?php if(userNotice != 'need_admin_activation' AND userNotice != 'need_email_activation') : ?>	
 		<?php echo userNotice; ?>		
 		<div>
 			<span>Username</span><input <?php formRefill('user'); ?> type="text" autocomplete="off" name="user" placeholder="Username"/> min.3 character
@@ -41,11 +42,25 @@ function reloadCaptcha() {
 			<span>Email</span><input type="text" <?php formRefill('email'); ?>name="email" placeholder="Email"/>
 		</div>
 		<div>
-			<span>Security</span><div><img src="<?php echo FUrl; ?>/plugins/mathcaptcha/image.php" alt="Click to reload image" title="Click to reload image" id="captcha" onclick="javascript:reloadCaptcha()" /><br/><input type="text" name="capthca" placeholder="What the result?" class="security" /></div>
+			<span>Security Code</span><div><img src="<?php echo FUrl; ?>/plugins/plg_mathcaptcha/image.php" alt="Click to reload image" title="Click to reload image" id="captcha" onclick="javascript:reloadCaptcha()" /><input type="text" name="capthca" placeholder="What the result?" class="security" /></div>
 		</div>
 		<div class="user-link">
-			<span>&nbsp;</span><input type="submit" name="register" value="Register" class="button login"/> <a href="<?php echo make_permalink('?app=user&view=login') ?>">Login</a> <a href="<?php echo make_permalink('?app=user&view=lost_password') ?>">Lost Password?</a>
+			<span>&nbsp;</span><input type="submit" name="register" value="Register" class="button btn login"/> <a href="<?php echo make_permalink('?app=user&view=login') ?>">Login</a> <a href="<?php echo make_permalink('?app=user&view=lost_password') ?>">Lost Password?</a>
 		</div>
+		<?php elseif(userNotice == 'need_email_activation') : ?>
+		<div>			
+			<?php alert("info",user_Registration_Success); ?>
+			<?php echo user_Email_Activation; ?>
+			<?php loadModule('user-register'); ?>
+		</div>
+		<?php elseif(userNotice == 'need_admin_activation') : ?>
+		<div>			
+			<?php alert("info",user_Registration_Success); ?>
+			<?php echo user_Admin_Activation; ?>
+			<?php loadModule('user-register'); ?>
+		</div>
+		<?php endif; ?>
+		
 	</form>
 </div> 
 <?php endif ?>

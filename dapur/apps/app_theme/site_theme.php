@@ -39,11 +39,11 @@ defined('_FINDEX_') or die('Access Denied');
 	<table class="data">
 	  <thead>
 		<tr>
-			<th width="3%" class='no' align='center'>#</td>
-			<th width="20%"><?php echo Theme_Name; ?></th>
-			<th style="width:30%  !important;"><?php echo AddOns_Author; ?></th>
-			<th style="width:35%  !important;"><?php echo Information; ?></th>
-			<th style="width:17%  !important;"><?php echo Creation_date; ?></th>
+			<th style="width:1%  !important;" class='no' align='center'>#</td>
+			<th style="width:20%  !important;"><?php echo Theme_Name; ?></th>
+			<th style="width:9%  !important;"><?php echo AddOns_Author; ?></th>
+			<th style="width:30%  !important;"><?php echo Information; ?></th>
+			<th style="width:10%  !important;"><?php echo Creation_date; ?></th>
 		</tr>
 	  </thead>
 		<?php			

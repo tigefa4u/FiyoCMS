@@ -10,7 +10,8 @@
 defined('_FINDEX_') or die('Access Denied');
 
 $view = app_param('view');
-
+$key = @$_GET['key'];
+$res = @$_GET['res'];
 switch($view)
 {
 	case 'logout':
@@ -29,7 +30,11 @@ switch($view)
 		require("apps/app_user/view/forgot.php");
 	break;
 	default :
-		require("apps/app_user/view/profile.php");
+		if(!empty($res))
+			require("apps/app_user/view/reset.php");
+		elseif(!empty($key))
+			require("apps/app_user/view/activation.php");
+		else require("apps/app_user/view/profile.php");
 	break;
 	
 }

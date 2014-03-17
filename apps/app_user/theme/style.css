@@ -3,14 +3,22 @@
 
 }
 #user div{
-	overflow:hidden;
-	line-height: 2em;
 	margin: 2px 0 0;
+}
+#user div > div{
+	margin: 2px 0 0;
+}
+#user form div > div{
+	margin: 0 0 0 132px;
+}
+#user form img{
+	margin: 4px 0;
+	display: block;
 }
 
 #user span{
 	float: left;
-	width: 20%;
+	width: 130px;
 }
 #user input[type="text"], #user input[type="password"] {
 	min-width:200px;
@@ -25,42 +33,10 @@
 	margin: 0 0 0 10px;
 }
 
-/* notification */
-
-.notice-info, .notice-error{ 
-	text-shadow: 0 0 0 #fff;
-	margin: 5px 0 10px !important;
-	font-size: 110%;
-	padding: 5px 5px 5px 41px;	
-	font-weight: bold;
-}
-
-.notice-info{ 
-	margin: 5px 0;
-	color: rgb(255, 255, 255);
-	padding: 7px 5px 6px 41px;
-	border: 1px solid rgb(56, 120, 150);
-	background: url(images/notice-info.png) no-repeat 5px 5px rgb(139, 167, 209);
-	font-size: 110%;
-	font-weight: bold;
-}
-.notice-error{ 
-	margin: 5px 0;
-	color: #8e0000;
-	padding: 6px 5px 6px 41px;
-	border: 1px solid rgba(142, 0, 0, 0.12);
-	background: url(images/notice-error.png) no-repeat 5px 3px #ffecec;
-	font-size: 110%;
-	font-weight: bold;
-}
-
-
 .profile-box {
 	border: 1px solid #ccc;
 	padding:10px;
 	margin: 0 0 20px;
-
-
 }
 form#user { 
 	overflow:hidden; 

@@ -1,0 +1,24 @@
+/**
+* @version		1.5.0
+* @package		Related Article
+* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.txt
+*/
+
+.article-tags {
+	text-align: center;
+	line-height: 2em;
+	
+}
+.article-tags a.tag1 {
+	font-size: 100%;
+}
+.article-tags a.tag2 {
+	font-size: 125%;
+}
+.article-tags a.tag3 {
+	font-size: 160%;
+}
+.article-tags a.tag4 {
+	font-size: 180%;
+}

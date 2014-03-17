@@ -50,11 +50,11 @@ while($com=mysql_fetch_array($sql) AND $no < $item){
 	$ltitle = oneQuery('article','id',$ltitle,'title');
 	$ltitle = "<a href='".make_permalink($com['link'])."' title='comment permalink'>$ltitle</a>";
 	
-	if($name AND $title AND $date) echo "$com[name], <em>$com[date]</em><br/> on $ltitle";
+	if($name AND $title AND $date) echo "<span>$com[name]</span> <em>$com[date]</em><br/> on $ltitle";
 	else if(!$name AND $title AND $date) echo "$ltitle on <em>$com[date]</em>";
-	else if($name AND  $title) echo "$com[name] on $ltitle";
-	else if($name AND  $date) echo "$com[name] on <em>$com[date]</em>";
-	else if($name) echo "$com[name]";
+	else if($name AND  $title) echo "<span>$com[name]</span> on $ltitle";
+	else if($name AND  $date) echo "<span>$com[name]</span> on <em>$com[date]</em>";
+	else if($name) echo "<span>$com[name]</span>";
 	else if($date) echo "$com[date]";
 	else if($title) echo "$ltitle";	
 	
@@ -67,14 +67,14 @@ while($com=mysql_fetch_array($sql) AND $no < $item){
 		if (navigator.onLine) {
 			$('.mod-gravatar[data-gravatar-hash]').prepend(function(index){
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="36" height="36" alt="" src="http://www.gravatar.com/avatar/'+hash+'?size=36">'
+				return '<img width="36" height="36" alt="" src="http://gravatar.com/avatar/'+hash+'?size=36">'
 			})
 		}
 		else 
 		{
-			$('.mod-mgravatar[data-gravatar-hash]').prepend(function(index){
+			$('.mod-gravatar[data-gravatar-hash]').prepend(function(index){
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="36" height="36" alt="" src="<?php echo FUrl; ?>apps/app_comment/theme/images/user.png" >'
+				return '<img width="36" height="36" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
 			})	
 		}
 	});

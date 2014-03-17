@@ -1,10 +1,26 @@
 .mod-article-archive {
-	margin: 0;
+
 }
 .mod-article-archive  li {
-	list-style: none;
 	font-weight:normal;
 }
 .mod-article-archive  li.acc {
 	font-weight: bold;
+}
+.archive-list {
+	display: none;
+	margin-top: 10px;
+}
+a.active .archive-list.open {
+	display: block !important;
+}
+.archive-list.open {
+	display: block;
+}
+.archive-list li{
+	line-height: 2em;
+}
+.archive-list li a.active{
+	font-weight: bold;
+	font-size: 110%;
 }

@@ -35,11 +35,17 @@ defined('_FINDEX_') or die('Access Denied');
 	$sql =	$db->select(FDBPrefix.'apps','*','',"name ASC"); 
 	while($qr=mysql_fetch_array($sql)){		
 		$file = "../apps/$qr[folder]/app_details.php";
-		if(file_exists($file))
+		if(file_exists($file)) {
 			include($file);
+			$class = "tooltip help";
+		}
+		else {
+			$app_desc = "";
+			$class = "tooltip";
+		}
 		echo "<tr>";
 		
-		if($qr['author']=='Fiyo CMS')
+		if($qr['type']== 0)
 			$radio = "<span class='icon lock'></lock>";
 		else
 			$radio ="<input type=\"radio\" name=\"apps\" value=\"$qr[folder]\">";
@@ -48,7 +54,7 @@ defined('_FINDEX_') or die('Access Denied');
 			$app_desc = "Error Apps!";
 			$qr['name'] ="Error Apps!";
 		}
-		echo "<td align='center'>$radio</td><td><a class='tooltip help' title='$app_desc'>$qr[name]</a></td><td>$qr[author]</td>";
+		echo "<td align='center'>$radio</td><td><a class='$class' title='$app_desc'>$qr[name]</a></td><td>$qr[author]</td>";
 			echo "</tr>";
 	}
 	?> 

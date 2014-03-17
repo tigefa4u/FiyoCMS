@@ -10,7 +10,6 @@
 defined('_FINDEX_') or die('Access Denied');
 
 $db = @new FQuery() or die;  
-$db->connect();
 
 //set request id 
 if(isset($_REQUEST['id']))
@@ -26,16 +25,16 @@ else {
 	$sq = $db->select(FDBPrefix.'article','*','id='.$id);  
 	$qr = @mysql_fetch_array($sq);
 }	
-
+$article = $qr['article'];
 if(checkLocalhost()) {
-	$article = str_replace("media/",FLocal."media/",$qr['article']);			
+	$article = str_replace("media/",FLocal."media/",$article);			
 }
-addJs ("../plugins/jquery_ui/ui.slider.js");
-addCss("../plugins/jquery_ui/base/ui.all.css");
-addJs ("../plugins/jquery_ui/ui.core.js");
-addJs ("../plugins/jquery_ui/ui.datepicker.js");
-addJs ("../plugins/jquery_ui/ui.timepicker.js");
-addJs ("../plugins/ckeditor/ckeditor.js");
+addJs ("../plugins/plg_jquery_ui/ui.slider.js");
+addCss("../plugins/plg_jquery_ui/base/ui.all.css");
+addJs ("../plugins/plg_jquery_ui/ui.core.js");
+addJs ("../plugins/plg_jquery_ui/ui.datepicker.js");
+addJs ("../plugins/plg_jquery_ui/ui.timepicker.js");
+addJs ("../plugins/plg_ckeditor/ckeditor.js");
 addJs ("apps/app_article/controller/jquery.tagsinput.min.js");
 addCSS("apps/app_article/controller/jquery.tagsinput.css");
 ?>
@@ -69,8 +68,8 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 		<div class="isi">				
 			<table class="data2">				
 				<tr>
-					<td class="djudul tooltip" title="<?php echo Article_Title; ?>"><?php echo Title; ?> *</td>
-					<td><input value="<?php echo $qr['id'];?>" type="hidden" name="id"><input <?php formRefill('title',$qr['title']);?> type="text" name="title" size="43" required></td>
+					<td class="djudul tooltip" title="<?php echo Article_Title; ?>" style="width:10%"><?php echo Title; ?> *</td>
+					<td><input value="<?php echo $qr['id'];?>" type="hidden" name="id"><input <?php formRefill('title',$qr['title']);?> type="text" name="title" size="43" style="width:100%" required></td>
 					<td class="djudul tooltip" title="<?php echo Article_category; ?>"><?php echo Category; ?></td>
 					<td><select name="cat">
 					<?php	
@@ -80,10 +79,10 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 						$sql = $db->select(FDBPrefix.'article_category','*','parent_id=0'); 
 						while($qrs=mysql_fetch_array($sql)){
 							if($qrs['level'] >= $_SESSION['USER_LEVEL'] ){
-							if($qr['category']==$qrs['id'])$s="selected";else$s="";
-							echo "<option value='$qrs[id]' $s>$qrs[name]</option>";
-							option_sub_cat($qrs['id'],'');
-							$no++;	}
+								if($qr['category']==$qrs['id'])$s="selected";else$s="";
+								echo "<option value='$qrs[id]' $s>$qrs[name]</option>";
+								option_sub_cat($qrs['id'],'');
+							}
 						}						
 					?>
 					</select>
@@ -91,12 +90,12 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 				</tr>
 				
 				<tr>
-					<td class="djudul tooltip" title="<?php echo Tags_tip; ?>" >Tags</td>
+					<td class="djudul tooltip" title="<?php echo Tags_tip; ?>"  style="min-width: 35px;">Tags</td>
 					<td>
 						<input <?php formRefill('tags',$qr['tag']);?> type="text" name="tags" id="tags" size="38">
 					</td>	
 					<td class="djudul tooltip" title="<?php echo Featured_tip; ?>"><?php echo Featured; ?></td>
-					<td style="width:20%;padding: 9px 10px;	vertical-align:top !important;">
+					<td style="width:20%;padding: 9px 6px;	vertical-align:top !important;">
 						<?php 
 							if($qr['featured']){$f1="selected checked"; $f0 = "";}
 							else {$f0="selected checked"; $f1= "";}
@@ -167,7 +166,7 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 							</tr>
 							<tr>
 								<td class="djudul tooltip" title="<?php echo Editor_tip; ?>"><?php echo Editor; ?></td>
-								<td><?php if(!empty($qr['editor'])) echo oneQuery("user","id",$qr['editor'],"name"); else echo "Null"; ?></td>
+								<td><?php if(!empty($qr['editor'])) echo oneQuery("user","id",$qr['editor'],"name"); else echo "None"; ?></td>
 							</tr>
 							<tr>
 								<td class="djudul tooltip" title="<?php echo Active_Status; ?>"><?php echo Active_Status; ?></td>
@@ -224,28 +223,28 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 				if(!is_numeric($rate_value) or empty($rate_value)) $rate_value=0;			
 				if(!is_numeric($rate_value) or empty($rate_counter)) $rate_counter=0;	
 				
-				if(!isset($param1)){$enpar1="selected checked"; $dispar1 = "";}
+				if(!isset($param1) or isset($new)){$enpar1="selected checked"; $dispar1 = "";}
 				else {$dispar1="selected checked"; $enpar1= "";}
 
-				if(!isset($param2)){$enpar2="selected checked"; $dispar2 = "";}
+				if(!isset($param2) or isset($new)){$enpar2="selected checked"; $dispar2 = "";}
 				else {$dispar2="selected checked"; $enpar2= "";}
 
-				if(!isset($param3)){$enpar3="selected checked"; $dispar3 = "";}
+				if(!isset($param3) or isset($new)){$enpar3="selected checked"; $dispar3 = "";}
 				else {$dispar3="selected checked"; $enpar3= "";}
 
-				if(!isset($param4)){$enpar4="selected checked"; $dispar4 = "";}
+				if(!isset($param4) or isset($new)){$enpar4="selected checked"; $dispar4 = "";}
 				else {$dispar4="selected checked"; $enpar4= "";}
 
-				if(!isset($param5)){$enpar5="selected checked"; $dispar5 = "";}
+				if(!isset($param5) or isset($new)){$enpar5="selected checked"; $dispar5 = "";}
 				else {$dispar5="selected checked"; $enpar5= "";}
 				
-				if(!isset($param6)){$enpar6="selected checked"; $dispar6 = "";}
+				if(!isset($param6) or isset($new)){$enpar6="selected checked"; $dispar6 = "";}
 				else {$dispar6="selected checked"; $enpar6= "";}
 
-				if(!isset($param7)){$enpar7="selected checked"; $dispar7 = "";}
+				if(!isset($param7) or isset($new)){$enpar7="selected checked"; $dispar7 = "";}
 				else {$dispar7="selected checked"; $enpar7= "";}
 				
-				if(!isset($param10)){$enpar10="selected checked"; $dispar10 = "";}
+				if(!isset($param10) or isset($new)){$enpar10="selected checked"; $dispar10 = "";}
 				else {$dispar10="selected checked"; $enpar10= "";}
 			
 			
@@ -322,8 +321,8 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 									<label for="radio9" class="cb-enable <?php echo $enpar7;?>"><span>Show</span></label>
 									<label for="radio10" class="cb-disable <?php echo $dispar7;?>"><span>Hide</span></label>
 								</p>
-								<input type="hidden" name="param8" value="<?php echo $rate_value; ?>">
-								<input type="hidden" name="param9" value="<?php echo $rate_counter; ?>">
+								<input type="hidden" name="param8" value="<?php echo @$rate_value; ?>">
+								<input type="hidden" name="param9" value="<?php echo @$rate_counter; ?>">
 							</td>
 						</tr>					
 						<tr>
@@ -361,11 +360,11 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 					<table class="data2">
 						<tr>
 							<td class="djudul tooltip " title="<?php echo Keywords_tip; ?>"><?php echo Keyword; ?></td>
-							<td><textarea rows="3" cols="30" type="text" name="keyword" style="margin-right:-20px"><?php formRefill('keyword',$qr['keyword'],'textarea'); ?></textarea></td>
+							<td><textarea rows="3" cols="19" type="text" name="keyword" style="min-width:95%"><?php formRefill('keyword',$qr['keyword'],'textarea'); ?></textarea></td>
 						</tr>							
 						<tr>
 							<td class="djudul tooltip " title="<?php echo Meta_Desc_tip; ?>"><?php echo Description; ?></td>
-							<td><textarea rows="5" cols="30" type="text" name="desc" style="margin-right:-20px"><?php formRefill('description',$qr['description'],'textarea'); ?></textarea></td>
+							<td><textarea rows="5" cols="19" type="text" name="desc" style=" min-width: 95%;"><?php formRefill('description',$qr['description'],'textarea'); ?></textarea></td>
 						</tr>
 					</table>
 					</div>

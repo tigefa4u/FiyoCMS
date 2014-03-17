@@ -80,7 +80,7 @@ include('module/header.php');
 							</a>
 						</li>
 						
-					<?php if($_SESSION['userLevel'] <= 2) : ?>
+					<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
 					
 						<li class="icon menu">
 							<a class='link' href="?app=menu">
@@ -101,7 +101,7 @@ include('module/header.php');
 							</a>
 						</li>	
 					<?php endif; ?>			
-					<?php if($_SESSION['userLevel'] <= 2) : ?>
+					<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
 							<li class="icon box">
 							<a class='link' href="?app=addons&act=install">
 							<div></div>

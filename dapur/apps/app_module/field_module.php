@@ -44,7 +44,7 @@ $editor = "../modules/$name/mod_editor.php";
 $param = $modParam = $qr['parameter'];
 define('modParam',$qr['parameter']);
 
-addJs("../plugins/jquery_ui/autocomplete.js");
+addJs("../plugins/plg_jquery_ui/autocomplete.js");
 ?>
 <script>
 $().ready(function() {	
@@ -166,7 +166,7 @@ function enableselections() {
 							echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
 						}
 					}
-					if($qr[level]==99 or !$id) $s="selected";else $s="";
+					if($qr['level']==99 or !$id) $s="selected";else $s="";
 					echo "<option value='99' $s>"._Public."</option>"
 				?>
 				</select></td>

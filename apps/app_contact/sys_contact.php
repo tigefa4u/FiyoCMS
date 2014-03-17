@@ -9,6 +9,8 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
+loadLang(__dir__);
+
 function contactInfo($output) {
 	$id = app_param('id');
 	$output = oneQuery('contact','id',$id ,$output);
@@ -21,7 +23,8 @@ function groupInfo($output) {
 	return  $output;
 }
 
-class Contact {	
+class Contact {
+	var $sent = false;
 	function item($id,$menuId) {
 		$db = new FQuery();  
 		$db->connect();
@@ -29,7 +32,7 @@ class Contact {
 		$qr	 = @mysql_fetch_array($sql); 	
 							
 		if(empty($qr['id']))
-			echo "<h3>Opps, Contact person is not found !";
+			echo "<h3>Opps, Contact person is not found!";
 		else {		
 			//get group name
 			$group = oneQuery('contact_group','id',$qr['group_id'],'name');	
@@ -65,22 +68,24 @@ class Contact {
 	function send($name,$email,$post,$send,$to) {				
 		if(isset($send)) {
 			if(empty($name) or empty($email) or empty($post)) 
-				echo "<div class='notice-error'>Please completes the fields !</div>";
+				alert("error",contact_Error);
 			else if(!preg_match("/^.+@.+\\..+$/",$email))
-				echo "<div class='notice-error'>Email not valid !</div>";
+				alert("error",contact_Error2);
 			else if($_POST['captcha'] == $_SESSION['captcha']) {
 				// multiple recipients
+				$site = siteConfig('site_name');
 				$to = "$to";
-				$subject = "Email From $name";
-				$message = "$post";		
+				$subject = "Email via $site";
+				$message = "$post<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p><small>Sent by <b> $site</b></small></p>";		
 				$headers  = 'MIME-Version: 1.0' . "\r\n";
 				$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-				$headers .= "To: <$to>'s Administrator"."\r\n";
+				$headers .= "To: <$to>\r\n";
 				$headers .= "From: $name <$email>" . "\r\n";
 				$mail = @mail($to,$subject,$message,$headers);	
-				echo "<div class='notice-info'>We promise we will get back to you as soon as possible</div>"; 
+				alert("info",contact_Info); 
+				$this -> sent 	= true;
 			}	
-			else echo "<div class='notice-error'>Security code is incorrect !</div>";
+			else alert("error",contact_Error3);
 		}	
 	}
 
@@ -109,7 +114,7 @@ class Contact {
 		$sql = $db->select(FDBPrefix.'contact','*','status = 1 AND group_id='.$id); 
 		$qr	 = @mysql_fetch_array($sql); 									
 		if(empty($qr['id']))
-			echo "<h3>Opps, Contact group is empty !";
+			echo "<h3>Opps, Contact group is empty!";
 		else {		
 			loadPaging();		
 			$paging = new paging();
@@ -117,7 +122,7 @@ class Contact {
 			$result=$paging->pagerQuery(FDBPrefix.'contact',"*","status=1 $whereCat",'name ASC',$rowsPerPage);
 			
 			$no=0;
-			$jml= mysql_affected_rows();		
+			$sum= mysql_affected_rows();		
 			while($qr=mysql_fetch_array($result)) {			
 			$group = oneQuery('contact_group','id',$qr['group_id'],'name');
 						
@@ -140,7 +145,7 @@ class Contact {
 			if(isset($ym) or isset($fb) or isset($tw) or isset($web))
 			$links = $ym.$fb.$tw.$web;
 			else  $links='';				
-			$this -> perrows 		= $jml;
+			$this -> perrows 		= $sum;
 			$this -> name[$no]		= $name;
 			$this -> group[$no]		= $group;
 			$this -> gender[$no]	= $qr['gender'];

@@ -8,8 +8,7 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-
-
 $article = new Article;
 $article -> category('tag');
+
 require	("apps/app_article/view/format/$format.php");

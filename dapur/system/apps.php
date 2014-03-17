@@ -19,7 +19,7 @@ if(!empty($app)){
 			/* blank line */
 		}
 		function loadAdminApps() {
-			require(AdminPath."/dasboard.php");			
+			require(AdminPath."/dashboard.php");			
 		}
 	}
 	else {			
@@ -38,7 +38,7 @@ else {
 		/* blank line */
 	}
 	function loadAdminApps() {
-		require(AdminPath."/dasboard.php");			
+		require(AdminPath."/dashboard.php");			
 	}
 }
 

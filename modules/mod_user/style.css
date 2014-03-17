@@ -8,11 +8,12 @@
 }
 .mod-user-login span{
 	float: left;
-	width: 75px;
+	width: 70px;
 }
 .mod-user-login input[type="text"], .mod-user-login input[type="password"]{
 	min-width:50%;
 	padding:6px;
+	max-width: 90%;
 }
 .mod-user-login a{
 	font-size:80%;

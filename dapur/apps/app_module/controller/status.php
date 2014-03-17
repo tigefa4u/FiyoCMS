@@ -7,7 +7,7 @@
 * @description	
 **/
 
-if(isset($_SESSION['userLevel']) <= 2) :
+if(isset($_SESSION['USER_LEVEL']) <= 2) :
 define('_FINDEX_',1);
 
 require_once ('../../../system/jscore.php');

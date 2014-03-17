@@ -16,3 +16,4 @@ defined('_FINDEX_') or die('Access Denied');
 require ('plg_system.php'); 
 redirect_www();
 redirect_link();
+

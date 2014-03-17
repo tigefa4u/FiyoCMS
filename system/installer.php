@@ -8,25 +8,22 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-
-
 if(isset($_POST['install'])) {
-	include("system/function.php");
-	extractZip('system/installer.zip',__dir__);
-
-
+	$zip = new ZipArchive;
+    $res = $zip->open('system/installer.zip');
+    if ($res === TRUE ) {
+		$zip->extractTo(__dir__);
+        $zip->close();
+	}
 }
-
 
 $file = "system/installer/index.php";
 
-if(file_exists($file)) :
+if(file_exists($file)) {
 	include($file);
-else :
-
+}
+else {
 	echo "<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px;'><form action='' method='POST' style='margin:0 0 2px;'>
 	Configuration file (<b>config.php</b>) is not found! Please upload config.php file or start <input type='submit' value='new installation' name='install'>
 	</form></div>";
-?>
-
-<?php endif; ?>
+}

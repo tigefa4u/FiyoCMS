@@ -14,23 +14,23 @@ $contact = new Contact() or die;
 $contact -> item($id,Page_ID);
 $contact -> send(@$_POST['name'],@$_POST['email'],@$_POST['text'],@$_POST['send'],@$_POST['to']);
 
-addJs(FUrl.'plugins/jquery_ui/ui.validate.js');
+addJs(FUrl.'plugins/plg_jquery_ui/ui.validate.js');
 if(isset($contact->name)) : ?>
 	<?php if(!empty($contact->photo) AND $contact->photo !='') : ?>	
 		<div class="contact-photo"><?php echo $contact->photo; ?></div>
 	<?php endif; ?>
 	<table style="width:65%;" class="personal">		
 		<tr>
-			<td style="width:30%">Name</td><td><?php echo $contact->name; ?></td>
+			<td style="width:30%"><?php echo _contact_Name; ?></td><td><?php echo $contact->name; ?></td>
 		</tr>
 		<?php if($contact-> gender == 3) : ?>
 			<tr>
-				<td>Jenis Kelamin</td><td><?php if($contact->gender==1) echo "Laki-laki"; else echo "Perempuan"; ?></td>
+				<td><?php echo _contact_Gender; ?></td><td><?php if($contact->gender==1) echo _contact_Man; else echo _contact_Woman; ?></td>
 			</tr>
 		<?php endif; ?>
 		<?php if($contact-> address) : ?>
 			<tr>
-				<td valign="top">Address</td><td><?php echo $contact->address; ?>
+				<td valign="top"><?php echo _contact_Address; ?></td><td><?php echo $contact->address; ?>
 				
 				<?php if($contact-> state or $contact-> city or $contact-> country) { ?>
 					<br>
@@ -51,12 +51,12 @@ if(isset($contact->name)) : ?>
 		
 		<?php if($contact-> email) : ?>
 			<tr>
-				<td>Email</td><td><?php echo $contact->email; ?></td>
+				<td><?php echo _contact_Email; ?></td><td><?php echo $contact->email; ?></td>
 			</tr>
 			<?php endif; ?>
 		<?php if($contact-> phone) : ?>
 			<tr>
-				<td>Phone</td><td><?php echo $contact->phone; ?></td>
+				<td><?php echo _contact_Phone; ?></td><td><?php echo $contact->phone; ?></td>
 			</tr>
 			<?php endif; ?>
 		<?php if($contact-> fax) : ?>
@@ -89,12 +89,12 @@ if(isset($contact->name)) : ?>
 				<td valign="top">Email *</td><td><input type="email" name="email" size="30" class="required email"<?php formRefill('email'); ?> required></td>
 			</tr>
 			<tr>
-				<td valign="top">Message *</td><td><textarea name="text" rows="10" style="width:85%" class="required" required><?php formRefill('text','textarea'); ?></textarea></td>
+				<td valign="top">Message *</td><td><textarea name="text" rows="10" style="width:85%" class="required" required><?php if(!isset($contact-> sent)) $formRefill('text','','textarea'); ?></textarea></td>
 			</tr>
 			<tr>
 				<td valign="top">Security *</td>
 				<td>
-					<img src="<?php echo FUrl; ?>/plugins/mathcaptcha/image.php" alt="Click to reload image" title="Click to reload image" id="captcha" onclick="javascript:reloadCaptcha()" />
+					<img src="<?php echo FUrl; ?>/plugins/plg_mathcaptcha/image.php" alt="Click to reload image" title="Click to reload image" id="captcha" onclick="javascript:reloadCaptcha()" />
 				
 				<div><input type="text" name="captcha" placeholder="What's the result?" onclick="this.value=''" class="input required numeric" required/></div>
 				

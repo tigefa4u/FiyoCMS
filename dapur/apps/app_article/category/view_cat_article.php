@@ -75,7 +75,7 @@ defined('_FINDEX_') or die('Access Denied');
 					
 								
 				if($_SESSION['USER_LEVEL'] <= $qr['level']) {
-				$name = "<a class='tooltip ctedit link' title='".Edit." \"$qr[name]\"' href='?app=article&act=edit_category&id=$qr[id]'>$qr[name]</a>";
+				$name = "<a class='tooltip ctedit link' title='".Edit."' href='?app=article&act=edit_category&id=$qr[id]'>$qr[name]</a>";
 				$checkbox ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
 				}
 				else {$checkbox ="<span class='icon lock'></lock>";

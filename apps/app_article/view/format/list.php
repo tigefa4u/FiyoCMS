@@ -46,7 +46,7 @@ if(isset($article-> category)) :
 			
 			<!-- Pagelinks -->
 			<?php if(!empty($pagelink)) : ?>
-			<div class="article-pagelink">
+			<div class="article-pagelink pagination">
 				<?php echo $pagelink; ?>
 			</div>
 			<?php endif; ?>	
@@ -54,7 +54,7 @@ if(isset($article-> category)) :
 		
 		<!-- RSS Feed Icon -->
 		<?php if($article->show_rss) : ?>
-			<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">&nbsp;</a>	
+			<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
 		<?php endif; ?>
 		
 	<!-- RSS Feed File Generator -->	

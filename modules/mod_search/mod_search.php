@@ -12,7 +12,7 @@ defined('_FINDEX_') or die('Access Denied');
 $link = make_permalink('?app=search');
 
 ?>
-<form class="searchform" action="<?php echo $link; ?>" method="post">
-	<input class="searchfield" type="text" placeholder="Search..."  name="q">
-	<input class="searchbutton" type="submit" value="Go"  name="search">
+<form class="search-form" action="<?php echo $link; ?>" method="post">
+	<input class="search-field" type="text" placeholder="Search..."  name="q">
+	<input class="search-button btn" type="submit" value="Go"  name="search">
 </form>

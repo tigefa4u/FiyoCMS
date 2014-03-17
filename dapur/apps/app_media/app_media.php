@@ -29,4 +29,4 @@ else
 		</div>		
 	 </div>
 </div>
-<iframe src="../plugins/kcfinder/browse.php?type=<?php echo $type; ?>" width="99%" height="400px" style="border:solid 1px #ccc; -moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px; padding:3px; background:#e9e9e9 ;margin: 10px 0 0;"></iframe>
+<iframe src="../plugins/plg_kcfinder/browse.php?type=<?php echo $type; ?>" width="99.65%" height="400px" style="border:solid 1px #ccc; -moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px; background:#eee ;margin:5px 0 1px;"></iframe>

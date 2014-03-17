@@ -1,0 +1,7 @@
+*.zip
+*.rar
+*.7z
+*.gz
+_site
+_gh_pages
+coverage

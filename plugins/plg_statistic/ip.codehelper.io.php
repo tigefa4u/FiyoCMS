@@ -36,7 +36,7 @@ class ip_codehelper {
             $ip = $this->getRealIP();
         }
         if(!class_exists("phpFastCache")) {
-            die("Please required phpFastCache Class");
+            die("<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px;'>Please enable plugin <b>Cache</b> to run plugin <b>Statistic</b>!</div>");
         }
         // you should change this to cURL()
         $data = phpFastCache::get("codehelper_ip_".md5($ip));
@@ -59,7 +59,7 @@ class ip_codehelper {
     public function SSLForwardJS() {
         $ip = $this->getRealIP();
         if(!class_exists("phpFastCache")) {
-            die("Please required phpFastCache Class");
+            die("<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px;'>Please enable plugin <b>Cache</b> to run plugin <b>Statistic</b>!</div>");
         }
 
         // you should change this to cURL()

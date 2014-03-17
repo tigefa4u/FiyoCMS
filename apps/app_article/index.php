@@ -7,7 +7,7 @@
 * @description	
 **/
 
-defined('_FINDEX_') or die('Access Denied');
+defined('_FINDEX_') or die('Access Denied!');
 
 $id 	= app_param('id');
 $view 	= app_param('view');

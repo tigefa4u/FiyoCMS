@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		1.4.1
+* @version		1.5.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -56,7 +56,7 @@ define("FThemes","themes/".FThemeFolder."/index.php");
 /*  		  Load default theme		  	*/
 /********************************************/
 if(!file_exists(FThemes)) {	
-	echo "<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px;'>Theme is not found!</div>";
+	echo alert("error","Theme is not found!",true,true);
 	die();
 }
 else if(_FEED_ == 'rss' or _FINDEX_ == 'blank') {

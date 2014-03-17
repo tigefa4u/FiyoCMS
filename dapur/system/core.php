@@ -16,6 +16,9 @@ require_once ('../system/user.php');
 require_once ('../system/site.php');
 require_once ('function.php');
 
+//set default timezone
+date_default_timezone_set(siteConfig('timezone'));
+
 //memuat file bahasa jika ditemukan
 loadLang("system");
 
@@ -23,5 +26,5 @@ define('MetaDesc', 	siteConfig('site_desc'));
 define('MetaKeys', 	siteConfig('site_keys'));
 define('TitleValue',app_param('name'));
 
-//memuat file pendukung system dan file apps
+//memuat file pendukung system dan file appss
 loadSystemApps();

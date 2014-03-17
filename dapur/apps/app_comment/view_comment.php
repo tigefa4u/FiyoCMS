@@ -127,7 +127,7 @@ defined('_FINDEX_') or die('Access Denied');
 					<input type='text' value='$qr[id]' id='id' class='invisible'><input type='text' value='stat' id='type' class='invisible'>
 				</p>";						
 							
-				$name ="<a class='tooltip ctedit' title='".Click_to_edit."' href='?app=comment&act=edit&id=$qr[id]'>$qr[name]</a>";
+				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=comment&act=edit&id=$qr[id]'>$qr[name]</a>";
 				
 				$check ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
 				$link = str_replace("http://".FUrl,"",make_permalink($qr['link']));

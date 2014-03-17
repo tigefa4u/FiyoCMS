@@ -186,8 +186,8 @@ function explode_query($q , $target) {
 	return $value;
 }
 /* add search permalink */
-if(!strpos(getUrl(),'?q=')) 
-add_permalink('search');
+if(getLink() == '?app=search') 
+	add_permalink('search');
 
 /* define search page title */
 define('PageTitle', 'Search Page');

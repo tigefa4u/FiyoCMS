@@ -14,7 +14,7 @@ $_REQUEST['id']=0;
 
 if(isset($_POST['next']) or isset($_POST['apps'])) {
 	if(empty($_POST['apps'])) {
-		echo '<div class="errorfly" id="status">'.Please_Select_Apps.'</div>';
+		alert('error',Please_Select_Apps);
 		 addappstep1();
 	}
 	else {			
@@ -65,7 +65,7 @@ function addappstep1() {
 		<?php
 		$db = new FQuery();  
 		$db->connect(); 
-		$sql =	$db->select(FDBPrefix.'apps','*','type <= 1',"name ASC"); 
+		$sql =	$db->select(FDBPrefix.'apps','*','type <= 1',"name ASC"); $apps_date = $apps_version = '-';
 		while($qr=mysql_fetch_array($sql)){	
 				$file = "../apps/$qr[folder]/app_details.php";
 				if(file_exists($file))
@@ -73,7 +73,7 @@ function addappstep1() {
 				echo "<tr>";
 				echo "<td align='center'><input type=\"radio\" name=\"apps\" value=\"$qr[folder]\"> </td><td><a class='tooltip help' title='$app_desc'>$qr[name]</a></td><td>$qr[author]</td>
 					<td>$apps_version </td>
-					<td>$apps_date </td>";
+					<td>$apps_date</td>";
 				echo "</tr>";
 			}
 		?> 

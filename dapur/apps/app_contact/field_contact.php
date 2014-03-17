@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		v 1.2.1
+* @version		1.5.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see license.txt
@@ -69,7 +69,7 @@ $(document).ready(function() {
             }
         }
     };
-    window.open('../plugins/kcfinder/browse.php',
+    window.open('../plugins/plg_kcfinder/browse.php',
         'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
         'directories=0, resizable=1, scrollbars=0, width=700, height=400'
     );
@@ -85,7 +85,7 @@ $(document).ready(function() {
 				<input value="<?php echo @$qr['id'];?>" type="hidden" name="id">
 				<tr>
 					<td class="djudul tooltip" title=""><?php echo Name; ?> *</td>
-					<td><input value="<?php echo $qr['name'];?>" type="text" name="name" size="20"></td>
+					<td><input value="<?php echo $qr['name'];?>" type="text" name="name" size="20" required></td>
 				</tr>
 				<tr>
 					<td class="djudul tooltip" title=""><?php echo Gender; ?> *</td>

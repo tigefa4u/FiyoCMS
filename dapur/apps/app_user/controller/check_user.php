@@ -7,7 +7,6 @@
 * @description	
 **/
 
-if(isset($_SESSION['userLevel']) <= 2) :
 define('_FINDEX_',1);
 
 require_once ('../../../system/jscore.php');
@@ -35,5 +34,3 @@ switch($act)
 		}
 	break;
 }
-
-endif;

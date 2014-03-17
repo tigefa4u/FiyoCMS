@@ -50,7 +50,7 @@ switch($act)
 	break;
 }
 $menuParam = $qr['parameter'];
-$params ="../apps/$name/app_params.php";	
+$params ="apps/$name/app_params.php";	
 
 ?>
 
@@ -94,11 +94,11 @@ $(document).ready(function(){
 				</tr>
 				<tr>
 					<td class="djudul tooltip" title="<?php echo Menu_Name_tip; ?>"><?php echo Name; ?> *</td>
-					<td><input <?php formRefill('desc',$qr['name']); ?> type="text" name="name" size="20" required></td>
+					<td><input <?php formRefill('desc',$qr['name']); ?> type="text" name="name" style="width: 90%; margin-left: 2px;"required></td>
 				</tr>
 				<tr>
 					<td class="djudul tooltip" title="<?php echo Menu_link_tip; ?>">Link *</td>
-					<td><input <?php formRefill('desc',$menuLink); ?> type="text" name="link" style="width: 100%;" id="link" required <?php if($name!='link') echo 'readonly'; ?> ></td>
+					<td><input <?php formRefill('desc',$menuLink); ?> type="text" name="link" style="width: 90%; margin-left: 2px;" id="link" required <?php if($name!='link') echo 'readonly'; ?> ></td>
 				</tr>				
 				<tr>
 					<td class="djudul tooltip" title="<?php echo Menu_Status_tip; ?>"><?php echo Active_Status; ?></td>
@@ -230,7 +230,7 @@ $(document).ready(function(){
 						</tr>
 						<tr>
 							<td class="djudul tooltip " title="<?php echo Add_css_style_tip; ?>">CSS Style</td>
-							<td><textarea type="text" name="style" rows="5" style="width: 90%;"><?php echo $mod_style ; ?></textarea></td>
+							<td><textarea type="text" name="style" rows="5" style="width: 90%; margin-left: 2px;"><?php echo $mod_style ; ?></textarea></td>
 						</tr>
 					</table>
 					</div>

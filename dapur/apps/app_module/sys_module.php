@@ -10,7 +10,7 @@
 defined('_FINDEX_') or die('Access Denied');
 
 // Access only for Administrator
-if($_SESSION['USER_LEVEL'] > 2)
+if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] > 2)
 	redirect('index.php');
 	
 $db = new FQuery();  

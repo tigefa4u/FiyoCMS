@@ -10,7 +10,6 @@
 defined('_FINDEX_') or die('Access Denied');
 
 $db = new FQuery();  
-$db -> connect();
 	
 /****************************************/
 /*		   Add category article			*/
@@ -98,20 +97,18 @@ if(isset($_POST['save_add']) or isset($_POST['add_new']) or isset($_POST['apply_
 		for($p=1;$p<=$_POST['totalparam'];$p++){
 			$param = $param.$_POST["nameParam$p"]."=".$_POST['param'.$p].';\n';
 		}		
-		echo $param;
 		$parameter = $param;			
 		if(empty($_POST['date'])) $_POST['date'] = date("Y-m-d H:i:s");
-		$article=str_replace('"',"'","$_POST[editor]");
-		$title = htmlentities($_POST['title']);
-		$keys = htmlentities($_POST['keyword']);
-		$desc = htmlentities($_POST['desc']);
-		$tags = htmlentities($_POST['tags']);
-		
+		$article = str_replace('"',"'","$_POST[editor]");
+		$title 	= htmlentities($_POST['title']);
+		$keys 	= htmlentities($_POST['keyword']);
+		$desc 	= htmlentities($_POST['desc']);
+		$tags 	= htmlentities($_POST['tags']);
 		if(checkLocalhost()) {
 			$article = str_replace(FLocal."media/","media/",$article);			
 		}
 		
-		$qr=$db->insert(FDBPrefix.'article',array("","$title","$_POST[cat]","$article","$_POST[date]","$_POST[author]",$_SESSION['userId'],"$desc", "$tags","$keys","$_POST[featured]","$_POST[status]","$_POST[level]","1","$parameter","",""));				
+		$qr=$db->insert(FDBPrefix.'article',array("","$title","$_POST[cat]","$article","$_POST[date]","$_POST[author]",$_SESSION['USER_ID'],"$desc", "$tags","$keys","$_POST[featured]","$_POST[status]","$_POST[level]","1","$parameter","",""));				
 		
 		if($qr AND isset($_POST['apply_add']) or isset($_POST['save_as'])){
 			$sql = $db->select(FDBPrefix.'article','id','','id DESC' ); 
@@ -132,8 +129,11 @@ if(isset($_POST['save_add']) or isset($_POST['add_new']) or isset($_POST['apply_
 		}				
 	}
 	else if(empty($_POST['editor'])){	
-		alert('error',Status_Invalid);
-	}	
+		alert('error',Please_write_some_text);
+	}
+	else if(empty($_POST['title'])){	
+		alert('error',Please_fill_article_title);
+	}
 	else{	
 		alert('error',Status_Invalid);
 	}
@@ -153,22 +153,21 @@ if(isset($_POST['save_edit']) or isset($_POST['save_new']) or isset($_POST['appl
 			$param = $param.$_POST["nameParam$p"]."=".$_POST['param'.$p].';\n';
 		}		
 		$parameter=$param;
-			
-		$db = new FQuery();  
-		$db->connect();
+		
 		$db->select(FDBPrefix.'article');
-		$cat=$_POST['cat'];
-		$article=str_replace('"',"'","$_POST[editor]");
 		if(!empty($_POST['hits_reset'])) {
 			$db->update(FDBPrefix.'article',array('hits'=>"0"),"id=$_POST[id]");
 		}	
 		
+		$cat  = $_POST['cat'];
 		$time = date("H:i:s");
 		$desc = htmlentities($_POST['desc']);
 		$tags = htmlentities($_POST['tags']);
 		$keys = htmlentities($_POST['keyword']);
 		$title = htmlentities($_POST['title']);
-		$author = htmlentities($_POST['author']);
+		$author = htmlentities($_POST['author']);		
+		
+		$article = str_replace('"',"'","$_POST[editor]");
 		
 		if(checkLocalhost()) {
 			$article = str_replace(FLocal."media/","media/",$article);			
@@ -186,7 +185,7 @@ if(isset($_POST['save_edit']) or isset($_POST['save_new']) or isset($_POST['appl
 		"keyword"=>"$keys",
 		"description"=>"$desc",
 		"article"=>"$article",
-		"editor"=> userID,
+		"editor"=> $_SESSION['USER_ID'],
 		"parameter"=>"$parameter"),
 		"id=$_POST[id]");
 			
@@ -205,6 +204,12 @@ if(isset($_POST['save_edit']) or isset($_POST['save_new']) or isset($_POST['appl
 			}
 		else 
 			alert('error',Status_Fail);					
+	}
+	else if(empty($_POST['editor'])){	
+		alert('error',Please_write_some_text);
+	}
+	else if(empty($_POST['title'])){	
+		alert('error',Please_fill_article_title);
 	}
 	else 	
 		alert('error',Status_Invalid);
@@ -259,7 +264,7 @@ function sub_article($parent_id,$nos,$pre = null) {
 				$level = _Public;
 		}			
 				
-		if($qr['level'] >= $_SESSION['userLevel'] )			{
+		if($qr['level'] >= $_SESSION['USER_LEVEL'] ) {
 			$checkbox ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";	
 			
 			$name ="<a class='tooltip ctedit' title='Click to edit article \"$qr[name]\"' href='?app=article&act=edit_category&id=$qr[id]'>$qr[name]</a>";

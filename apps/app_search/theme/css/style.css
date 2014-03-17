@@ -26,19 +26,9 @@ ul.paging li {
 	display:inline; 
 }
 
-.notice-info, .notice-error{ 
+.notice{ 
 	text-shadow: 0 0 0 #fff;
 	margin: 5px 0 10px;
 	font-size: 110%;
-	padding: 6px 5px 7px 41px;
-}
-.notice-info{ 
-	color: rgb(255, 255, 255);
-	border: 1px solid #3f5d86;
-	background: url(../images/notice-info.png) no-repeat 5px 3px rgb(139, 167, 209);
-}
-.notice-error{ 
-	color: #8e0000;
-	border: 1px solid rgba(142, 0, 0, 0.12);
-	background: url(../images/notice-error.png) no-repeat 5px 0 #ffecec;
+	font-weight: normal;
 }

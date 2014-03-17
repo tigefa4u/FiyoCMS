@@ -63,8 +63,11 @@ function valmonth($x) {
 	return $val;	
 }
 
+
+
 // Daily controller
 $today 		= valday(mkdate());
+if($today < 1) $today = 1;
 $yesterday	= valday(mkdate(-1));
 
 // Weekly controller

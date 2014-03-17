@@ -11,14 +11,15 @@ defined('_FINDEX_') or die('Access Denied');
 
 $link = make_permalink("?app=user");
 ?>
-<div class="user-logout">
+<form action="" method="post">
+	<div class="user-logout">
 	<h1>User Logout</h1>
-	<form action="" method="post">
-		<div>
+		<p>
 			<?php echo Sure2Logout__; ?>
-		</div>
-		<div>
-			<input type="submit" name="logout" value="<?php echo Yes; ?>"  class="button" /> <?php echo or_; ?> <a href="<?php echo $link; ?>" class="button"><?php echo No; ?></a>	
-		</div>
-	</form>
-</div>
+		</p>
+		<p>
+			<input type="submit" name="logout" value="<?php echo Yes; ?>"  class="button btn" /> <?php echo or_; ?> <a href="<?php echo $link; ?>" class="button btn"><?php echo No; ?></a>	
+		</p>
+		<?php loadModule('user-logout'); ?>
+	</div>
+</form>

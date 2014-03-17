@@ -7,10 +7,11 @@
 */
 
 defined('_FINDEX_') or die('Access Denied');
-addJs ("../plugins/ckeditor/ckeditor.js");
+addJs ("../plugins/plg_ckeditor/ckeditor.js");
 
+$param = $qr['parameter'];
 if(checkLocalhost()) {
-	$param = str_replace("media/",FLocal."media/",$qr['parameter']);			
+	$param = str_replace("media/",FLocal."media/",$param);			
 }
 
 ?>

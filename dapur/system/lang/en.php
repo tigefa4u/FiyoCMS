@@ -62,7 +62,7 @@ define ("The Code", "Code");
 define ("Price", "Price");
 define ("Date", "Date");
 define ("Title", "Title");
-define ("Deleted", "Deleted");
+define ("deleted", "deleted");
 define ("Specification", "Specifications");
 define ("Message", "Message");
 define ("Description", "Description");
@@ -112,14 +112,18 @@ define ("Site_Configuration", "Site Configuration");
 define ("Site_Settings", "Site Settings");
 define ("Site_Name", "Site Name");
 define ("Site_Name_tip", "Name as the site's identity");
-define ("Site_Title", "Site title");
+define ("Site_Title", "Site Title");
 define ("Site_Title_tip", "Title of the site displayed on the title-bar");
-define ("Site_URL", "Site-URL");
+define ("Site_URL", "Site URL");
 define ("Site_URL_tip", "URL / website address");
 define ("Site_Status", "Site Status");
-define ("Site_Status_tip", "<b>Online</b>mean visitors can see the entire contents of the website.<br><b>Offline</b>means websites/usually in a State of repair.<br>Please login to view sites that are Offline. ");
+define("Site_Mail","Site Mail");
+define("Site_Mail_tip","Default site mail");
+define ("Site_Status_tip", "<b>Online</b> mean visitors can see the entire contents of the website.<br><b>Offline</b> means websites/usually in a maintenance.<br>Administrator must login to view  sites that are offline. ");
 define ("Member_Register", "Member Registration");
-define ("Member_Register_tip", "Allow member register");
+define ("Member_Register_tip", "Allow new member");
+define ("Member_Activation", "Member Activation");
+define ("Member_Activation_tip", "Member activation methods");
 define ("Meta_Keywords", "Meta Keywords");
 define ("Meta_Keywords_tip", "Separated by a comma (,) for example: <i>keyword 1, keyword second, 3rd key</i>.");
 define ("Meta_Description", "Meta Description");
@@ -132,7 +136,7 @@ define ("SEF_URLs", "SEF URLs");
 define ("SEF_URLs_tip", "Enable SEF URLs means it will modify the site link<br>be more easily read by search engines and visitor. ");
 define ("Link_Follow_tip", "Let the search engines following the link site.");
 define("Redirect_WWW","URL Redirection");
-define("Redirect_WWW_tip","Redirecting www  to non-www or otherwise.");
+define("Redirect_WWW_tip","Redirecting non-www to www or otherwise.");
 define ("Title_Type", "Type");
 define ("Title_Type_tip", "Select a model display of the title of the site you want to display on the title-bar.");
 define ("Title_Divider", "Title Sperator");
@@ -143,28 +147,39 @@ define ("Database_Settings", "Database Settings");
 
 
 /************** Media_Settings *****************/
+define ("Member_Settings", "Member Settings");
+
+/************** Media_Settings *****************/
 define ("Media_Settings", "Media Storage Settings");
 define ("Allow_File_Extentions", "Files are permitted");
 define ("Allow_File_Extentions_tip", "Files that are allowed to be uploaded to storage media<br>without the dot (.) and delimited by a space. ");
 define ("Max_File_Size", "Maximum File size (bytes)");
 define ("Max_File_Size_tip", "Maximum file size that can be uploaded to storage media.<br>A unit of bytes and filled just a number. ");
-define ("Media_Theme", "Media Teeme");
+define ("Media_Theme", "Media Theme");
 define ("Media_Theme_tip", "Displays storage media");
 
 
 /************** BackEnd_Settings *****************/
-define ("BackEnd_Settings", "AdminPanel Configuration");
-define ("Folder_AdminPanel", "Folder Name");
-define ("Folder_AdminPanel_tip", "Folder name for AdminPanel");
+define ("BackEnd_Settings", "Updates, Languages & Times");
+define ("Folder_AdminPanel", "Admin Panel");
+define ("Folder_AdminPanel_tip", "Folder name for Admin Panel");
 define ("Folder_unchange", "Folder is being used or protected!");
 define ("Language_AdminPanel_tip", "Preferred languages for AdminPanel");
-define ("Config_helper", "<h3>Site Configuration</h3><p><b>Site Configuration</b>page is the control center of the site.</p>");
+define ("Config_helper", "<h3>Site Configuration</h3><p><b>Site Configuration</b> page is the control center of the site.</p>");
+define("Time_Zone","Time Zone");
+define("Time_Zone_tip","Refference time zone");
+define("Fiyo_Version","Fiyo Version");
+define("Fiyo_Version_tip","Fiyo version used");
+
+
+define("Default_Group_Member_tip","Default Group for at the beginning of registration");
+define("Default_Group_Member","Default Group Registration");
 
 
 /************************************************
 *				  Media Manager					*
 *************************************************/
-define ("Media_Manager_help", "<h3>Media Manager</h3><ul><li><b>Media Manager</b>is useful for managing image, flash or other file types.</li><li>The media Folder is located in the <b>/media</b>folder and then type, e.g.:<ul><li>/media/<b>images</b>for image type</li><li>/media/<b>flash</b>for this type of flash (*. swf)</li><li>/media/<b>files</b>to other file types (*.doc, *.zip, *.rar, *.html)</li></ul></li></ul>");
+define ("Media_Manager_help", "<h3>Media Manager</h3><ul><li><b>Media Manager</b> is useful for managing image, flash or other file types.</li><li>The media Folder is located in the <b>/media</b> folder and then type, e.g.:<ul><li>/media/<b>images</b> for image type</li><li>/media/<b>flash</b> for this type of flash (*. swf)</li><li>/media/<b>files</b>to other file types (*.doc, *.zip, *.rar, *.html)</li></ul></li></ul>");
 
 
 /************************************
@@ -182,7 +197,7 @@ define ("AddOns_Author", "Creator");
 define ("AddOns_installed", "AddOns installed successfully!");
 define ("AddOns_deleted", "AddOns successfully erased!");
 define ("AddOns_installeds", "Module is successfully installed!");
-define ("AddOns_help", "<h3>AddOns Manager</h3><ul><li>This page is useful to manage AddOns that are already installed.</li><li>AddOns can be obtained through the official website of <b><a href='http://addons.fiyo.org/ target=' _blank=''>Fiyo AddOns</a></b>.</li><li>Uninstall will remove all files, folders and the database of the AddOns.</li><li>Disable AddOns can cause errors on the site.</li></ul>");
+define ("AddOns_help", "<h3>AddOns Manager</h3><ul><li>This page is useful to manage AddOns that are already installed.</li><li>AddOns can be obtained through the official website at <b><a href='http://addons.fiyo.org/' target=' _blank'>Fiyo AddOns</a></b>.</li><li>Uninstall will remove all files, folders and the database of the AddOns.</li><li>Disable AddOns can cause errors on the site.</li></ul>");
 
 /************************************
 * 			Article Manager 		*
@@ -193,10 +208,10 @@ define ("Article_New_Saved", "New Article successfully saved.");
 define ("Article_Saved", "Item successfully saved.");
 define ("Article_Deleted", "Item successfully deleted.");
 define ("Article_Not_Select", "Select article first!");
-define ("Article_category", "Category Pages");
+define ("Article_category", "Article Categories");
 define ("Add_new_article", "Create new article");
-define ("Edit_Article", "Edit Pages");
-define ("New_Article", "New Articles");
+define ("Edit_Article", "Edit Article");
+define ("New_Article", "New Article");
 define ("Last_Updated","Last Update");
 define ("Last_Updated_tip","Latest updated time");
 define ("Updated_By","Editor");
@@ -206,7 +221,7 @@ define ("Featured_tip", "Featured Articles");
 define ("Tags_tip", "Tag article is restricted with commas (,)");
 define ("Keywords_tip", "Keywords are used by search engines for<br>finding articles. restricted with commas (,)");
 define ("Meta_Desc_tip", "Brief description of the article");
-define ("Article_help", "<h3>Article Manager</h3><ul><li>Article Manager is used to manage the content of the article.</li><li>You can delete some articles sakaligus.</li><li>Select the article title to edit the article.</li><li>Changes to the <b>On / Off</b>will be saved automatically.</li></ul>");
+define ("Article_help", "<h3>Article Manager</h3><ul><li>Article Manager is used to manage the content of the article.</li><li>You can delete some articles sakaligus.</li><li>Select the article title to edit the article.</li><li>Changes to the <b>On/Off</b> will be saved automatically.</li></ul>");
 define ("Field_Article_help", "<h3>Article Manager</h3><ul><li>Advantage editor to set the display of media articles and also to be added.</li><li>Featured article will be displayed on the front page / main page.</li><li>Cut to the article to be partially filled pages with the <b>Read More</b>.</li><li>Link link from the media into the article using the <b>Attach File</b>.</li></ul>");
 define ("Article_Category_help", "<h3>Article Categories</h3><ul><li>Categories used to classify the articles.</li><li>Categories can have multiple sub-categories without limit.</li></ul>");
 define ("Category_Not_Empty", "Fail, Category still contains articles!");
@@ -219,8 +234,10 @@ define ("Category_level", "Who has access to the category");
 define ("Article", "Article");
 define ("Article_Category_Saved", "Category articles successfully saved.");
 define ("Article_Saved_redirect", "Item successfully saved. Please wait ...");
-define ("Hits_Reset", "Press the Reset button <b></b>to reset Hits article");
+define ("Hits_Reset", "Press the Reset button to reset Hits article");
 define ("Article_desc", "Showing articles in categories or single page");
+define ("Please_write_some_text","Please write some text!");
+define ("Please_fill_article_title","Please fill article title!");
 
 
 /*********** Article Icon *************/
@@ -242,7 +259,7 @@ define ("Show_Category", "Show Categories");
 define ("Show_Hits", "Show Hits");
 define ("Show_Tags", "Show Tag");
 define ("Show_Rate", "Show Rating");
-define ("Show_Comment", "View Comments");
+define ("Show_Comment", "Show Comments");
 
 /************************************
 * 			Menu Manager 			*
@@ -307,7 +324,7 @@ define ("Menu_Category_tip", "Category Menu");
 /************************************
 * 			Modules Manager 		*
 ************************************/
-define ("Add_new_module", "Insert Module");
+define ("Add_new_module", "Add Module");
 define ("New_Module", "New Module");
 define ("Edit_Module", "Edit Module");
 define ("Module_name", "Module name");
@@ -325,11 +342,11 @@ define ("Module_Order_tip", "The order of the modules based on the module positi
 define ("Module_Access_tip", "Who can see this module?");
 define ("Module_Pages", "Home Module");
 define ("Module_Pages_tip", "Select the page where the module will be displayed");
-define ("Module_help", "<h3>Module Manager</h3><ul><li><b>Module Manager</b>is useful for managing modules posted on the site.</li><li><b>Button Show Name / status</b> will be saved automatically.</li><li>To install the module can be through the <a href='?app=addons'><b>Addons Manager</b></a>.</li></ul>");
+define ("Module_help", "<h3>Module Manager</h3><ul><li><b>Module Manager</b> is useful for managing modules posted on the site.</li><li><b>Button Show Name / status</b> will be saved automatically.</li><li>To install the module can be through the <a href='?app=addons'><b>Addons Manager</b></a>.</li></ul>");
 // ---------- Add Page 1 ----------- //
 define ("Add_Module_1_help", "<h3>Module Manager</h3><ul><li>Click on one of the circles (module) to select the modules you want installed.</li><li>Then click <b>Next</b> for the configuration process.</li></ul>");
 // ---------- Add Page 2 ----------- //
-define ("Add_Module_2_help", "<h3>Module Manager</h3><ul><li>Fill each column correctly especially marked (*) star.</li><b>Select the module position</b>according to the theme applied.</li><li>module will appear on the appropriate page <b>Pages Module</b>.</li><li>");
+define ("Add_Module_2_help", "<h3>Module Manager</h3><ul><li>Fill each column correctly especially marked (*) star.</li><b>Select the module position</b> according to the theme applied.</li><li>module will appear on the appropriate page <b>Pages Module</b>.</li><li>");
 define ("Module_Saved", "Module successfully saved.");
 define ("New_Module_Saved", "New module is successfully added.");
 define ("Module_Not_Selected", "Select the first module!");
@@ -346,8 +363,8 @@ define ("Theme_Name", "Theme Name");
 define ("Theme_url", "Theme URL");
 define ("Please_select_theme", "Choose a theme first!");
 define ("Theme_help", "<h3>Themes Manager</h3><ul><li>Themes marked means being used as the theme of the site.</li><li>Preview theme will appear when the cursor is directed to name the name of the theme .</li><li>Themes that supports <b>Theme Config</b> will display the icon 'configuration' when highlighted.</li><li>Edit File (*. php, *. html, *. js, *. css) by choosing a theme and select the <b>Edit</b>.</li></ul>");
-define ("Files_Theme_help", "<h3>Themes Manager</h3><ul><li>Advantage <b>Theme Editor</b>to edit the files from a selected theme.</li><li>Button <b>Save</b>will appear when the script file type website.</li></ul>");
-define ("Admin_Theme_help", "<h3>Themes Manager</h3><ul><li>You can see a preview of the theme by highlighting the name of the theme.</li><li>Themes marked with a star means being used as the theme of the site.</li><li>Themes that supports <b>Theme Config</b>will display the icon 'configuration' as highlighted in the theme.</li></ul>");
+define ("Files_Theme_help", "<h3>Themes Manager</h3><ul><li>Advantage <b>Theme Editor</b> to edit the files from a selected theme.</li><li>Button <b>Save</b> will appear when the script file type website.</li></ul>");
+define ("Admin_Theme_help", "<h3>Themes Manager</h3><ul><li>You can see a preview of the theme by highlighting the name of the theme.</li><li>Themes marked with a star means being used as the theme of the site.</li><li>Themes that supports <b>Theme Config</b> will display the icon 'configuration' as highlighted in the theme.</li></ul>");
 
 /************************************
 * 			User Manager 			*
@@ -375,7 +392,7 @@ define ("Password_Invalid", "Password less than 6 characters!");
 define ("User_Added", "New user added successfully.");
 define ("User_Saved", "User data successfully saved.");
 define ("Please_Select_User", "Choose a user first!");
-define ("User_deleted", "The user has been successfully removed.");
+define ("User_Deleted", "The user has been successfully removed.");
 define ("User_Group_Added", "User group successfully added.");
 define ("User_Group_Exists", "Name or level already exists.");
 define ("User_Group_Saved", "User group successfully saved.");
@@ -383,9 +400,9 @@ define ("User_Group_Not_Empty", "User group still contains active user.");
 define ("User_help", "<h3>User Manager</h3><ul><li><b>User Manager</b> is useful for managing registered users or members.</li><li>Members will be given the right special access has been determined in accordance <b>User Level</b>.</li><li>User Levels are grouped according to <a href='?app=user&act=group'><b>User Group</b></a> that have been made.</li><ul>");
 define ("User_Group_help", "<h3>User Group</h3><ul><li><b>User Group</b> is used to classify users by category and user level.</li><li>The smaller <b>User Level</b>, the greater the permissions obtained.</li><ul>");
 define ("Login_Error", "Username or password is incorrect!");
-define ("Remember_Error", "Username or email is wrong!");
-define ("Password_sent_to_mail", "Password has been sent to your email address.");
-define ("Failed_send_mail", "Fail, the system does not support the mailer function!");
+define ("Remember_Error", "Wrong email or not registered!");
+define ("Password_sent_to_mail", "Password has been sent to your email.");
+define ("Failed_send_mail", "Failed, server can't send email!");
 
 
 /************************************
@@ -398,13 +415,13 @@ define ('Please_Select_contact', 'Select the first contact.');
 define ('Group_contact_Not_Empty', 'Contact Group still contain active!');
 define ("Contact_help", "<h3>Contact Manager</h3><ul><li>this page is useful to set the list to contact.</li><li>Contact list can include people, offices or the other.</li><li>Contact list grouped by <b><a href='?app=contact&act=group'>Group Contacts</a></b>.</li><li>");
 define ("Group_Contact_help", "<h3>Groups Contact</h3>This page contains a list of contact groups, which serve to categorize the contacts you will make.");
-define ("Field_Contact_help", "<h3>Contact Person</h3><ul><li>Fill in the fields <b>General Information</b>for your personal information.</li><li>Additional <b>Information</b>is owned additional information.</li></ul>");
+define ("Field_Contact_help", "<h3>Contact Person</h3><ul><li>Fill in the fields <b>General Information</b> for your personal information.</li><li>Additional <b>Information</b> is owned additional information.</li></ul>");
 
 
 /************************************
 * 				SEF 				*
 ************************************/
-define ("SEF_help", "<h3>SEF Manager</h3><ul><li><b>SEF Manager</b>allows you to set or link SEF permalink.</li><li>The link that has the generated (easy to read) called <i>permalink / SEF links</i>.</li><li>Link SEF will help search engines determine the contents of the search.</li><li>Use function <b>Lock</b>to protect the links that are not easily erased.</li><b>Page ID</b>is used to fit the parameters mentukan <b>Menu ID</b>.</li></ul>") ;
+define ("SEF_help", "<h3>SEF Manager</h3><ul><li><b>SEF Manager</b> allows you to set or link SEF permalink.</li><li>The link that has the generated (easy to read) called <i>permalink / SEF links</i>.</li><li>Link SEF will help search engines determine the contents of the search.</li><li>Use function <b>Lock</b> to protect the links that are not easily erased.</li><b>Page ID</b> is used to fit the parameters mentukan <b>Menu ID</b>.</li></ul>") ;
 
 /************************************
 * 			Comment Apps			*
@@ -415,14 +432,14 @@ define ("Comment_help", "Comment <h3>Manager</h3><ul><li>you can control the sit
 define ("Comment_Deleted", "Comment successfully deleted.");
 define ("Comment_Updated", "Comments successfully saved.");
 define ("Please_Select_comment", "Select the first comment!");
-define ("Comment_Configuration", "Configuration Comments");
+define ("Comment_Configuration", "Comments Configuration");
 define ("Comment_Config_helper", "Comment <h3>Configuration</h3><ul><li>Auto Submit Feature (off) is only valid for a regular user and not the Administrator</li><li>reCAPTCHA will be automatically activated when the column filled properly</li><li>other assistance can be viewed by highlighting the column headings</li></ul>");
 define ("Auto_Submit_tip", "Comments automatically displayed after remarking");
 define ("Word_Filter", "Forbidden word");
 define ("Word_Filter_tip", "Enter the text that prohibited <br>Each word is restricted with commas (,)");
 define ("Name_Filter_tip", "Enter the name of the banned <br>Each name is limited by a comma (,) <br>Restrictions apply to non-Admin");
 define ("Email_Filter_tip", "Enter the email being banned <br>Each email is limited by a comma (,) <br>Restrictions apply to non-Admin");
-define ("Recaptcha_tip", "Re-Captcha will be active if <b>Public Key</b>and <b>Private Key</b>true");
+define ("Recaptcha_tip", "Re-Captcha will be active if <b>Public Key</b> and <b>Private Key</b> valid.");
 define ("See_comments", "View Comments");
 
 
@@ -432,7 +449,7 @@ define ("See_comments", "View Comments");
 define ("Status_Saved", "Success, Data successfully added!");
 define ("Status_Applied", "Changes successfully saved!");
 define ("Status_Updated", "Data successfully updated!");
-define ("Status_Invalid", "Data incomplete / wrong format!");
+define ("Status_Invalid", "Data incomplete or wrong format!");
 define ("Status_Fail", "Failed to save data to the database!");
 define ("Status_Exist", "Error, Data already used!");
 define ("Status_Insert_Text", "Please to fill the article first!");
@@ -444,7 +461,7 @@ define ("Sure_want_delete", "Are you sure you want to remove the selected items?
 define ("Group_Deleted", "The Group successfully deleted!");
 define ("Group_Saved", "The Group successfully saved!");
 define ("Please_Select_Group", "Select the first group!");
-define ("File_not_support", "Does not support the file type");
+define ("File_not_support", "Does not support the file type!");
 define ("File_Saved", "File successfully saved.");
 define ("File_Error", "Failed to save file!");
 define ("File_uploaded_not_valid", "File not including Fiyo Addons!");

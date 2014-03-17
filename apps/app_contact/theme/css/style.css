@@ -69,24 +69,6 @@
 	margin-right:5%;
 }
 
-.notice-info{ 
-	margin: 5px 0;
-	color: rgb(255, 255, 255);
-	padding: 7px 5px 6px 41px;
-	border: 1px solid rgb(56, 120, 150);
-	background: url(../images/notice-info.png) no-repeat 5px 5px rgb(139, 167, 209);
-	font-size: 110%;
-	font-weight: bold;
-}
-.notice-error{ 
-	margin: 5px 0;
-	color: #8e0000;
-	padding: 6px 5px 6px 41px;
-	border: 1px solid rgba(142, 0, 0, 0.12);
-	background: url(../images/notice-error.png) no-repeat 5px 1px #ffecec;
-	font-size: 110%;
-	font-weight: bold;
-}
 label.error {
 	border-radius: 5px;
 	margin: 5px 0 0 -10px;

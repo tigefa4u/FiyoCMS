@@ -12,12 +12,8 @@
 	<?php loadModuleCss(); ?>
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo FThemePath; ?>/css/images/favicon.ico" />
 	<link rel="stylesheet" href="<?php echo FThemePath; ?>/css/style.css" type="text/css" media="all" />
-	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,500,700' rel='stylesheet' type='text/css' />
-	
-	<script src="<?php echo FThemePath; ?>/js/jquery-1.8.0.min.js" type="text/javascript"></script>
-	<!--[if lt IE 9]>
-		<script src="js/modernizr.custom.js"></script>
-	<![endif]-->
+	<link rel="stylesheet" href="<?php echo FThemePath; ?>/css/font.css" type="text/css" media="all" />
+	<script type="text/javascript" src="<?php echo FThemePath; ?>/js/jquery-2.0.3.min.js"></script>
 	<script src="<?php echo FThemePath; ?>/js/functions.js" type="text/javascript"></script>
 </head>
 <body>
@@ -63,7 +59,7 @@
 						<div class="col">				
 							<?php loadModule('top3');?>
 						</div>
-						<div class="cl">Â </div>
+						<div class="cl"> </div>
 					</section>
 				<?php endif; ?>
 					<section class="post">
@@ -76,7 +72,7 @@
 						
 					</section>
 
-						<div class="cl">Â </div>
+						<div class="cl"> </div>
 				
 				</div>
 				<!-- end of main -->
@@ -85,15 +81,15 @@
 				<div class="socials">
 					<div class="socials-inner">									
 							<?php loadModule('breadchumb');?>						
-						<div class="cl">Â </div>
+						<div class="cl"> </div>
 					</div>
 				</div>					
 				<?php endif; ?>	
 				
 				<div id="footer">
 					<div class="footer-bottom">
-						<p class="copy">Â© Copyright 2012 <?php echo siteConfig('site_name'); ?> <span>|</span> <strong>My Engine is <a href="http://www.fiyo.org" target="_blank">Fiyo CMS</a></strong></p>
-						<div class="cl">Â </div>
+						<p class="copy">&copy; Copyright <?php echo siteConfig('site_name')." ".date("Y"); ?><br/><strong>My Engine is <a href="http://www.fiyo.org" target="_blank">Fiyo CMS</a></strong></p>
+						<div class="cl"></div>
 					</div>
 				</div>
 			</div>

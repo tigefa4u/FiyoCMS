@@ -13,6 +13,8 @@ defined('_FINDEX_') or die('Access Denied');
 $db = new FQuery();  
 $db->connect();
 
+loadLang(__dir__);
+
 if(!defined('SEF_URL')) {	
 	$link = check_permalink('link',getLink(),'link');	
 	$go_link = FUrl.getLink()."&pid=$_GET[pid]";
@@ -39,10 +41,10 @@ if(isset($_POST['send-comment'])){
 	}
 	
 	if(empty($_POST['name']) or empty($_POST['email']) or empty($_POST['com'])) {	
-		$notice =  "<div class='notice-error'>Please fill the required fields (*) !</div>";
+		$notice =  alert("error",comment_Notice_Error,true);
 	}
 	else if(!preg_match("/^.+@.+\\..+$/",$_POST['email'])){	
-		$notice =  "<div class='notice-error'>Email is invalid !</div>";
+		$notice =  alert("error",comment_Notice_Error2,true);
 	}
 	else if($_POST['secure'] == $_SESSION['captcha'] or isset($valid)){
 		$name = oneQuery('comment_setting','name',"'name_filter'",'value');
@@ -68,30 +70,30 @@ if(isset($_POST['send-comment'])){
 			$filter = 0;
 		}		
 		
-		if(!$name  AND $_SESSION['userLevel'] != 1 AND $_SESSION['userLevel'] != 2) {
-			$notice =  "<div class='notice-error'>The name you use is not allowed !</div>";		
+		if(!$name  AND $_SESSION['USER_LEVEL'] != 1 AND $_SESSION['USER_LEVEL'] != 2) {
+			$notice =  alert("error",comment_Notice_Error3,true);		
 		}
 		else if(!$filter) {			
-			$notice =  "<div class='notice-error'>Disallows use prohibited words !</div>";		
+			$notice =  alert("error",comment_Notice_Error4,true);		
 		}
 		else {			
 			$auto = oneQuery('comment_setting','name',"'auto_submit'",'value');
 			if($auto == 0) {
-				if($_SESSION['userLevel'] ==1 or $_SESSION['userLevel'] ==2) $auto = 1;
+				if($_SESSION['USER_LEVEL'] ==1 or $_SESSION['USER_LEVEL'] ==2) $auto = 1;
 				else $auto = null;
 			}
-			
+			$no = null;
 			$_POST['web'] = str_replace("<","&lt;",$_POST['web']);
 			$_POST['web'] = str_replace(">","&gt;",$_POST['web']);
 			$_POST['web'] = str_replace(" ","",$_POST['web']);
 			$_POST['web'] = str_replace("  ","",$_POST['web']);
 			$text = htmlentities($_POST['com']);
-			$com = $db->insert(FDBPrefix.'comment',array("","$link",userLevel,"$_POST[name]","$_POST[email]","$_POST[web]",date("Y-m-d H:i:s",time()),"$text","$auto","$no"));
+			$com = $db->insert(FDBPrefix.'comment',array("","$link",$_SESSION['USER_LEVEL'],"$_POST[name]","$_POST[email]","$_POST[web]",date("Y-m-d H:i:s",time()),"$text","$auto","$no"));
 			
 			if($com AND $auto)
-				$notice =  "<div class='notice-info'>Your comment will appear after the page reloads. Loading...</div>";
+				$notice =  alert("info",comment_Notice_Info,true);
 			else
-				$notice = "<div class='notice-info'>Your comment will be moderated before display.</div>";
+				$notice = alert("info",comment_Notice_Info2,true);
 				
 			if(empty($no)) $no = 1;
 			//Comment will appear after page reload
@@ -100,7 +102,7 @@ if(isset($_POST['send-comment'])){
 		}
 	}
 	else {
-		$notice =  "<div class='notice-error'>Security code is wrong!</div>";
+		$notice =  alert("error",comment_Notice_Error5,true);
 	}
 }
 

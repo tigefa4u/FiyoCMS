@@ -71,6 +71,7 @@ else {$dispar1="selected checked"; $enpar1= "";}
 			"aoColumns": [ null, { "sType": 'string-case' }, null,  null, null, null, null, null ]		
 				
 			});
+			
 	$('#checkall').click(function () {
 		    $(this).parents('form:eq(0)').find(':checkbox').attr('checked', this.checked);
 		});
@@ -131,9 +132,9 @@ else {$dispar1="selected checked"; $enpar1= "";}
 			else
 				{ $stat2 ="selected";$stat1 ="";}	
 					
-			$UserId =  userSessionInfo('id');
+			$UserId =  userInfo('id');
 				
-			if($qr['level'] != 1 AND $_SESSION['USER_LEVEL'] < $qr['level'] or $_SESSION['USER_LEVEL'] == 1 AND $qr['id'] != $_SESSION['USER_ID'] ){
+			if($qr['level'] != 1 AND userInfo('level') < $qr['level'] or userInfo('level') == 1 AND $qr['id'] != userInfo('id') ){
 				$status ="
 				<p class='switch'>
 					<label class='cb-enable $stat1'><span>On</span></label>
@@ -169,31 +170,3 @@ else {$dispar1="selected checked"; $enpar1= "";}
         </tbody>			
 	</table>
 </form>
-
-
-<!-- CONFIGURATION POPUP -->
-<div class="popup_warp">
-	<div id="config" class="pop_up" style="padding:10px">
-		<div id="updater_id">		
-<form method="post">
-		<h3>User Configuration</h3>
-		<table class="data2" style="width:600px">
-				<input value="<?php echo @$qr['id'];?>" type="hidden" name="id">
-				<tr>
-					<td class="djudul tooltip" title="">Allow New Member</td>
-					<td>
-					<p class="switch">
-							<input id="radio1" value="1" name="new_member" <?php echo $enpar1;?> type="radio" class="invisible" >
-							<input id="radio2" value="0" name="new_member" <?php echo $dispar1;?> type="radio" class="invisible">
-							<label for="radio1" class="cb-enable <?php echo $enpar1;?>"><span>Allow</span></label>
-							<label for="radio2" class="cb-disable <?php echo $dispar1;?>"><span>Disallow</span></label>
-							</p></td>
-				</tr>
-				<tr><td></td>
-					<td><input type="submit" class="button" value="Save" name="addSuplier"></td>
-				</tr>
-			</table>
-</form>
-		</div>
-	</div>	
-</div>

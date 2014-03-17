@@ -41,9 +41,9 @@ $private_key = oneQuery('comment_setting','name',"'recaptcha_privatekey'",'value
 		<div class="warp_app_header">		
 			<div class="app_title"><?php echo Comment_Configuration; ?></div>			
 			<div class="app_link">	
-			<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="save_config"/>
+			<a class="lbt prev tooltip link" href="?app=comment" title="<?php echo Prev; ?>"></a>
 			<hr class="lbt sparator tooltip">
-			<a class="lbt cancel tooltip link" href="?app=comment" title="<?php echo Prev; ?>"></a>
+			<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="save_config"/>
 			</div>
 		 </div>			 
 	</div>

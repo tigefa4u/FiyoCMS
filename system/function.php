@@ -7,16 +7,21 @@
 * @description	Halaman ini berisi tentang funsi-fungsi dasar FiyoCMS.
 **/
 
-defined('_FINDEX_') or die('Access Denied');
+defined('_FINDEX_') or die('Access Denied!');
 
 /****************************************/
 /*			 Query Function 			*/
 /****************************************/
-//auto database query
-function FQuery($table, $where = null, $output = null, $hide = null, $order = null) {	
+
+/* Connect to database */
+$db = new FQuery();  
+$db -> connect();
+			
+/* basic query function */
+function FQuery($table, $where = null, $output = null, $hide = null, $order = null, $select = null) {	
 	$db = new FQuery();  
-	$db -> connect();
-	$sql = $db->select(FDBPrefix."$table","*","$where","$order");
+	if(empty($select)) $select = "*";
+	$sql = $db->select(FDBPrefix."$table","$select","$where","$order");
 	if(!$sql) {
 		if(!isset($hide))
 			echo "<b>Error</b> :: failed to use <b>FQuery</b> function. Please check table <b>$table</b> or your sql (<b>$where</b>) or field (<b>$output</b>)<br>";	
@@ -36,6 +41,7 @@ function oneQuery($table,$field,$value,$output = null) {
 	$query = FQuery($table,"$field=$value",$output);
 	return $query;	
 }
+
 /* Website Global Information */
 function siteConfig($name) {
 	$output = oneQuery('setting','name',"'$name'",'value');
@@ -43,29 +49,35 @@ function siteConfig($name) {
 }
 
 /********************************************/
-/*  		   User Information	 		 	*/
+/*  		   Site Information	 		 	*/
 /********************************************/
-// mengambil data informasi session dari user yang sudah login
-function userSessionInfo($field) {
-	$id = $_SESSION['USER_ID'];
-	$output = oneQuery('session_login','user_id',$id,"$field");		
-	return $output;
-}
-
 // mengambil data informasi dari user yang sudah login
-function userInfo($value,$id = null) {
-	if(empty($id) AND !empty($_SESSION['USER_ID'])) 
-		$id = $_SESSION['USER_ID']; 
-	else if(empty($_SESSION['USER_ID']) AND empty($id)) 
-		$id = 0;
-	return oneQuery('user','id',$id,$value);
+function userInfo($value = null,$id = null) {
+	if(empty($id) AND !empty($_SESSION['USER_ID']))  {
+		$id = $_SESSION['USER_ID'];
+		$value = strtolower($value);
+		if($value == 'id' or !isset($value)) $value = 'user_id';
+		$output = oneQuery('session_login','user_id',"'$id'","$value");	
+		if(!empty($output))
+			return $output;
+		else false;
+	} 
+	if(!empty($id))  {
+		return oneQuery('user','id',$id,$value);
+	} 
+	else if($value == 'level') {
+		return 99;
+	}
+	else {
+		return false;
+	}
 }
 
 // mengambil informasi menu
-function menuInfo($value,$url = null, $id = null) {
+function menuInfo($value, $url = null, $id = null) {
 	if(empty($id)) {
 		if(empty($url)) $url = getLink(); 
-		return FQuery('menu',"link = '$url' AND status=1","$value");
+		return FQuery('menu',"link LIKE '%$url%' AND status=1","$value");
 	}
 	else {
 		return FQuery('menu',"id = $id AND status=1","$value");
@@ -86,7 +98,7 @@ function homeInfo($field) {
 }
 
 /* Base site url */
-function FUrl() {
+function FUrl($www = null) {
 	$furl = str_replace('index.php','',$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]);
 	if(_FINDEX_=='BACK') {
 		$jurl = substr_count($furl,"/")-1;
@@ -98,7 +110,11 @@ function FUrl() {
 	else {
 		$FUrl= $furl;
 	}
-	return $FUrl;
+	
+	if(siteConfig('sef_www') or isset($www))
+		return $FUrl;
+	else
+		return str_replace("www.","",$FUrl);
 }
 
 /********************************************/
@@ -193,17 +209,7 @@ function stripTags($text, $tags = null)
 function htmlToText($text)
 {  
   // replace php and comments tags so they do not get stripped  
-  $text = preg_replace("@<\?@", "#?#", $text);
-  $text = preg_replace("@<!--@", "#!--#", $text);
-  
-  // strip tags normally
-  $text = strip_tags($text);
-  
-  // return php and comments tags to their origial form
-  $text = preg_replace("@#\?#@", "<?", $text);
-  $text = preg_replace("@#!--#@", "<!--", $text);
-  
-  return $text;
+  return stripTags($text);
 }
 /********************************************/
 /*  		   URL & Redirecting	 	 	*/
@@ -220,26 +226,51 @@ function htmlRedirect($link,$time = null) {
 }
 
 //check link/permalink
-function check_permalink($field,$value,$output = null) {
-	$link = FQuery("permalink","$field = '$value'",$output);
-	if(empty($output) AND $link > 0) 
+function check_permalink($field,$value ,$output = null, $like = null) {
+	if(empty($like))
+		$link = FQuery("permalink","$field = '$value'",$output);
+	else
+		$link = FQuery("permalink","$field LIKE '%$value%'",$output);
+	if(empty($value) or empty($link))
+		$link = false;
+	else if(empty($output) AND $link > 0) 
 		$link = true;
 	return $link;
 }
 
+//check url
+function check_url_exists($url){
+	$header_response = get_headers($url, 1);
+	if ( strpos( $header_response[0], "404" ) !== false )
+	{
+	  return false;
+	}
+	else
+	{
+	   return true;
+	}
+}
+
 //mengecek apakah halaman yang terbuka adalah halaman homepage	
 function checkHomePage(){
+	
 	$link = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 	//check curent paging
 	$a=strpos($_SERVER['REQUEST_URI'],"?page=");	
 	if($a!==0) 	$page=substr($_SERVER['REQUEST_URI'],$a+6);
 	$link = @str_replace("?page=$page","",$link);
 	$link = str_replace("index.php","",$link);	
-	if(FBase==$link)
+	if(FUrl('auto') == $link or empty($link))
 		return true;
+	else if(isset($_REQUEST['link'])) {
+		$c = check_permalink('permalink',@$_REQUEST['link'],'link');
+		$b = homeInfo('link');
+		if($c == $b) return true;
+	}
 	else
 		return false;
 }
+
 //mengambil url yang aktif
 function getUrl() {
 	$url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -273,6 +304,13 @@ function getLink() {
 	//no inject please :)	
 	$link = str_replace("'","",$link);
 	$link = str_replace('"',"",$link);
+	if(checkLocalhost()) {
+		$base = str_replace('localhost','',FBase);
+		$link = str_replace($base,'',$link);
+	}
+	if(SEF_URL AND check_permalink('permalink',$link,'link')) {
+		$link = check_permalink('permalink',$link,'link');	
+	}
 	return $link;
 }
 
@@ -325,7 +363,8 @@ function delete_directory($dirname) {
 }
 
 //fungsi duplikat direktori/folder
-function copy_directory( $source, $destination ) {
+function copy_directory($source, $destination, $cut = null) {
+	$copy = false;
 	if ( is_dir( $source ) ) {
 		@mkdir( $destination );
 		$directory = dir( $source );
@@ -338,13 +377,15 @@ function copy_directory( $source, $destination ) {
 				copy_directory( $PathDir, $destination . '/' . $readdirectory );
 				continue;
 			}
-			copy( $PathDir, $destination . '/' . $readdirectory );
+			$copy = copy( $PathDir, $destination . '/' . $readdirectory );
 		}
- 
 		$directory->close();
 	}else {
-		copy( $source, $destination );
+		$copy = copy( $source, $destination );
 	}
+	if(isset($cut)) delete_directory( $source );
+	if($copy) return true;
+	else return false;
 }
 
 /********************************************/
@@ -359,21 +400,24 @@ function loadExtention() {
 //memuat plugins yang aktif
 function loadPlugin() {	
 	$db = new FQuery();   
-	$db ->connect();
 	$qrs = $db->select(FDBPrefix.'plugin','*',"status=1");	
 	while($qr=mysql_fetch_array($qrs)){	
 		$folder = "plugins/$qr[folder]/$qr[folder].php";
 		if(file_exists($folder))
 			require $folder;
 		else
-			echo "error :: failed to open {<i>$folder</i>} <br> ";
+			echo alert("error","Error : failed to open {<i>$folder</i>}",true,true);
 	}
 }
 
 function loadLang($dir = null) {
 	$lang = siteConfig('lang');
 	if(empty($lang)) $lang = 'en';
-	include ("$dir/lang/$lang.php");
+	$file = "$dir/lang/$lang.php";
+	if(file_exists($file))
+		include ("$dir/lang/$lang.php");
+	else
+		echo "<div style='border: 2px solid #09f; font-size: 12px; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 5px; color :  rgb(199, 69, 69);'><b>Error</b> : Failed to load \"$file\"</div>";
 }
 
 //memanggul fungsi RSS Feed
@@ -387,10 +431,6 @@ function loadPaging(){
 		include("system/paging.php");	
 		define('loadPaging',1);
 	}
-}
-
-function loadMail(){
-	equire_once("system/mail.php");	
 }
 
 //memanggil file JavaScript
@@ -419,24 +459,24 @@ function angka2($x) {
 }
 
 function checkOnline() {
-	 exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg('www.google.com')), $res, $rval);
-        return $rval === 0;
+	exec(sprintf('ping -c 1 -W 5 %s', @escapeshellarg('www.google.com')), $res, $rval);
+    return $rval;
 }
 
 function formRefill($input_name, $val=null, $txt=null) {	
 	if(isset($_POST["$input_name"]) AND empty($val)) 
 		$val = $_POST["$input_name"];
 	if(isset($_POST["$input_name"]) or !empty($val))  {
-		if($txt == 'textarea')
+		if($txt == "textarea")
 			echo "$val"; 
 		else
-			echo "value='$val'"; 
+			echo "value=\"$val\""; 
 		
 	}
 	
 }
 
-function randomString($valid_chars = null, $length) {
+function randomString($length, $valid_chars = null) {
 	if(empty($valid_char)) 
 		$valid_chars ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
     // start with an empty random string
@@ -496,25 +536,27 @@ function thisTime() {
 
 
 //status informasi pada saat eksekusi database
-function alert($type,$text = null, $style = null){
+function alert($type, $text = null, $echo = null, $style = null){
 	if($style == true or $style == 1 or !empty($style)) {
 		if($type=='info'){
-			echo "<div style='border: 2px solid #18A740;font-size: .8em;font-family: Arial;background: #E2FFEF;padding: 10px; color : #18A740'>$text</div>";
+			$alert = "<div style='border: 2px solid #18A740;font-size: .8em;font-family: Arial;background: #E2FFEF;padding: 10px; color : #18A740'>$text</div>";
 		}
 		else if($type=='error')	{
-			echo "<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px; color : #C42929'>$text</div>";
+			$alert = "<div style='border: 2px solid #09f; font-size: .8em; font-family: Arial;background: #FCF0F0;border: 2px solid #F07272;padding: 10px; color : #C42929'>$text</div>";
 		}
 	}
 	else {
 		if($type=='info'){
-			echo "<div class='notice info' $style>$text</div>";
+			$alert = "<div class='notice info' $style>$text</div>";
 		}
 		else if($type=='error')	{
-			echo "<div class='notice error' $style>$text</div>";
+			$alert = "<div class='notice error' $style>$text</div>";
 		}
 		else if($type=='loading')		
-			echo '<div id="loading"></div>';
+			$alert = "<div id='loading'></div>";
 	}
+	
+	if(!$echo) echo $alert; else return $alert;
 }
 
 //fungsi multiple select yang telah terpilih
@@ -545,7 +587,6 @@ function multipleSelect($x) {
 //fungsi multiple select yang telah terpilih
 function multipleDelete($table, $source, $item = null, $cat = null, $except = null, $sub = null) {
 	$db = new FQuery();  
-	$db->connect();
 	$del = explode(",",$source);
 	if(!isset($except)) $except = null; else $except = $except;
 	if(!empty($cat)){ $cat = $fid = $cat; } else{ $cat = 'category'; $fid ='id';}

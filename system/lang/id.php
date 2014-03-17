@@ -22,6 +22,7 @@ define("Save","Simpan");
 define("Sent","Kirim");
 define("Login","Masuk");
 define("Logout","Keluar");
+define("Register", "Daftar");
 define("Readmore","Selengkapnya");
 define("Save_and_Quit","Simpan lalu keluar");
 define("Apply","Simpan perubahan");
@@ -31,8 +32,11 @@ define("Back","Kembali");
 define("Next","Selanjutnya");
 define("Prev","Kembali");
 define("View","Lihat");
-define("Print","Cetak");
 define("Send","Kirim");
+define("Print","Cetak");
+define("Comment","Komentar");
+define("Comments","Komentar");
+define("Send_Comment","Beri Komentar");
 define("Download","Unduh");
 define("Featured","Unggulan");
 define("Click_for_helps","Klik untuk bantuan");
@@ -85,6 +89,16 @@ define("Set_disable","Non-aktifkan");
 define("Set_enable","Aktifkan");
 define("Add_New_Item","Tambahkan data baru");
 define("Plugin_Name","Nama Plugin");
+
+
+/************************************
+* 		 	  Article  				*
+*************************************/
+define ("second_ago", "detik lalu");
+define ("minutes_ago", "menit lalu");
+define ("hours_ago", "jam lalu");
+define ("days_ago", "hari lalu");
+define ("Article_cant_access", "<h2>Oops!</h2>Maaf anda tidak memiliki izin untuk melihat konten ini.<br>Mungkin anda belum login atau memang tidak diberi izin.");
 
 
 /************************************

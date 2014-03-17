@@ -34,7 +34,7 @@ defined('_FINDEX_') or die('Access Denied');
 		<div class="warp_app_header">		
 			<div class="app_title">AddOns Manager</div>
 			<div class="app_link">			
-				<?php if(isset($_GET['type']) != 'install') : ?>
+				<?php if(isset($_GET['type']) AND $_GET['type'] != 'install' or !isset($_GET['type'])) : ?>
 				<a class="lbt install tooltip link" href="?app=addons&type=install" title="Install">Install</a>
 				<input type="submit" class="lbt uninstall tooltip" title="Uninstall" value="Uninstall" name="uninstall"/>	
 				<?php else : ?>				
@@ -71,7 +71,7 @@ defined('_FINDEX_') or die('Access Denied');
 		 require('modules.php');
 		break;
 		case 'install':
-		 require('installer.php');
+		 require('installer.inc.php');
 		break;
 		default :
 		 require('apps.php');

@@ -9,7 +9,7 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
-$param1 = mod_param('nama',modParam);
+$param1 = mod_param('name',modParam);
 $param2 = mod_param('gravatar',modParam);
 $param3 = mod_param('title',modParam);
 $param4 = mod_param('comment',modParam);
@@ -69,10 +69,10 @@ $(document).ready( function(){
 				<td class="djudul tooltip" title="Show author comment">Show Name</td>
 				<td>	
 					<p class="switch">
-		<input id="radio1"  value="1" name="param1" type="radio" <?php echo $enpar1;?> class="invisible">
-		<input id="radio2"  value="0" name="param1" type="radio" <?php echo $dispar1;?> class="invisible">
-		<label for="radio1" class="cb-enable <?php echo $enpar1;?>"><span>Show</span></label>
-		<label for="radio2" class="cb-disable <?php echo $dispar1;?>"><span>Hide</span></label>
+						<input id="radio11" value="1" name="param1" type="radio" <?php echo $enpar1;?> class="invisible">
+						<input id="radio21" value="0" name="param1" type="radio" <?php echo $dispar1;?> class="invisible">
+						<label for="radio11" class="cb-enable <?php echo $enpar1;?>"><span>Show</span></label>
+						<label for="radio21" class="cb-disable <?php echo $dispar1;?>"><span>Hide</span></label>
 					</p>
 				</td>
 			</tr>				
@@ -80,10 +80,10 @@ $(document).ready( function(){
 				<td class="djudul tooltip" title="Show gravatar image">Show Gravatar</td>
 				<td>	
 					<p class="switch">
-		<input id="radio3"  value="1" name="param2" type="radio" <?php echo $enpar2;?> class="invisible">
-		<input id="radio4"  value="0" name="param2" type="radio" <?php echo $dispar2;?> class="invisible">
-		<label for="radio3" class="cb-enable <?php echo $enpar2;?>"><span>Show</span></label>
-		<label for="radio4" class="cb-disable <?php echo $dispar2;?>"><span>Hide</span></label>
+						<input id="radio31"  value="1" name="param2" type="radio" <?php echo $enpar2;?> class="invisible">
+						<input id="radio41"  value="0" name="param2" type="radio" <?php echo $dispar2;?> class="invisible">
+						<label for="radio31" class="cb-enable <?php echo $enpar2;?>"><span>Show</span></label>
+						<label for="radio41" class="cb-disable <?php echo $dispar2;?>"><span>Hide</span></label>
 					</p>
 				</td>
 			</tr>			
@@ -92,10 +92,10 @@ $(document).ready( function(){
 				<td class="djudul tooltip" title='Show article title'>Show Article Title</td>
 				<td>	
 					<p class="switch">
-		<input id="radio5" value="1"  name="param3" type="radio" <?php echo $enpar3;?> class="invisible">
-		<input id="radio6"  value="0" name="param3" type="radio" <?php echo $dispar3;?> class="invisible">
-		<label for="radio5" class="cb-enable <?php echo $enpar3;?>"><span>Show</span></label>
-		<label for="radio6" class="cb-disable <?php echo $dispar3;?>"><span>Hide</span></label>
+						<input id="radio5" value="1"  name="param3" type="radio" <?php echo $enpar3;?> class="invisible">
+						<input id="radio6"  value="0" name="param3" type="radio" <?php echo $dispar3;?> class="invisible">
+						<label for="radio5" class="cb-enable <?php echo $enpar3;?>"><span>Show</span></label>
+						<label for="radio6" class="cb-disable <?php echo $dispar3;?>"><span>Hide</span></label>
 					</p>
 				</td>
 			</tr>			
@@ -103,10 +103,10 @@ $(document).ready( function(){
 				<td class="djudul tooltip" title='Show text comments' >Show Comment</td>
 				<td>	
 					<p class="switch">
-		<input id="radio7" value="1"  name="param4" type="radio" <?php echo $enpar4;?> class="invisible">
-		<input id="radio8" value="0"  name="param4" type="radio" <?php echo $dispar4;?> class="invisible">
-		<label for="radio7" class="cb-enable <?php echo $enpar4;?>"><span>Show</span></label>
-		<label for="radio8" class="cb-disable <?php echo $dispar4;?>"><span>Hide</span></label>
+						<input id="radio7" value="1"  name="param4" type="radio" <?php echo $enpar4;?> class="invisible">
+						<input id="radio8" value="0"  name="param4" type="radio" <?php echo $dispar4;?> class="invisible">
+						<label for="radio7" class="cb-enable <?php echo $enpar4;?>"><span>Show</span></label>
+						<label for="radio8" class="cb-disable <?php echo $dispar4;?>"><span>Hide</span></label>
 					</p>
 				</td>
 			</tr>						
@@ -114,10 +114,10 @@ $(document).ready( function(){
 				<td class="djudul tooltip" title='Show comments date' >Show Date</td>
 				<td>	
 					<p class="switch">
-		<input id="radio9" value="1"  name="param5" type="radio" <?php echo $enpar5;?> class="invisible">
-		<input id="radio10" value="0"  name="param5" type="radio" <?php echo $dispar5;?> class="invisible">
-		<label for="radio9" class="cb-enable <?php echo $enpar5;?>"><span>Show</span></label>
-		<label for="radio10" class="cb-disable <?php echo $dispar5;?>"><span>Hide</span></label>
+						<input id="radio9" value="1"  name="param5" type="radio" <?php echo $enpar5;?> class="invisible">
+						<input id="radio10" value="0"  name="param5" type="radio" <?php echo $dispar5;?> class="invisible">
+						<label for="radio9" class="cb-enable <?php echo $enpar5;?>"><span>Show</span></label>
+						<label for="radio10" class="cb-disable <?php echo $dispar5;?>"><span>Hide</span></label>
 					</p>
 				</td>
 			</tr>

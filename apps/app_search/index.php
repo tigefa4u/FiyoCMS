@@ -37,30 +37,30 @@ $query = $_SESSION['search'];
 <h1>Search Page</h1>
 <form action="" method="POST">
 	<input type="text" name="q" value="<?php if(!empty($query)) echo $query;?>" size="40" placeholder="Search..." /> 
-	<input type="submit" name="s" value="Search" class="commentBtn"/> 
+	<input type="submit" name="s" value="Search" class="button btn search-button"/> 
 </form>
 <?php
 if(empty($_SESSION['search'])) :
-	echo "<div class='notice-error'>".Please_fill_keyword."</div>";
+	echo alert("error",Please_fill_keyword,true);
 elseif(strlen($_SESSION['search'])<3) :
-	echo "<div class='notice-error'>".Minimum_keywords."</div>";
+	echo alert("error",Minimum_keywords,true);
 else :
 	$article = new searchArticle;
 	$article -> item($_SESSION['search'],Page_ID);
-	$category 	= $article-> category;
-	$catlink	= $article-> catlink;
-	$pagelink 	= $article-> pglink;
-	$perrows 	= $article-> perrows;
-	$text  		= $article-> article;
-	$author 	= $article-> author;
-	$total 		= $article-> total;
-	$title		= $article-> title;
-	$date 		= $article-> date;
+	$category 	= @$article-> category;
+	$catlink	= @$article-> catlink;
+	$pagelink 	= @$article-> pglink;
+	$perrows 	= @$article-> perrows;
+	$text  		= @$article-> article;
+	$author 	= @$article-> author;
+	$total 		= @$article-> total;
+	$title		= @$article-> title;
+	$date 		= @$article-> date;
 		
 	if(!isset($text)) :
-		echo "<div class='notice-error'>".Not_found_keyowrd." <b><i>$query</i></b></div>";	
+		echo alert("error",Not_found_keyowrd." <b><i>$query</i></b>",true);	
 	else :
-		echo "<div class='notice-info'>".Found_1." <b>$total</b> ".Found_2." <b><i>$query</i></b></div>";		
+		echo alert("info",Found_1." <b>$total</b> ".Found_2." <b><i>$query</i></b>",true);		
 		echo "<div id='article'>";
 		
 		for($i=0; $i < $perrows ;$i++) : 		
@@ -80,7 +80,7 @@ else :
 			endfor;
 		?>
 		</div>
-		<div>
+		<div class="article-pagelink pagination">
 			<?php echo $pagelink; ?>
 		</div>
 		<?php

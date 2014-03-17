@@ -62,8 +62,7 @@ class FQuery {
     }
 
     /*
-    * Perubahan database baru, set semua hasil saat ini
-    * Untuk null
+    * Set nama database awal
     */
     public function setDatabase($name)
     {
@@ -80,8 +79,7 @@ class FQuery {
     }
 
     /*
-    * Cek untuk melihat apakah tabel ada ketika melakukan
-    * query
+    * Cek untuk melihat apakah tabel ada ketika melakukan query
     */
     private function tableExists($table)
     {
@@ -214,10 +212,8 @@ class FQuery {
         if($this->tableExists($table))
         {
             // Parse mana nilai-nilai
-            // Bahkan nilai-nilai (termasuk 0) mengandung baris mana
-            // Nilai ganjil mengandung klausul untuk baris
-          
-
+            // Bahkan nilai-nilai (termasuk 0) mengandung baris isi
+            // Nilai ganjil mengandung klausul untuk setiap baris   
 
             $update = 'UPDATE '.$table.' SET ';
             $keys = array_keys($rows);
@@ -263,3 +259,4 @@ class FQuery {
         return $this->result;
     }
 }
+//auto database query	$db = new FQuery();  

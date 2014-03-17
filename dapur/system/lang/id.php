@@ -116,10 +116,14 @@ define("Site_Title","Judul Situs");
 define("Site_Title_tip","Judul situs yang ditampilkan pada title-bar browser");
 define("Site_URL","URL Situs");
 define("Site_URL_tip","URL / Alamat situs");
+define("Site_Mail","Email Situs");
+define("Site_Mail_tip","Email dafault situs");
 define("Site_Status","Status Situs");
 define("Site_Status_tip","<b>Online</b> berarti pengunjung bisa melihat seluruh isi website.<br><b>Offline</b> berarti website/biasanya dalam keadaan perbaikan.<br>Perlu login untuk melihat situs yang sedang Offline.");
 define("Member_Register","Registrasi Member");
 define("Member_Register_tip","Izinkan regristrasi member baru");
+define("Member_Activation","Aktivasi Member");
+define("Member_Activation_tip","Metode aktivasi member");
 define("Meta_Keywords","Katakunci Situs");
 define("Meta_Keywords_tip","Dipisahkan dengan koma (,) contoh : <i>kata kunci 1, kata kunci kedua, kunci ke-3</i>.");
 define("Meta_Description","Deskripsi Situs");
@@ -141,6 +145,9 @@ define("SEF_Extention_tip","Sebagai extensi dari url situs<br>contoh : <i>.html 
 define("Database_Settings","Pengaturan Database");
 
 /************** Media_Settings *****************/
+define ("Member_Settings", "Pengaturan Member");
+
+/************** Media_Settings *****************/
 define("Media_Settings","Pengaturan Media Penyimpanan");
 define("Allow_File_Extentions","File Yang Diizinkan");
 define("Allow_File_Extentions_tip","File yang diizinkan untuk diupload ke media penyimpanan<br>tanpa titik (.) dan dibatasi dengan spasi.");
@@ -150,12 +157,21 @@ define("Media_Theme","Tampilan Media");
 define("Media_Theme_tip","Tampilan media penyimpanan.");
 
 /************** BackEnd_Settings *****************/
-define("BackEnd_Settings","Pengaturan AdminPanel");
-define("Folder_AdminPanel","Nama Folder");
-define("Folder_AdminPanel_tip","Nama Folder untuk AdminPanel");
+define("BackEnd_Settings","Pembaharuan, Bahasa dan Waktu");
+define("Folder_AdminPanel","Admin Panel");
+define("Folder_AdminPanel_tip","Nama Folder untuk Admin Panel");
 define("Folder_unchange","Folder sedang digunakan atau diproteksi!");
 define("Language_AdminPanel_tip","Pilihan bahasa untuk AdminPanel");
 define("Config_helper","<h3>Konfigurasi Situs</h3><p>Halaman <b>Konfigurasi Situs</b> merupakan pusat kontrol situs.</p>");
+define("Time_Zone","Zona Waktu");
+define("Time_Zone_tip","Zona waktu server");
+define("Fiyo_Version","Versi Fiyo");
+define("Fiyo_Version_tip","Versi Fiyo yang digunakan");
+
+define("Default_Group_Member_tip","Group umum saat awal regristrasi");
+define("Default_Group_Member","Default Grup Member");
+
+
 
 
 /************************************************
@@ -220,6 +236,8 @@ define("Article_Category_Saved","Kategori artikel berhasil disimpan.");
 define("Article_Saved_redirect","Artikel berhasil disimpan. Harap tunggu...");
 define("Hits_Reset","Tekan tombol <b>Reset</b> untuk mereset Hits artikel");
 define("Article_desc","Menampilkan artikel dalam kategori atau halaman tersendiri");
+define("Please_write_some_text","Tulis artikel terlebih dahulu!");
+define ("Please_fill_article_title","Judul artikel belum ditulis");
 
 /*********** Article Icon *************/
 define("Save_add_new","Simpan dan tambah baru");
@@ -245,7 +263,7 @@ define("Show_Comment","Tampilkan Komentar");
 /************************************
 *			Menu Manager		 	*
 ************************************/
-define("Add_New_Menu","Tambahkan menu baru");
+define("Add_New_Menu","Tambah menu baru");
 define("New_Menu","Menu Baru");
 define("Edit_Menu","Edit Menu");
 define("Menu_Type_or_Apps_Name","Tipe Menu / Nama Apps");
@@ -305,7 +323,7 @@ define("Menu_Category_tip","Kategori Menu");
 /************************************
 *			Modules Manager	 		*
 ************************************/
-define("Add_new_module","Pasang Modul");
+define("Add_new_module","Tambah Modul");
 define("New_Module","Modul Baru");
 define("Edit_Module","Edit Modul");
 define("Module_Manager","Modul Manager");
@@ -382,9 +400,9 @@ define("User_help","<h3>User Manager</h3><ul><li><b>User Manager</b> berguna unt
 define("User_Group_help","<h3>User Group</h3><ul><li><b>User Group</b> digunakan untuk mengelompokan user berdasarkan kategori dan level user.</li><li>Semakin kecil <b>Level User</b>, semakin besar hak akses yang diperoleh.</li><ul>");
 
 define("Login_Error","Username atau password salah!");
-define("Remember_Error","Username atau email salah!");
+define("Remember_Error","Email salah atau tidak terdaftar!");
 define("Password_sent_to_mail","Password telah dikirim ke email anda.");
-define("Failed_send_mail","Gagal, sistem tidak mendukung fungsi mailer!");
+define("Failed_send_mail","Server gagal mengirim pesan!");
 
 
 
@@ -395,7 +413,7 @@ define("Failed_send_mail","Gagal, sistem tidak mendukung fungsi mailer!");
 define("Status_Saved","Sukses, data berhasil ditambahkan!");
 define("Status_Applied","Perubahan berhasil disimpan!");
 define("Status_Updated","Data berhasil diperbarui!");
-define("Status_Invalid","Data belum lengkap / format salah!");
+define("Status_Invalid","Data belum lengkap atau format salah!");
 define("Status_Fail","Gagal menyimpan data ke databse!");
 define("Status_Exist","Error, Data sudah dipakai!");
 define("Status_Insert_Text","Mohon untuk mengisi artikel terlebih dahulu!");

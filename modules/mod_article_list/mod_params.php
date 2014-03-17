@@ -21,6 +21,7 @@ if($type==1){$a1="selected";}
 if($type==2){$a2="selected";}
 if($type==3){$a3="selected";}
 
+	$filter1 = $filter2 = $filter3 = "";
 if($filter==1){
 	$b1="selected"; $filter1 = "name='param3'"; $filter2 ="class='invisible'";
 }

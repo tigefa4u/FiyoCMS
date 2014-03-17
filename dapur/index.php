@@ -17,7 +17,6 @@ $sm = substr($sn,0,$sm);
 
 define('_ADMINPANEL_', $sm );
 
-
 //mengecek file konfigurasi
 if(!file_exists('../config.php')) 
 	header("location:../");

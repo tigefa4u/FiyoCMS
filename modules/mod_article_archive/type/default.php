@@ -50,8 +50,7 @@ else {
 		}
 		
 		if($archveRow['date'] >= $start  AND $archveRow['date'] <= $end  )
-		{		
-			
+		{
 			$s = 0;
 			$cats = explode(",","$cat");
 			$coma = substr_count("$cat",",");
@@ -59,21 +58,29 @@ else {
 			foreach($cats  as $p ) {
 				$s += FQuery('article',"date LIKE '%$archveRow[y]-$archveRow[m]%' AND status = 1 AND category = $p");
 			}
-			
-			
 				
 			if(isset($m) AND $m != $archveRow['m'] ) {			
 				echo "</ul></li></ul>";				
 			}
 			
-			if(@$m != $archveRow['m'] ) {	echo "
-				<ul class='mod-article-archive accordion'>
-					<li class='acc'>$archveRow[mo] $archveRow[y] ($s)
-				<ul>";			
+			if(@$m != $archveRow['m'] ) { 
+				$open ='';	
+				if(app_param('app') == 'article' AND app_param('view') == 'item')
+					if(substr(articleInfo('date'),0,7) == "$archveRow[y]-$archveRow[m]")
+						$open = " open";			
+				echo "
+				<ul class='mod-article-archive'>
+					<li class='archive-head'><a class='archive-head-a'>$archveRow[mo] $archveRow[y] ($s)</a>
+				<ul class='archive-list$open'>";			
 			}
 						
 			if($archveRow['status']==1) {
-				$article ="<a title='Read \"$archveRow[title]\"' href='$link' >$archveRow[title]</a>";
+				$active = '';
+				if(app_param('app') == 'article' AND app_param('view') == 'item')
+					if(articleInfo('id') == "$archveRow[id]")
+						$active = "active";
+					
+				$article ="<a title='Read \"$archveRow[title]\"' href='$link' class='$active'>$archveRow[title]</a>";
 				echo "<li>$article</li>";	
 				$x++;	
 				$x++;	

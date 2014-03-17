@@ -46,7 +46,7 @@ if($type=='category'){$a2="selected";}
 			<tr>
 				<td class="djudul tooltip" title="<?php echo $catTip ?>">Category</td>
 				<td>	
-					<select name="param3[]" multiple style="height:160px; width:120px; font-size:11px; font-family:Arial ; ">
+					<select name="param3[]" multiple style="height:160px; min-width: 150px; max-width:100%; font-size:11px; font-family:Arial ; ">
 					<?php	
 						$_GET['id']=0;
 						$db = new FQuery();  
@@ -75,7 +75,7 @@ if($type=='category'){$a2="selected";}
 			<tr>
 				<td class="djudul tooltip" title="<?php echo $startTip ?>">Start Date</td>
 				<td>	
-					<input name="param1" size="16" type="date"  value="<?php echo $start; ?>"/>
+					<input name="param1" size="16" type="date"  value="<?php echo $start; ?>" />
 				</td>
 			</tr>			
 			

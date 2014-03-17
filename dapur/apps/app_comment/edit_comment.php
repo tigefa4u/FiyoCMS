@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		1.4.0
+* @version		1.5.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -27,14 +27,14 @@ $link = "<a href='".make_permalink($qr['link'])."#comment-$qr[clink]' target='_b
 <input value="<?php echo $qr['id'];?>" type="hidden" name="id">
 	<div id="app_header">
 		<div class="warp_app_header">		
-			<div class="app_title">Comment Manager</div>			
+		  <div class="app_title">Comment Manager</div>			
 			<div class="app_link">	
-				<input type="submit" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_edit"/>			
-				<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="apply_edit"/>
-				<a class="lbt cancel tooltip" href="?app=comment" title="<?php echo Cancel; ?>"></a>
-				
-			</div>
-		 </div>			 
+			<a class="lbt prev tooltip link" href="?app=comment" title="<?php echo Prev; ?>"></a>
+			<hr class="lbt sparator">
+			<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="apply_edit"/>
+			<input type="submit" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_edit"/>
+		  </div>
+		</div>			 
 	</div>
 	
 	<div class="cols">
@@ -63,11 +63,11 @@ $link = "<a href='".make_permalink($qr['link'])."#comment-$qr[clink]' target='_b
 				
 				<tr>
 					<td class="djudul tooltip" >Website</td>
-					<td><input value="<?php echo $qr['website'];?>" type="text" name="web" size="10" id="order"></td>
+					<td><input value="<?php echo $qr['website'];?>" type="text" name="web" size="25" id="order"></td>
 				</tr>
 				<tr>
 					<td class="djudul tooltip"><?php echo Comment; ?></td>
-					<td><textarea name="comment"cols="40" rows="5"><?php echo $qr['comment'];?></textarea></td>
+					<td><textarea name="comment"cols="60" rows="6"><?php echo $qr['comment'];?></textarea></td>
 				</tr>	
 			</table>
 			</div>

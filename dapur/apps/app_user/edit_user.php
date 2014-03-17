@@ -13,7 +13,7 @@ $db = new FQuery() or die;
 $db ->connect();  
 $sql= $db->select(FDBPrefix."user","*","id=$_REQUEST[id]"); 
 $qr	= mysql_fetch_array($sql); 
-if($_SESSION['userLevel'] >= userLevel AND $_SESSION['USER_ID'] != $qr['id']){
+if($_SESSION['USER_LEVEL'] >= $qr['level'] AND $_SESSION['USER_ID'] != $qr['id']){
 	alert('info','Redirecting...');
 	alert('loading');
 	htmlRedirect('?app=user');

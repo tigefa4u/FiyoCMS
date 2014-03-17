@@ -17,7 +17,7 @@ defined('_FINDEX_') or die('Access Denied');
 		<h1><?php echo Edit_Profile; ?></h1>
 		<?php echo userNotice; ?>	
 		<div>
-			<span>Username</span><input type="text" disabled autocomplete="off" name="user" placeholder="Username" value="<?php echo $_SESSION['User']; ?>"/>
+			<span>Username</span><input type="text" disabled autocomplete="off" name="user" placeholder="Username" value="<?php echo $_SESSION['USER']; ?>"/>
 			min.3 character
 		</div>
 		<div>
@@ -31,20 +31,20 @@ defined('_FINDEX_') or die('Access Denied');
 			&nbsp;
 		</div>
 		<div>
-			<span><?php echo Name; ?></span><input type="text" name="name" placeholder="<?php echo Name; ?>" value="<?php echo $_SESSION['userName']; ?>"/>
+			<span><?php echo Name; ?></span><input type="text" name="name" placeholder="<?php echo Name; ?>" value="<?php echo $_SESSION['USER_NAME']; ?>"/>
 		</div>
 		<div>
-			<span>Email</span><input type="text" name="email" placeholder="Email"  value="<?php echo $_SESSION['userEmail']; ?>"/>
+			<span>Email</span><input type="text" name="email" placeholder="Email"  value="<?php echo $_SESSION['USER_EMAIL']; ?>"/>
 		</div>
 		<div>
-			<span>Bio</span><textarea name="bio"rows="7" style="width: 60%; max-width: 77%"><?php echo userInfo('about',$_SESSION['userId']); ?></textarea>
+			<span>Bio</span><textarea name="bio"rows="7" style="width: 60%; max-width: 77%"><?php echo userInfo('about',$_SESSION['USER_ID']); ?></textarea>
 		</div>
 		<div class="user-link">
-			<span>&nbsp;</span><input type="submit" name="edit" value="<?php echo Save; ?>" class="button login"/>
+			<span>&nbsp;</span><input type="submit" name="edit" value="<?php echo Save; ?>" class="button login btn"/>
 		</div>
 		<p>&nbsp;</p>
 		
-<a href="<?php echo make_permalink('?app=user') ?>" class="button"><?php echo Back; ?></a>
-		<input type="submit" name="logout" value="<?php echo Logout; ?>" class="button"/>
+<a href="<?php echo make_permalink('?app=user') ?>" class="button btn"><?php echo Back; ?></a>
+		<a href="<?php echo make_permalink('?app=user&view=logout'); ?>" class="button btn"><?php echo Logout; ?></a>
 	</form>
 </div> 

@@ -98,8 +98,8 @@ defined('_FINDEX_') or die('Access Denied');
 	<table class="data">
 		<thead>
 			<tr>								  
-				<th width="1%" class="no">#</th>
-				<th width="3%" class="no" colspan="0" id="ck"><input type="checkbox" id="checkall"></th>
+				<th style="width:2% !important;" class="no">#</th>
+				<th style="width:2% !important;" class="no" colspan="0" id="ck"><input type="checkbox" id="checkall"></th>
 				<th style="width:27% !important;"><?php echo Name; ?></th>
 				<th style="width:8.5% !important;" class="no" align="center">Status</th>
 				<th style="width:12% !important; padding: 0" class="no" align="center"><?php echo Show_Name; ?></th>

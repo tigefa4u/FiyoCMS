@@ -10,3 +10,4 @@
 defined('_FINDEX_') or die('Access Denied');
 
 addCss(FUrl.'apps/app_article/theme/css/style.css');
+

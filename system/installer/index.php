@@ -9,23 +9,35 @@
 
 defined('_FINDEX_') or die('Access Denied');
 
+$file_name = "_config.php";
+if(!file_exists($file_name))
+{
+	$file = "system/installer/_config.php";
+	@copy($file,'../');
+} else if(!isset($_POST['step_1'])) {			
+	include ("_config.php");							
+	$_POST['dbase'] = $DBName;
+	$_POST['host'] = $DBHost;
+	$_POST['user'] = $DBUser;
+	$_POST['pass'] = $DBPass;
+	$_POST['dbpr'] = $DBPrefix;		
+}
+
 if(isset($_POST['step_1']) AND empty($_SESSION['host']))
-{ 
+{
 	$conn = @mysql_connect($_POST['host'],$_POST['user'],$_POST['pass']);
 	if($conn)
 	{
-		$createDB = mysql_query("CREATE DATABASE $_POST[dbase]");		
+		if(($_SERVER['SERVER_ADDR'] == '127.0.0.1' or $_SERVER['SERVER_ADDR'] == '::1') AND !file_exists($file_name))
+			$createDB = mysql_query("CREATE DATABASE $_POST[dbase]");		
+		else 
+			$createDB = 1;	
 		if($createDB)
 		{
-			echo "<font color='white'><div class='infofly go-front' id='status'>Database has been successfully created.</div></font>";
-			$db = @mysql_select_db($_POST['dbase']);		
+			echo "<font color='white'><div class='infofly go-front' id='status'>Database has been successfully connected!</div></font>";	
 			
-			$file_name = "_config.php";
-			if(!file_exists($file_name))
-			{
-				$file = "system/installer/_config.php";
-				@copy($file,'../');
-			}
+			
+			
 			$fo = @fopen($file_name,"w+");
 			$s = fgets($fo,6);
 			$text = ("<?php
@@ -46,6 +58,8 @@ if(isset($_POST['step_1']) AND empty($_SESSION['host']))
 			rewind($fo);
 			fwrite($fo,$text);
 			$conn = fclose($fo);
+			
+			$db = @mysql_select_db($_POST['dbase']);	
 			if($db)		
 			{
 				$_SESSION['host']=$_POST['host'];
@@ -56,21 +70,25 @@ if(isset($_POST['step_1']) AND empty($_SESSION['host']))
 			}
 			else
 			{
-				echo "<div class='errorfly go-front' id='status'>The database name is already exists !</div>";
+				echo "<div class='errorfly go-front' id='status'>User can't access the database!</div>";
 			}
 		}
 		else
 		{
-			echo "<div class='errorfly go-front' id='status'>The database name is invalid or exists !</div>";
+			echo "<div class='errorfly go-front' id='status'>The database name is invalid or exists!</div>";
 		}
 		
 	}
 	else
 	{
-		echo "<div class='errorfly go-front' id='status'>Username or password invalid !</div>";
+		echo "<div class='errorfly go-front' id='status'>Username or password invalid!</div>";
 	}
 }
 
+if(isset($_POST['step_-1'])) {
+	$_SESSION['success'] = "";
+	$_SESSION['host'] = "";
+}
 
 if(isset($_POST['step_2']))
 { 
@@ -103,23 +121,23 @@ if(isset($_POST['step_2']))
 			
 		if($go)
 		{
-			echo "<div class='infofly go-front' id='status'>SQL Query successfully !</div>";
+			echo "<div class='infofly go-front' id='status'>SQL Query successfully!</div>";
 		}
 			
 		if(preg_match('/^.+@.+\\..+$/',$_POST['email']))
 		{
-			$qr=$db->insert(FDBPrefix.'user',array("","$_POST[username]","Administrator",MD5("$_POST[userpass]"),"$_POST[email]","1","1",date('Y-m-d H:i:s'),"")); 
+			$qr=$db->insert(FDBPrefix.'user',array("","$_POST[username]","Administrator",MD5("$_POST[userpass]"),"$_POST[email]","1","1",date('Y-m-d H:i:s'),date('Y-m-d H:i:s'),"")); 
 			if($qr)
 				$_SESSION['user']="";
 				$_SESSION['success']=1;
 		}
 		else
 		{
-			echo "<div class='errorfly go-front' id='status'>Email or User are invalid !</div>";
+			echo "<div class='errorfly go-front' id='status'>Email or User are invalid!</div>";
 		}
 	}
 	else
-		echo "<div class='errorfly go-front' id='status'>Please fill the fields correctly !</div>";
+		echo "<div class='errorfly go-front' id='status'>Please fill the fields correctly!</div>";
 }
 
 if(isset($_POST['admin']))
@@ -134,19 +152,19 @@ else if(isset($_POST['home']))
 	rename("_config.php","config.php");
 	header("location:#");
 }
-function FUrl() {
-	$furl = str_replace('index.php','',$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]);
+function InsUrl() {
+	$InsUrl = str_replace('index.php','',$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]);
 	if(_FINDEX_=='BACK') {
-		$jurl = substr_count($furl,"/")-1;
-		$ex = explode("/",$furl);
+		$jurl = substr_count($InsUrl,"/")-1;
+		$ex = explode("/",$InsUrl);
 		$no = 1 ;
-		$FUrl = '';
-		foreach($ex as $b) {$FUrl .= "$b/";  if($no==$jurl) break; $no++;}	
+		$InsUrl = '';
+		foreach($ex as $b) {$InsUrl .= "$b/";  if($no==$jurl) break; $no++;}	
 	}
 	else {
-		$FUrl= $furl;
+		$InsUrl= $InsUrl;
 	}
-	return "http://$FUrl";
+	return "http://$InsUrl";
 }
 
 ?>
@@ -156,10 +174,10 @@ function FUrl() {
 <head>
 	<title>Fiyo CMS Installer</title>
 	<link rel="shortcut icon" href="favicon.png" />
-	<link rel="stylesheet" href="<?php echo FUrl(); ?>system/installer/css/form.css" type="text/css">		
-	<script src="<?php echo FUrl(); ?>system/installer/js/jquery.min.js" type="text/javascript" ></script>
-	<script src="<?php echo FUrl(); ?>system/installer/js/easy.js" type="text/javascript"></script>
-	<script src="<?php echo FUrl(); ?>system/installer/js/main.js" type="text/javascript" ></script>
+	<link rel="stylesheet" href="<?php echo InsUrl(); ?>system/installer/css/form.css" type="text/css">		
+	<script src="<?php echo InsUrl(); ?>system/installer/js/jquery.min.js" type="text/javascript" ></script>
+	<script src="<?php echo InsUrl(); ?>system/installer/js/easy.js" type="text/javascript"></script>
+	<script src="<?php echo InsUrl(); ?>system/installer/js/main.js" type="text/javascript" ></script>
 	<script type="text/javascript">
      $(document).ready(function() {		
 		var loadings = $("#status");
@@ -253,13 +271,14 @@ function FUrl() {
 						</P>
                         <P class="submit">
                             <BUTTON id="registerButton" type="submit" name="step_2">Next</BUTTON>
+                            <BUTTON id="registerButton" type="submit" name="step_-1" style="float: left;">Back</BUTTON>
                         </P>
 					</fieldset>
 				</form>  
 				<?php 	}	else if(!empty($_SESSION['success'])) 	{ 	?>
                 <form id="formElem" method="post">
                     <fieldset class="step">
-                        <legend>Install Successfuly</legend>
+                        <legend>Install Successfully</legend>
                         <p>Selamat, Fiyo CMS telah sukses di instal dan telah siap digunakan :)</p>
 						<p>Congratulations, Fiyo CMS has been successfully installed and ready to use :)</p>
                         <P class="submit">

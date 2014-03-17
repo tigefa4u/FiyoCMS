@@ -109,7 +109,7 @@ class phpFastCache {
                 self::$sys['drivers']['memcache'] = true;
 
                 try {
-                    memcache_connect("127.0.0.1");
+                    memcache_connect("localhost");
                     self::$sys['storage'] = "memory";
                     self::$sys['method'] = "memcache";
                 } catch (Exception $e) {
@@ -124,7 +124,7 @@ class phpFastCache {
 
                 try {
                     $memcached = new memcached();
-                    $memcached->addServer("127.0.0.1","11211");
+                    $memcached->addServer("localhost","11211");
                     self::$sys['storage'] = "memory";
                     self::$sys['method'] = "memcached";
 

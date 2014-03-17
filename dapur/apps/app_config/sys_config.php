@@ -12,7 +12,7 @@ defined('_FINDEX_') or die('Access Denied');
 /*
 * Access only for Super Administrator
 */
-if($_SESSION['USER_LEVEL'] != 1)
+if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] != 1)
 	redirect('index.php');
 	
 if (get_magic_quotes_gpc()) {
@@ -68,7 +68,8 @@ if(isset($_POST['config_save']))
 		*/
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[site_name]"),"name='site_name'");	
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[title]"),"name='site_title'");	
-		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[url]"),"name='site_url'");	
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[url]"),"name='site_url'");
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[mail]"),"name='site_mail'");
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[status]"),"name='site_status'");	
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[meta_keys]"),"name='site_keys'");	
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[meta_desc]"),"name='site_desc'");	
@@ -79,10 +80,13 @@ if(isset($_POST['config_save']))
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[title_type]"),"name='title_type'");	
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[title_divider]"),"name='title_divider'");
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[lang]"),"name='lang'");		
-		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[follow_link]"),"name='follow_link'");		
-		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[member]"),"name='new_member'");		
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[follow_link]"),"name='follow_link'");	
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[member_registration]"),"name='member_registration'");		
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[member_activation]"),"name='member_activation'");	
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[member_group]"),"name='member_group'");	
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$pxt"),"name='sef_ext'");
 		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[www]"),"name='sef_www'");
+		$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[timezone]"),"name='timezone'");
 		
 		/*
 		* Edit AdminPanel folder

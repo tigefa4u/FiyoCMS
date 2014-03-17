@@ -11,203 +11,332 @@
 defined('_FINDEX_') or die('Access Denied');
 
 $db = new FQuery();  
-$db->connect(); 
 loadLang(__dir__);
 
 $view = app_param('view');
+$key = @mysql_real_escape_string($_GET['key']);
+$res = @mysql_real_escape_string($_GET['res']);
 
-if($view == 'register' or $view == 'login' or $view == 'forgot') {
+$linkLogin = make_permalink('?app=user&view=login');
+$linkUser = make_permalink('?app=user');
 
+if($view == 'register' or $view == 'login' or $view == 'forgot' ){
 	if(!empty($_SESSION['USER_ID']))
-		redirect(make_permalink('?app=user'));
-	else if(!siteConfig('new_member') AND $view == 'register')
-		redirect(make_permalink('?app=user&view=login'));
+		redirect($linkUser);
+	else if(!siteConfig('member_registration') AND $view == 'register')
+		redirect($linkLogin);
 }
 else if($view == 'profile' or $view == 'logout' or $view == 'edit' or empty($view)) {
-	if(empty($_SESSION['USER_ID'])) redirect(make_permalink('?app=user&view=login'));
+	if(empty($_SESSION['USER_ID']) AND empty($key) AND empty($res)) redirect($linkLogin);
 }
-
-if(isset($_POST['register'])) {		
+if(isset($_POST['register']) AND siteConfig('member_registration')) {
 	$us=strlen("$_POST[user]");
-	$ps=strlen("$_POST[password]");
+	$ps=strlen("$_POST[password]");	
+	$user = $_POST['user'];	
+	preg_match('/[^a-zA-Z0-9]+/', $user, $matches);
 	if(	!empty($_POST['password']) AND 
-		!empty($_POST['USER'])AND 
+		!empty($_POST['user'])AND 
 		!empty($_POST['capthca'])AND 
 		!empty($_POST['email'])AND 
 		$_POST['password']==$_POST['kpassword'] AND 
-		$us>2 AND $ps>3) {
+		$us>2 AND $ps>3 AND !$matches) {
 		if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-			$this -> notice =  "<div class='notice-error'>Please check your email!</div>";
+			define("userNotice", alert("error",user_Email_Invalid,true));
 		}
 		else if($_POST['capthca'] == $_SESSION['captcha']) {
-			$group =$db->select(FDBPrefix.'user_group','id','','id DESC LIMIT 1');	
-			$group = mysql_fetch_array($group);
-			$gid = $group['id'];	
-			$qr=$db->insert(FDBPrefix.'USER',array("","$_POST[user]","$_POST[user]",MD5("$_POST[password]"),"$_POST[email]","1","$gid",date('Y-m-d H:i:s'),""));
+			$group = siteConfig('member_group');
+			if(empty($group)) $group = 5;
+			$activator	= siteConfig('member_activation');
+			$siteName	= siteConfig('site_name');
+			$siteLang	= siteConfig('lang');
+		
+			$key = md5($_POST['email']+randomString(6)+$_POST['user']);
+			$keys = "app=user&key=$key";
+			if($activator == 0) $key = 'Waiting for activation...';
+			else if($activator == 1) $key = null;
+			$webmail = siteConfig('site_mail'); 
+			$domain  = str_replace("/","",FUrl()); 
+			if(empty($webmail)) $webmail = "no-reply@$domain";
+			
+			if($activator == 0) { 
+				$pass = MD5($_POST['password']);
+				$s = 0;
+			} else if($activator == 1) { 
+				$pass = MD5($_POST['password']);
+				$s = 1;			
+			} else if($activator == 2) { 
+				$pass = MD5($_POST['password']);
+				$s = 0;			
+			}
+			$qr=$db->insert(FDBPrefix.'user',array("","$_POST[user]","$_POST[user]",$pass,"$_POST[email]","$s","$group",date('Y-m-d H:i:s'),date('Y-m-d H:i:s'),"$key"));
 			if($qr) {
-				$siteMail = siteConfig('site_mail');
-				$siteName = siteConfig('site_name');
-				$subject = "Email From $siteName";
-				$message = "Hello $_POST[user],<br> 
-					Thank you, you have to register and join us on $siteName.<br>
-					Here are details of your account :<br><br>
-					Username : $_POST[user]<br>
-					Password : $_POST[password]<br>
-					Take good care of your accounts from any forms of crime.<br><br><br>
-					<span style='font-size:80%'>This email is processed using Fiyo CMS for $siteName.</span>";		
+				if($activator == 2) {
+					if($siteLang == 'id') {
+					$subject = "Aktifasi Akun Baru";
+					$message = "<p>Halo, $_POST[user],</p> 
+						<p>Terimakasih sudah bergabung bersama kami di $siteName.</p>
+						<p>Kami perlu melakukan konfirmasi untuk mengaktifkan akun Anda. Klik link berikut untuk mengaktifkan akun Anda. :</p>
+						<p>&nbsp;</p>
+						<p><a href='".FUrl."?$keys'>".FUrl."?$keys</a></p>
+						<p>&nbsp;</p>
+						<p>Jaga selalu data Anda dari segala sesuatu yang tidak diinginkan.</p>
+						<p>Terimakasih.</p>
+						<p>&nbsp;</p><p>&nbsp;</p>
+						<p><b>$siteName.</b><br>
+						".FUrl."</p>";		
+					}
+					else {
+					$subject = "New Account Activation";
+					$message = "<p>Hello, $_POST[user],</p>
+						<p>Thank you, you have to register and join us on $siteName.</p>
+						<p>We need to confirm to activate your account. Click the following link to activate your account:</p>
+						<p>&nbsp;</p>
+						<p><a href='".FUrl."?$keys'>".FUrl."?$keys</a></p>
+						<p>&nbsp;</p>
+						<p>Take good care of your accounts from any forms of crime.</p>
+						<p>Thankyou.</p>
+						<p>&nbsp;</p><p>&nbsp;</p>
+						<p><b>$siteName.</b><br>
+						".FUrl."</p>";
+					}
+				}
+				else {
+					if($siteLang == 'id') {
+					$subject = "Informasi Data Login";
+					$message = "<p>Halo, $_POST[user],</p> 
+						<p>Terimakasih sudah bergabung bersama kami di $siteName.</p>";
+						
+					if($activator == 0)
+					$message = $message . "<p>Akun anda masih menunggu persetujuan untuk diaktifkan.</p>";
+						
+					$message = $message . "			
+						<p>&nbsp;</p>			
+						<p>Berikut adalah data login Anda :</p><p>&nbsp;</p>
+						<p>Username : $_POST[user]</p>
+						<p>Password : $_POST[password]</p><p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>URL login : $linkLogin</p>
+						<p>&nbsp;</p>
+						<p>Jaga selalu data Anda dari segala sesuatu yang tidak diinginkan.</p>
+						<p>Terimakasih.</p>
+						<p>&nbsp;</p><p>&nbsp;</p>
+						<p><b>$siteName.</b><br>
+						".FUrl."</p>";		
+					}
+					else {
+					$subject = "Account Login Information";
+					$message = "<p>Hello, $_POST[user],</p>
+						<p>Thank you, you have to register and join us on $siteName.</p>";
+					if($activator == 0)
+					$message = $message . "<p>Your account is still waiting for approval to be activated.</p>";
+						
+					$message = $message . "			
+						<p>&nbsp;</p>	
+						<p>Here are details of your account :</p><p>&nbsp;</p>
+						<p>Username : $_POST[user]</p>
+						<p>Password : $_POST[password]</p>
+						<p>&nbsp;</p>
+						<p>URL login : $linkLogin</p>
+						<p>&nbsp;</p>
+						<p>Take good care of your accounts from any forms of crime.</p>
+						<p>Thankyou.</p>
+						<p>&nbsp;</p><p>&nbsp;</p>
+						<p><b>$siteName.</b><br>
+						".FUrl."</p>";
+					}
+				}
+				$to  = "$_POST[email]" ;
 				$headers  = 'MIME-Version: 1.0' . "\r\n";
 				$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 				$headers .= "To: $_POST[user] <$_POST[email]>"."\r\n";
-				$headers .= "From: ".SiteName." <$siteMail>" . "\r\n";
-				$mail = @mail($to,$subject,$message,$headers);	
-						
-				$db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));
+				$headers .= "From: ".SiteName." <$webmail>" . "\r\n";
+				$email = @mail($to,$subject,$message,$headers);	
 				
-				$sql = $db->select(FDBPrefix."user","*","status=1 AND user='$_POST[user]' AND password='".MD5($_POST['password'])."'");
-				$qr = mysql_fetch_array($sql);
-				$_SESSION['USER_ID']  	= $qr['id'];
-				$_SESSION['USER'] 		= $qr['USER'];
-				$_SESSION['USER_NAME']  = $qr['name'];
-				$_SESSION['USER_EMAIL']	= $qr['email'];	
-				$_SESSION['USER_LEVEL']	= $qr['level'];	
-				$_SESSION['USER_LOG'] 	= date('Y-m-d H:i:s');
-				redirect(make_permalink('?app=user'));
+				if($activator == 0) {
+					define("userNotice","need_admin_activation");
+				}
+				else if($activator == 1) {
+					$db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));
+					
+					$sql = $db->select(FDBPrefix."user","*","status=1 AND user='$_POST[user]' AND password='".MD5($_POST['password'])."'");
+					$qr = mysql_fetch_array($sql);
+					$_SESSION['USER_ID']  	= $qr['id'];
+					$_SESSION['USER'] 		= $qr['USER'];
+					$_SESSION['USER_NAME']  = $qr['name'];
+					$_SESSION['USER_EMAIL']	= $qr['email'];	
+					$_SESSION['USER_LEVEL']	= $qr['level'];	
+					$_SESSION['USER_LOG'] 	= date('Y-m-d H:i:s');
+					redirect($linkUser);
+				}		
+				else if($activator == 2 AND $email) {	
+					define("userNotice","need_email_activation");
+				}		
+				else if(!$email) {		
+					$db->delete(FDBPrefix."user","user = '$_POST[user]'");
+					define("userNotice",alert("error","Sorry, mail server error :(",true));
+				}
 			}
 			else 
-				define("userNotice","<div class='notice-error'>Username atau email sudah terdaftar!</div>");
+				define("userNotice",alert("error",user_Registration_Exists,true));
 		} else 
-			define("userNotice","<div class='notice-error'>Security code is incorrect!</div>");
+			define("userNotice",alert("error",user_Security_Invalid,true));
 	}
 	else  {						
-		define("userNotice","<div class='notice-error'>Register failed, please fill the fields corectly!</div>");
+		define("userNotice",alert("error",user_Please_Complete_Fields,true));
 	}
 }
 		
-if(isset($_POST['login'])) {	
-	$qr = $db->select(FDBPrefix."user","*","status=1 AND user='$_POST[user]' AND password='".MD5($_POST['pass'])."'"); 
+if(isset($_POST['login'])) {
+	$user = mysql_real_escape_string($_POST['user']);
+	$qr = $db->select(FDBPrefix."user","*","status=1 AND user='$user' AND password='".MD5($_POST['pass'])."'"); 
 	$qr = mysql_fetch_array($qr);
-	$jml = mysql_affected_rows();
-	if($jml > 0) {		
+	$ok = mysql_affected_rows();
+	if($ok > 0) {
 		$_SESSION['USER_ID']  	= $qr['id'];
-		$_SESSION['USER'] 		= $qr['USER'];
+		$_SESSION['USER'] 		= $qr['user'];
 		$_SESSION['USER_NAME']  = $qr['name'];
 		$_SESSION['USER_EMAIL']	= $qr['email'];	
 		$_SESSION['USER_LEVEL'] = $qr['level'];
-		$_SESSION['USER_LOG'] 	= date('Y-m-d H:i:s');
-		$db->select(FDBPrefix."session_login","*","user_id=$qr[id]");
+		$_SESSION['USER_LOG'] 	= $qr['time_log'];
+		
+		$time_log = date('Y-m-d H:i:s');
+		$db->update(FDBPrefix.'user',array("time_log"=>"$time_log"),"id=$qr[id]"); 
+		
+		
 		if($qr['id'] > 0) {
 			$db->delete(FDBPrefix."session_login","id=$qr[id]");
-			$qrs=$db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));  
+			$db->insert(FDBPrefix."session_login",array("$qr[id]","$qr[user]","$qr[level]",date('Y-m-d H:i:s')));  
 		}	
+		if(!isset($_POST['prevpage'])) $_POST['prevpage'] = $linkUser;
 		redirect($_POST['prevpage']);
 	}
 	else {
-		define("userNotice","<div class='notice-error'><b>Username</b> or <b>password</b> is invalid!</div>");
+		define("userNotice",alert("error",user_Login_Error,true));
 	}
 }
 	
-/****************************************/
-/*				User Edit				*/
-/****************************************/
-if(isset($_POST['edit'])){
-	$us=strlen("$_POST[user]");
-	$ps=strlen("$_POST[password]");			
+	
+if(isset($_POST['edit'])){		
 	if(!empty($_POST['email']) AND @ereg("^.+@.+\\..+$",$_POST['email'])) 
-	{
+	{	
+		$qrq = false;
+		$_POST['bio']	= htmlentities($_POST['bio']);
+		$_POST['name']	= mysql_real_escape_string($_POST['name']);
 		if(empty($_POST['password']) AND empty($_POST['kpassword'])){
-			$qrq=$db->update(FDBPrefix.'USER',array(	
+			$qrq=$db->update(FDBPrefix.'user',array(	
 			"name"=>"$_POST[name]",
 			"email"=>"$_POST[email]",
 			"about"=>"$_POST[bio]"),
-			"id=$_SESSION[userId]"); 
+			"id=$_SESSION[USER_ID]"); 
 		}
 		elseif($_POST['password']==$_POST['kpassword']){
-			$qrq=$db->update(FDBPrefix.'USER',array(
+			$qrq=$db->update(FDBPrefix.'user',array(
 			"name"=>"$_POST[name]",
 			"password"=>MD5("$_POST[password]"),
 			"email"=>"$_POST[email]",
 			"about"=>"$_POST[bio]"),
-			"id=$_SESSION[userId]"); 
+			"id=$_SESSION[USER_ID]"); 
 			}
 			
-		$qr=$qrq;
+		$qr = $qrq;
 		if($qr AND isset($_POST['edit'])){	
 			$_SESSION['USER_EMAIL'] = $_POST['email'];
 			$_SESSION['USER_NAME'] = $_POST['name'];
-			define("userNotice","<div class='notice-info'>".Status_Updated."</div>");
+			define("userNotice",alert('info',Status_Updated,true));
 		}
 		else if($_POST['password']!=$_POST['kpassword']) {			
-			define("userNotice","<div class='notice-error'>".user_Password_Not_Match."</div>");
+			define("userNotice",alert("error",user_Password_Not_Match,true));
 		}
 		else {				
-			define("userNotice","<div class='notice-error'>".Status_Invalid."</div>");
+			define("userNotice",alert("error",Status_Invalid,true));
 		}					
 	}
 	else {				
-		define("userNotice","<div class='notice-error'>".Status_Invalid."</div>");
+		define("userNotice",alert("error",Status_Invalid,true));
 	}
 }
 	
 		
 if(isset($_POST['logout'])) {	
-	$db = new FQuery();  
-	$db->connect(); 
 	$_SESSION['USER_ID']	= "";
 	$_SESSION['USER']		= "";
 	$_SESSION['USER_EMAIL']	= "";
 	$_SESSION['USER_LEVEL']	= 99;
-	$qr = $db->delete(FDBPrefix."session_login","user_id=".$_SESSION['USER_ID']);	
-	redirect($_POST['prevpage']);
+	$qr = $db->delete(FDBPrefix."session_login","user_id=".$_SESSION['USER_ID']);
+	if(!isset($_POST['prevpage'])) $_POST['prevpage'] = $linkLogin;
+	redirect($linkLogin);
 }	
 		
 if(isset($_POST['forgot']))	{		
 	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){						
-		define("userNotice","<div class='notice-error'>Please fill the field corectly!</div>");
+		define("userNotice",alert("error",user_Email_None,true));
 	} 
 	else {
 	$qr = $db->select(FDBPrefix."user","*","status=1 AND email='$_POST[email]'"); 
 	$qr = mysql_fetch_array($qr);
 	$jml = mysql_affected_rows();
 		if($jml) {
-		// multiple recipients
-		$to = "$_POST[email]";
-		// subject
-		$subject = 'Password Reminder';
-		$password = randomString('','8');
-		// message
-		$siteMail = siteConfig('site_mail');
-		$siteName = siteConfig('site_name');
-		$message = "
-		Hello $qr[name],<br>
-		You have done a password reminder requests <br><br>
-		This is new data login for ".SiteName.".<br>
-		Real Name : $qr[name] <br>
-		Username : $qr[user] <br>
-		Password : $password  <br><br>
-		Take good care of your accounts from any forms of crime.<br><br><br>
-		<span style='font-size:80%'>This email is processed using Fiyo CMS for $siteName.</span>";
-		
+			$reminder = randomString(32);
+			$_SESSION['USER_REMINDER'] = $reminder;
+			$_SESSION['USER_REMINDER_ID'] = $qr['id'];
+			$reminder = "app=user&res=$reminder";
+			$to  = "$_POST[email]" ;
+			$webmail = siteConfig('site_mail'); 
+			$domain  = str_replace("/","",FUrl()); 
+			if(empty($webmail)) $webmail = "no-reply@$domain";
+			
+			if(siteConfig('lang') == 'id') {
+				$subject = 'Konfirmasi Reset Password';
+				$message = "<font color='#333'>
+				<p>Halo, $qr[name]</p> 
+				<p>Anda telah meminta kami untuk mengirimkan password baru.</p>
+				<p>Konfirmasi pesan ini dengan klik link konfirmasi berikut.</p>
+				<p>&nbsp;</p>
+				<p><a href='".FUrl."?$reminder'>".FUrl."?$reminder</a></p>
+				<p>&nbsp;</p>
+				<p>Pesan ini akan valid dalam 1-2 hari hingga Anda melakukan konfirmasi untuk reset password.</p>
+				<p>Jika Anda ingin membatalkan proses ini, abaikan saja email ini hingga kode kadaluarsa dalam 1-2 hari.</p>
+				<p>Terimakasih.</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p><b>".SiteTitle."</b><br>".FUrl."</p></font>";
+			}
+			else {
+				$subject = 'Password Reset Confirmation';
+				$message = "<font color='#333'>
+				<p>Hello, $qr[name]</p> 
+				<p>You have asked us to send you a new password.</p>
+				<p>Confirm this message by click the following link.</p>
+				<p>&nbsp;</p>
+				<p><a href='".FUrl."?$reminder'>".FUrl."?$reminder</a></p>
+				<p>&nbsp;</p>
+				<p>This message will be valid within 1-2 days so you do confirm to reset the password.</p>
+				<p>If you want to cancel this process, ignore this letter to Expired code in 1-2 days.</p>
+				<p>Thankyou.</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p><b>".SiteTitle."</b><br>".FUrl."</p></font>";			
+			}
 		// To send HTML mail, the Content-type header must be set
-		$headers  = 'MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$mail = siteConfig('site_mail');
-		$from = siteConfig('site_name');
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
 		// Additional headers
-		$headers .= "To: $_POST[email] <$_POST[email]>," . "\r\n";
-		$headers .= "From: $siteName<$siteMail>" . "\r\n";
+			$headers .= "To: $qr[name] <$_POST[email]>" . "\r\n";
+			
+			$headers .= "From: ".SiteTitle. "<$webmail>" ."\r\n";
+			$headers .= "cc :" . "\r\n";
+			$headers .= "Bcc :" . "\r\n";
 		// Mail it
-		$mail = @mail($to,$subject,$message,$headers);
+			$mail = @mail($to,$subject,$message,$headers);
 			if($mail) {
-				define("userNotice","<div class='notice-info'>New password has been sent to your email.</div>");
-				$qr = $db->update(FDBPrefix."user",array(
-			'password'=>MD5("$password")),
-			"id=$qr[id]");
+				define("userNotice",alert("info",user_Password_Reset_Sent,true));
 			}
 			else
-				define("userNotice","<div class='notice-error'>System error : function mail() can not executed.</div>");		
+				define("userNotice",alert("error","System error : function mail() can not executed.",true));		
 		}
 		else {
-			define("userNotice","<div class='notice-error'>Email not registered!</div>");
+			define("userNotice",alert("error",user_Email_None,true));
 		}
 	}	
 }	
@@ -218,18 +347,23 @@ if(!defined("userNotice")) define("userNotice","");
 //App User SEF Controller
 if('SEF_URL'){
 	$view = app_param('view');
-	if($view=='logout') 
-		add_permalink('user/logout');
-	else if($view=='edit') 
-		add_permalink('user/edit');
-	else if($view=='login') 
-		add_permalink('user/login');
-	else if($view=='register') 
-		add_permalink('user/register');
-	else if($view=='lost_password') 
-		add_permalink('user/remember');
-	else if(empty($view)) 
-		add_permalink('USER');
+	if(!empty($key) or !empty($res)) {
+	
+	}
+	else {
+		if($view=='logout') 
+			add_permalink('user/logout');
+		else if($view=='edit') 
+			add_permalink('user/edit');
+		else if($view=='login') 
+			add_permalink('user/login');
+		else if($view=='register') 
+			add_permalink('user/register');
+		else if($view=='lost_password') 
+			add_permalink('user/remember');
+		else if(empty($view))
+			add_permalink('user');
+	}
 }
 
 
@@ -250,6 +384,4 @@ else  {
 	define('PageTitle','User Profile');
 }
 
-
 loadLang(__dir__);
-
