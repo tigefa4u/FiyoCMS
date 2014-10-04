@@ -1,11 +1,10 @@
 <?php
 /**
-* @name			Site System
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-*/
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
+**/
 
 defined('_FINDEX_') or die('Access Denied');
 
@@ -39,13 +38,16 @@ define('TitleDiv', 	siteConfig('title_divider'));
 /********************************************/
 /*  	  		SEF Pagination  			*/
 /********************************************/
-if(isset($_GET['page']) AND ctype_alnum($_GET['page']))
+if(isset($_GET['page']) AND ctype_digit($_GET['page'])) {
 	define('_Page',$_GET['page']);	
-	
+}
 else if(SEF_URL) {
-	$o = strpos($_SERVER['REQUEST_URI'],"?page=");	
-	if($o!==0) $p=substr($_SERVER['REQUEST_URI'],$o+6);
-	define('_Page',$p);
+	$p = url_param('page');
+	if(ctype_digit($p)) {
+		define('_Page',$p);
+	} else {
+		define('_Page', 0);
+	}
 }
 else {
 	define('_Page', 1 );
@@ -66,16 +68,17 @@ else
 /*  	  Define Page_ID, PageTitle	  		*/
 /********************************************/
 if(_FINDEX_ != 'BACK') {
+		$pid = menuInfo('id',getLink());
 	if(checkHomePage()) {
-		define('Page_ID', pageInfo(1,'id','home'));
-		if(pageInfo(1,'title')) 
-			define('PageTitle', pageInfo(1,'title'));
+		define('Page_ID', homeInfo('id'));
+		if(homeInfo('title')) 
+			define('PageTitle', homeInfo('title'));
 		else
-			define('PageTitle', pageInfo(1,'name'));
+			define('PageTitle', homeInfo('name'));
 	}
 	else if (!SEF_URL){	
 		$link = str_replace("&page="._Page,"",getLink());
-		if($pid =  menuInfo('id')){
+		if($pid ==  menuInfo('id')){
 			define('Page_ID', $pid);
 		}
 		else if($pid =  check_permalink('link',$link,'pid'))
@@ -86,10 +89,10 @@ if(_FINDEX_ != 'BACK') {
 			define('Page_ID',oneQuery('menu','global',1,'id'));
 	}
 	else if (SEF_URL){
-		if($pid =  menuInfo('id')){
+		if(!empty($pid) AND $pid ==  menuInfo('id')){
 			define('Page_ID', $pid);
 		}
-		else if(isset($_GET['pid']) AND is_numeric($_GET['pid'])) {			
+		else if(isset($_GET['pid']) AND is_numeric($_GET['pid'])) {	
 			define('Page_ID', pageInfo($_GET['pid'],'id'));
 		}
 		else {
@@ -108,6 +111,3 @@ if(file_exists('system/installer/index.php'))
 	delete_directory('system/installer');
 if(_FINDEX_ == 'BACK' AND file_exists('../system/installer/index.php'))
 	delete_directory('../system/installer');
-
-
-

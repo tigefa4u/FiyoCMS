@@ -20,6 +20,9 @@ ul.paging li,ul.tags li {display:inline; margin:0 3px;}
 .article-main {	
 
 }
+#article {
+	position: relative;
+}
 #article ul{	
 margin: 0 0 2em;
 padding: 0 2em;
@@ -43,13 +46,16 @@ padding: 0 2em;
 	outline: none;
 	z-index: 9999;
 }
+.article-warp * {	
+	box-sizing: border-box;
+}
 
 h1.title {
-	margin: 3px -5px 0 ;
-	padding: 2px 4px;
 }
 h1.title:focus {	
 	box-shadow: inset 0 0 8px 0 #aaa;
+	margin-left: -4px;
+	padding-left: 4px;
 }
 
 #article h2.title {
@@ -85,11 +91,37 @@ h1.title:focus {
 }
 .article-blog img {
 	float: left;
-	margin: 7px 10px 0 0;
-	border: 1px solid #eee;
-	padding:3px;
-
 }
+
+/* Article List */
+
+.article-list {
+	background: rgba(200, 200, 200, 0.1);
+	margin-bottom: 10px;
+	padding: 10px 10px 7px 10px;
+	overflow: hidden;
+}
+.article-list:hover {
+	background: rgba(200, 200, 200, 0.25);
+}
+#article .article-list h2.title{
+	font-size: 1.3em;
+	font-weight: 600;
+}
+#article .article-list .article-panel{
+	border: 0;
+	font-size: 90%;
+	padding: 0;
+	margin: 0;	
+}
+
+#article .article-list img{
+	margin-right: 7px;
+	border: 1px solid rgba(200, 200, 200, 0.3);
+	padding: 2px;
+}
+
+
 /* paging */
 
 /* pagging */
@@ -97,8 +129,8 @@ h1.title:focus {
 	list-style:none; 
 	text-align:center;
 	padding: 0;
-	margin: 2em auto 1em;
-	width: 100%;
+	margin: 1em auto 1em;
+	width: auto;
 }
 #article ul.paging li {
 	display:inline; 
@@ -136,7 +168,9 @@ ul.paging li a:hover{
 	height: 32px;
 	display: block;
 	text-indent: -4000px;
-
+	float: right;
+	right: 5px;
+	position: absolute;
 }
 .star-rating,
 .star-rating a:hover,
@@ -217,6 +251,7 @@ ul.paging li a:hover{
 	border-left :0;
 	border-right :0;
 	border-top: 1px dotted #ccc;
+	font-size: .9em;
 }
 
 #article .tags li.tag {
@@ -230,14 +265,14 @@ ul.paging li a:hover{
 #article .tags li a{
 	padding:1px 5px 2px 3px;
 	margin: 0 6px 0 0;
-	background:#eee;
+	background:#f3f3f3;
 	position: relative;
 	border-radius: 5px;
 	border: solid 1px #ddd;
 }
 
 #article .tags li a:before {
-	top: 28%;
+	top: 25%;
 	left: -5px;
 	position: absolute;
 	width: 0;
@@ -248,12 +283,12 @@ ul.paging li a:hover{
 	content: " ";
 }
 #article .tags li a:after{	
-	top: 28%;
+	top: 25%;
 	left: -4px;
 	position: absolute;
 	width: 0;
 	height: 0;
-	border-right: 5px solid #eee;
+	border-right: 5px solid #f3f3f3;
 	border-top: 5px solid transparent;
 	border-bottom: 5px solid transparent;
 	content: " ";
@@ -262,7 +297,7 @@ ul.paging li a:hover{
 /* Author Panel */
 #article  .article-author {
 	overflow: hidden;
-	padding:10px 10px 12px;
+	padding: 15px 10px 17px;
 	border-top: dotted 1px #ccc;
 	margin: -1px 0 0;
 }
@@ -292,6 +327,12 @@ ul.paging li a:hover{
 	font-size: 1em;
 }
 
+#article  .article-author + .modules {
+	overflow: hidden;
+	padding:10px 10px 12px;
+	border-top: dotted 1px #ccc;
+	margin: -1px 0 0;
+}
 /* Fiyo Comment */
 
 /* Article Comment */
@@ -301,8 +342,7 @@ ul.paging li a:hover{
 	margin-top: -1px;
 	border-top: dotted 1px #ccc;
 	padding: 0 0 10px;		
-	width: 100%;
-	overflow: hidden;
+	width: 100%;	
 	float: left;
 }
 #comment .comment-entry {
@@ -361,22 +401,23 @@ ul.paging li a:hover{
 #comment .avatar-comment img{ 
 	margin :4px;
 	padding :3px !important;
-	box-shadow :0 0 3px #aaa;
+	box-shadow :0 0 1px #999;
 }
 #article .right-comment { 
 	position: relative;
-	margin: 0 1px 0 70px;
+	margin: 0 1px 0 72px;
 	border-radius: 5px;
 	line-height: 22px;
 }	
 
 
 #article .article-main img {
-	margin: 0 8px;
+	margin: 0;
 	border: 1px solid #eee;
 	padding:3px;
 
 }
+
 
 #article .main-comment a{
 	color : #ccc;
@@ -384,15 +425,15 @@ ul.paging li a:hover{
 #article .main-comment {
 	color : #666;
 	background : #fafafa;
-	padding:3px 5px 5px;
-	margin: 5px 0 0 ;
+	padding:4px 5px 5px;
+	margin: 1px 0 0 ;
 	border-radius: 4px;
 	border: 1px solid #ddd;
 }
 
 
 #article .main-comment:before {
-	top: 36px;
+	top: 32px;
 	left: -7px;
 	position: absolute;
 	width: 0;
@@ -403,7 +444,7 @@ ul.paging li a:hover{
 	content: " ";
 }
 #article .main-comment:after{
-	top: 36px;
+	top: 32px;
 	left: -6px;
 	position: absolute;
 	width: 0;
@@ -414,7 +455,7 @@ ul.paging li a:hover{
 	content: " ";
 }
 #comment .admin-comment .main-comment {
-	padding:2px 5px 5px;
+	padding:2px 5px 4px;
 	color: #666;
 	background: #fafafa;
 	border-top: 4px solid #666;
@@ -435,14 +476,14 @@ ul.paging li a:hover{
 	position: absolute;
 
 }
-.editor-button {
+#editor-panel .editor-button {
 	width: 42px !important;
 	display:none;	
 	outline: none;
 	position: absolute !important;
 	margin-left: -48px !important;
 	margin-top: 80px !important;
-	padding: 30px 3px 3px !important;
+	padding: 30px 3px 3px;
 	font-size: 11px !important;
 	white-space: normal;
 	-moz-box-shadow: 0 1px 0 #fff inset;
@@ -455,7 +496,7 @@ ul.paging li a:hover{
 	border: 1px solid #ccc;
 	line-height: 14px  !important;
 }
-.revert {
+#editor-panel .revert {
 	display: none !important;
 	background-image: url("../images/editor.png"), url("../images/editor-button.gif") !important;
 	background-repeat: no-repeat, repeat-x !important;
@@ -473,7 +514,7 @@ ul.paging li a:hover{
 	text-shadow: 1px 1px 0 #fff !important;
 	
 }
-.save {
+#editor-panel .save {
 	display: none !important;
 	z-index: 99;
 	background-image: url("../images/editor.png"), url("../images/editor-button.gif") !important;
@@ -490,11 +531,27 @@ ul.paging li a:hover{
 	color: #666 !important;
 	text-shadow: 1px 1px 0 #fff !important;
 }
-.saving  {
+#editor-panel .edit {
+	margin-top: 170px !important;
+	padding: 3px 0;
+	display: block !important;
+	border-radius: 4px 0 0 4px;
+	text-shadow: 1px 1px 1px darkred;
+	border: 1px solid darkred;
+	box-shadow: -1px 0 2px 0px #eee !important;
+	border: none;
+	color :#fff;
+	background: url('../images/edit-banner.png') no-repeat right;
+	height: 45.5px;
+	
+
+		
+}
+#editor-panel .saving  {
 	background : url("../images/loading.gif") center center no-repeat;
 }
-span.saved {		
-	margin-top:3px;
+span.saved.title-saving {		
+	margin-top:4px;
 	margin-left: -200px;
 	border-radius: 3px;
 	float: right;

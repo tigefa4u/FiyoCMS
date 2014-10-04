@@ -17,6 +17,24 @@ if(isset($_POST['install'])) {
 	}
 }
 
+$furl = str_replace('index.php','',$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]);
+if(_FINDEX_=='BACK') {
+	$jurl = substr_count($furl,"/")-1;
+	$ex = explode("/",$furl);
+	$no = 1 ;
+	$FUrl = '';
+	foreach($ex as $b) {$FUrl .= "$b/";  if($no==$jurl) break; $no++;}	
+}
+else {
+	$FUrl= $furl;
+}
+
+$FUrl = str_replace("www.","",$FUrl);	
+$url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$url = str_replace("'","",$url);
+	
+if($url !== $FUrl) header("location:http://$FUrl");
+
 $file = "system/installer/index.php";
 
 if(file_exists($file)) {

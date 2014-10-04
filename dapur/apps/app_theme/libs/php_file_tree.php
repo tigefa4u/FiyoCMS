@@ -48,7 +48,7 @@ function php_file_tree_dir($directory, $return_link, $extensions = array(), $fir
 	}
 	
 	if( count($file) > 2 ) { // Use 2 instead of 0 to account for . and .. "directories"
-		$php_file_tree = "<ul";
+		$php_file_tree = "<ul id='tree-theme'";
 		if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
 		$php_file_tree .= ">";
 		foreach( $file as $this_file ) {
@@ -63,6 +63,11 @@ function php_file_tree_dir($directory, $return_link, $extensions = array(), $fir
 				AND $files != 'spot_position.gif' 
 				AND $files != 'theme_details.php' 
 				AND $files != 'theme_image.gif' 
+				AND $files != 'theme_image.jpg' 
+				AND $files != 'theme_image.png' 
+				AND $files != 'theme_details.jpg' 
+				AND $files != 'Thumbs.db' 
+				AND $files != 'theme_details.png' 
 				AND $files != 'index.html'){
 					// File
 					// Get extension (prepend 'ext-' to prevent invalid classes from extensions that begin with numbers)

@@ -1,15 +1,14 @@
 <?php
 /**
 * @name			Fi Search
-* @version		1.4.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 */
 
 defined('_FINDEX_') or die('Access Denied');
 
-addCss(FUrl.'apps/app_search/theme/css/style.css');
 
 $q = url_param('q');
 if(isset($_POST['q'])) {
@@ -27,13 +26,14 @@ else if(!empty($q)) {
 	$q = str_replace("+"," ",$q);
 	$_SESSION['search'] = $q;
 }
-else if(_Page < 1)
+else if(_Page < 1 AND empty($_SESSION['search']))
 	$_SESSION['search'] = null;
-
+	
 
 $query = $_SESSION['search'];
 
-?>	
+?>
+<div id="app-search">	
 <h1>Search Page</h1>
 <form action="" method="POST">
 	<input type="text" name="q" value="<?php if(!empty($query)) echo $query;?>" size="40" placeholder="Search..." /> 
@@ -79,11 +79,12 @@ else :
 		<?php	
 			endfor;
 		?>
-		</div>
 		<div class="article-pagelink pagination">
 			<?php echo $pagelink; ?>
+		</div>
 		</div>
 		<?php
 	endif;
 endif;
 ?>
+</div>

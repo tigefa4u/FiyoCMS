@@ -1,12 +1,10 @@
 <?php
 /**
-* @version		1.4.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
-
 defined('_FINDEX_') or die('Access Denied');
 
 if(isset($_REQUEST['act']))
@@ -14,27 +12,39 @@ if(isset($_REQUEST['act']))
 else
 	$act = null;
 
-switch($act)
+if(isset($_REQUEST['view']))
+	$view=$_REQUEST['view'];
+else
+	$view = null;
+switch($view)
 {	
 	default :
-	 require('view_user.php');
+	 switch($act) {	
+		default :
+		 require('view_user.php');
+		break;
+		case 'add':	 
+		 require('add_user.php');
+		break;
+		case 'edit':
+		 require('edit_user.php');
+		break;
+		case 'view':
+		 require('view_user.php');
+		break;			
+	}
 	break;
-	case 'add':	 
-	 require('add_user.php');
-	break;
-	case 'edit':
-	 require('edit_user.php');
-	break;
-	case 'view':
-	 require('view_user.php');
-	break;
-	case 'group':	 
-	 require('group/view_group_user.php');
+	case 'group': 		 
+	 switch($act) {	
+		default :	 
+		 require('group/view_group.php');
+		break;
+		case 'edit':	 
+		 require('group/edit_group.php');
+		break;
+		case 'add':	 
+		 require('group/add_group.php');
+		break;	
+	}	
 	break;	
-	case 'add_group':	 
-	 require('group/add_group_user.php');
-	break;
-	case 'edit_group':	 
-	 require('group/edit_group_user.php');
-	break;
 }

@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -15,106 +14,77 @@ else {$dispar1="selected checked"; $enpar1= "";}
 
 ?>	
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		$(".cb-enable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-disable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', true);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_user/controller/status.php",
-				data: type+"=1&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				}
-			});
-		});
-		
-		$(".cb-disable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-enable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', false);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_user/controller/status.php",
-				data: type+"=0&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				
-				}
-			});
-		});
-		
-		oTable = $('.data').dataTable({
-			"bJQueryUI": true,
-			"sPaginationType": "full_numbers",	
-			"aoColumns": [ null, { "sType": 'string-case' }, null,  null, null, null, null, null ]		
-				
-			});
-			
-	$('#checkall').click(function () {
-		    $(this).parents('form:eq(0)').find(':checkbox').attr('checked', this.checked);
-		});
-		
-		$("#form").submit(function(e){
-		if (!confirm("<?php echo Sure_want_delete; ?>"))
-			{
-				e.preventDefault();
-				return;
-			} 
+$(document).ready(function() {
+	$(".activa label").click(function(){ 
+		var parent = $(this).parents('.switch');
+		var id = $('.number',parent).attr('value');	
+		var value = $('.type',parent).attr('value');
+		if(value == 1) value = 0; else value = 1;
+		$.ajax({
+			url: "apps/app_user/controller/status.php",
+			data: "stat="+value+"&id="+id,
+			success: function(data){
+				$('#type',parent).attr('value',0);					
+				notice(data);		
+			}
 		});
 	});
-
+	
+	$(".cb-enable").click(function(){		
+		var parent = $(this).parents('.switch');
+		$('.cb-disable',parent).removeClass('selected');
+		$(this).addClass('selected');
+		$('.checkbox',parent).attr('checked', false);	
+	});
+	
+	$(".cb-disable").click(function(){		
+		var parent = $(this).parents('.switch');
+		$('.cb-enable',parent).removeClass('selected');
+		$(this).addClass('selected');
+		$('.checkbox',parent).attr('checked', false);	
+	});
+	
+	$("#form").submit(function(e){
+		e.preventDefault();
+		var ff = this;
+		var checked = $('input[name="check[]"]:checked').length > 0;
+		if(checked) {	
+			$('#confirmDelete').modal('show');	
+			$('#confirm').on('click', function(){
+				ff.submit();
+			});		
+		} else {
+			noticeabs("<?php echo alert('error',Please_Select_Delete); ?>");
+			$('input[name="check[]"]').next().addClass('input-error');
+			return false;
+		}
+	});		
+	loadTable();
+});
 </script>
-<div id="stat"></div>
 <form method="post" id="form">
 	<div id="app_header">
-	 <div class="warp_app_header">
-		
-		<div class="app_title">User Manager</div>
-	
-		<div class="app_link">
-			<a class="lbt add tooltip" href="?app=user&act=add" title="<?php echo Add_new_user; ?>"></a>
-			<input class="lbt delete tooltip" type="submit" name="delete" title="<?php echo Delete; ?>" />
-			<span class="lbt sparator"></span>	
-			<a class="lbt help popup tooltip" href="#helper" title="<?php echo Help; ?>"><?php echo Help; ?></a>
-			<div id="helper"><?php echo User_help; ?></div>					
-		</div> 	
-	  </div> 
-	</div> 	
-	
+		<div class="warp_app_header">		
+			<div class="app_title"><?php echo User_Manager; ?></div>
+			<div class="app_link">			
+				<a class="add btn btn-primary" href="?app=user&act=add" title="<?php echo New_User; ?>"><i class="icon-plus"></i> <?php echo New_User; ?></a>
+				<button type="submit" class="delete btn btn-danger" title="<?php echo Delete; ?>" value="<?php echo Delete; ?>" name="delete"><i class="icon-trash"></i> &nbsp;<?php echo Delete; ?></button>
+				<input type="hidden" value="true" name="delete_confirm"  style="display:none" />
+				<?php printAlert(); ?>
+			</div>
+		</div>		 
+	</div>
 	<table class="data">
 		<thead>
 			<tr>								  
-				<th width="5px" class="no">#</th>
-				<th width="3%" class="no" colspan="0" id="ck">  
-					<input type="checkbox" id="checkall"></th>				
-				<th style="width:30% !important;"><?php echo Name; ?></th>
+				<th width="1%" class="no" colspan="0" id="ck">  
+					<input type="checkbox" id="checkall" target="check[]"></th>				
+				<th style="width:20% !important;"><?php echo Name; ?></th>
 				<th style="width:20% !important;">Username</th>
-				<th style="width:9% !important;">Status</th>
-				<th style="width:15% !important;">Group</th>
-				<th  style="width:20% !important;">Email</th>
-				<th width="27px">ID</th>
+				<th style="width:5% !important; text-align: center;" class="no">Status</th>
+				<th style="width:25% !important; text-align: center;">Group</th>
+				<th style="width:25% !important;">Email</th>
+				<th style="width:5% !important;text-align: center;">ID</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -122,7 +92,7 @@ else {$dispar1="selected checked"; $enpar1= "";}
 		$db = new FQuery();  
 		$db->connect(); 	
 		$UserLevel =  userInfo('level');
-		$sql=$db->select(FDBPrefix.'user','*','level>='.$UserLevel);
+		$sql=$db->select(FDBPrefix.'user','*',"level >= $UserLevel","status ASC, ID DESC");
 		$no=1;
 		while($qr=mysql_fetch_array($sql)){
 			$checkbox = null;
@@ -134,27 +104,36 @@ else {$dispar1="selected checked"; $enpar1= "";}
 					
 			$UserId =  userInfo('id');
 				
-			if($qr['level'] != 1 AND userInfo('level') < $qr['level'] or userInfo('level') == 1 AND $qr['id'] != userInfo('id') ){
-				$status ="
-				<p class='switch'>
-					<label class='cb-enable $stat1'><span>On</span></label>
-					<label class='cb-disable $stat2'><span>Off</span></label>
-					<input type='text' value='$qr[id]' id='id' class='invisible'><input type='text' value='stat' id='type' class='invisible'>
-				</p>";	
-				$checkbox ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
-				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[name]</a>";
-				$user ="<a class='tooltip ctedit' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[user]</a>";
+			if($qr['status']==1)
+			{ $stat1 ="selected"; $stat2 =""; $enable = ' enable';}							
+			else
+			{ $stat2 ="selected";$stat1 =""; $enable = 'disable';}
+				
+			if($qr['level'] != 1 AND $_SESSION['USER_LEVEL'] < $qr['level'] or $_SESSION['USER_LEVEL'] == 1 AND $qr['id'] != $_SESSION['USER_ID'] ){
+				
+				$status ="<span class='invisible'>$enable</span>
+				<div class='switch s-icon activator activa'>
+					<label class='cb-enable $stat1 tips' data-placement='right' title='".Disable."'><span>
+					<i class='icon-remove-sign'></i></span></label>
+					<label class='cb-disable $stat2 tips' data-placement='right' title='".Enable."'><span>
+					<i class='icon-ok-sign'></i></span></label>
+					<input type='hidden' value='$qr[id]' class='number invisible'>
+					<input type='hidden' value='$qr[status]'  class='type invisible'>
+				</div>";	
+				//checkbox
+				$checkbox = "<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
 			}
 			else  {
-				$status ="
-					<label class='cs-enable $stat1'><span>On</span></label>
-					<label class='cs-disable $stat2'><span>Off</span></label>";	
+				$status ="<span class='invisible'>$enable</span>
+					<label class='$stat2 tips icon-active' data-placement='right' title='".Enable."'><span>
+					<i class='icon-ok-sign'></i></span></label>
+				";
 				$checkbox = "<span class='icon lock'></lock>";
 			}
 			
 			if($qr['level'] >= $_SESSION['USER_LEVEL'] or $_SESSION['USER_LEVEL'] == 1) {
-				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[name]</a>";
-				$user ="<a class='tooltip ctedit' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[user]</a>";
+				$name ="<a class='tips' data-placement='right' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[name]</a>";
+				$user ="<a class='tips' data-placement='right' title='".Edit."' href='?app=user&act=edit&id=$qr[id]'>$qr[user]</a>";
 			}
 			else  {
 				$name ="$qr[name]";
@@ -162,7 +141,7 @@ else {$dispar1="selected checked"; $enpar1= "";}
 			}
 			
 			echo "<tr>";
-			echo "<td>$no</td><td align='center'>$checkbox</td><td>$name</td><td>$user</td><td align=center>$status</td><td align='center'>$group</td><td>$qr[email]</td><td align='center'>$qr[id]</td>";
+			echo "<td align='center'>$checkbox</td><td>$name</td><td>$user</td><td align=center>$status</td><td align='center'>$group</td><td>$qr[email]</td><td align='center'>$qr[id]</td>";
 			echo "</tr>";
 			$no++;	
 		}

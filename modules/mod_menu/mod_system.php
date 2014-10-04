@@ -10,7 +10,7 @@
 defined('_FINDEX_') or die('Access Denied');
 
 define('_Mod_SubTitle_',$sub_title);
-define('_Mod_SubMenu_',$sub_title);
+define('_Mod_SubMenu_',$sub_menu);
 
 function sub_menu($parent_id){
 	$db = new FQuery();  
@@ -62,6 +62,8 @@ function sub_menu($parent_id){
 			}
 			else {
 				echo "<li class=\"menu$menu[class]$a$pos\" style=\"$menu[style]\"><a href=\"".FUrl."\">$menu[name]$subtitle</a>";
+					if(_Mod_SubMenu_ == 1) sub_menu($menu['id']);
+					echo "</li>";
 			}
 			$no++;
 		}

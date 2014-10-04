@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -25,65 +24,64 @@ else {
 function addModuleStep1() {
 ?>
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		oTable = $('table').dataTable({
-			"bJQueryUI": true,
-			"sPaginationType": "full_numbers",
-			"aaSorting": [[ 1, "asc" ]]
-				
-		});
+if (!$.isFunction($.fn.dataTable) ) {
+	var script = '../plugins/plg_jquery_ui/datatables.js';
+	document.write('<'+'script src="'+script+'" type="text/javascript"><' + '/script>');	
+}	
+$(function() {		
+	$("form").submit(function(e){
+		var ff = this;
+		var checked = $('input:checked').length > 0;
+		if(checked) {	
+				ff.submit();
+		} else {
+			noticeabs("<?php echo alert('error',Please_Select_Item); ?>");
+			$('input').next().addClass('input-error');
+			return false;
+		}
 	});
+	loadTable();
+});
 </script>
 <form method="post">
 	<div id="app_header">
 		<div class="warp_app_header">
-		
-			<div class="app_title"><?php echo New_Module; ?></div>
-			
+			<div class="app_title"><?php echo Installed_Module; ?></div>			
 			<div class="app_link">
-				<a class="lbt prev tooltip" href="?app=module" title="<?php echo Back; ?>">Prev</a>
-				<input type="submit" value="Next" class="lbt next  tooltip" title="<?php echo Next; ?>" id="next1" name="next"/>
-				<hr class="lbt sparator tooltip">
-				<a class="lbt help popup  tooltip" href="#helper" title="<?php echo Help; ?>">Help</a>
-				<div id="helper"><?php echo Add_Module_1_help; ?></div>
-				
+				<a class="delete btn btn-default btn-sm btn-grad" href="?app=module" title="<?php echo Back; ?>"><i class="icon-arrow-left"></i>&nbsp;<?php echo Prev; ?></a>
+				<button type="submit" class="btn btn-success  btn-sm btn-grad" title="<?php echo Delete; ?>" value="Next" name="next"><?php echo Next; ?> &nbsp;<i class="icon-arrow-right"></i></button>
 			</div>
-		 </div>			 
-	</div>
+			<?php printAlert(); ?>
+		</div>			 
+	</div>			
 		
 	<table class="data">
 		<thead>
 			<tr>
-				<th width="6%" class="no"></th>
-				<th style="width:40% !important;"><?php echo Module_Name; ?></th>
-				<th style="width:30% !important;"><?php echo AddOns_Author; ?></th>
-				<th style="width:10% !important;"><?php echo Version; ?></th>
-				<th style="width:20% !important;"><?php echo Update_date; ?></th>
+				<th style="width:2% !important;" class="no"></th>
+				<th style="width:17% !important;"><?php echo Module_Name; ?></th>
+				<th style="width:16% !important;"><?php echo AddOns_Author; ?></th>
+				<th style="width:65% !important;"><?php echo Description; ?></th>
 			</tr>
 		</thead>
 				
 		<?php
+			if(file_exists("../modules")) {
 			$dir=opendir("../modules"); 
-			$no=1;
 			while($folder=readdir($dir)){ 
 				if($folder=="." or $folder=="..")continue; 
-				if(is_dir("../modules/$folder"))
-				{
+				if(is_dir("../modules/$folder")){
 					include("../modules/$folder/mod_details.php");
-					echo "<tr>
-					<label><td align=\"center\">
-						<input type=\"radio\" name=\"folder\"  value=\"$folder\">
-					</td>
-					<td><a title=\"$module_desc\" class=\"tooltip help\">$module_name</a>";			
-					echo "</td>
-					<td>$module_author </td>
-					<td>$module_version </td>
-					<td>$module_date </td>
+					echo "<tr target-radio='$folder'>
+						<td align=\"center\"><input type=\"radio\" name=\"folder\" data-name='$folder' target-radio='$folder'  value=\"$folder\"></td>
+						<td><a title=\"Select\" class=\"tips\">$module_name</a></td>
+						<td>$module_author</td>
+						<td>$module_desc</td>
 					</tr>";
 				}
-				$no++;
 			} 
 			closedir($dir);
+			}
 		?> 
 	</table>
 </form>
@@ -97,15 +95,13 @@ function addModuleStep2() {
 		<div class="warp_app_header">
 			<div class="app_title"><?php echo New_Module; ?></div>			
 			<div class="app_link">	
-				<a class="lbt prev tooltip" href="?app=module&act=add" title="<?php echo Back; ?>"></a>
-				<span class="lbt sparator"></span>
-				<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="apply_add"/>
-				<input type="submit" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_add"/>
-				<a class="lbt cancel tooltip" href="?app=module" title="<?php echo Cancel; ?>"></a>
-				<span class="lbt sparator"></span>
-				<a class="lbt help popup  tooltip" href="#helper" title="<?php echo Help; ?>"></a>
-				<div id="helper"><?php echo Add_Module_2_help; ?></div>
+				<a class="btn btn-default" href="?app=module&act=add" title="<?php echo Back; ?>"><i class="icon-arrow-left"></i> <?php echo Prev; ?></a>											
+				<button type="submit" class="btn btn-success" title="<?php echo Delete; ?>" value="Next" name="apply_add"><i class="icon-ok"></i> <?php echo Save; ?></button>				
+				<button type="submit" class="btn btn-metis-2" title="<?php echo Delete; ?>" value="Next" name="save_add"><i class="icon-ok-sign"></i>  <?php echo Save_and_Quit; ?></button>
+				</button>				
+				<a class="danger btn btn-default" href="?app=module" title="<?php echo Cancel; ?>"><i class="icon-remove-sign"></i> <?php echo Cancel; ?></a>
 			</div>
+			<?php printAlert(); ?>
 		</div>			 
 	</div>		
 	<?php 

@@ -37,14 +37,20 @@ defined('_FINDEX_') or die('Access Denied');
 			<span>Email</span><input type="text" name="email" placeholder="Email"  value="<?php echo $_SESSION['USER_EMAIL']; ?>"/>
 		</div>
 		<div>
-			<span>Bio</span><textarea name="bio"rows="7" style="width: 60%; max-width: 77%"><?php echo userInfo('about',$_SESSION['USER_ID']); ?></textarea>
+			<span>Bio</span><textarea name="bio"rows="7"><?php echo userInfo('about',$_SESSION['USER_ID']); ?></textarea>
 		</div>
 		<div class="user-link">
-			<span>&nbsp;</span><input type="submit" name="edit" value="<?php echo Save; ?>" class="button login btn"/>
+			<input type="submit" name="edit" value="<?php echo Save; ?>" class="button login btn"/>
+		</div>
+		<div>
+		<br>
+		<br>
+		</div>
+		<div>
+			<a href="<?php echo make_permalink('?app=user') ?>" class="button btn"><?php echo Back; ?></a>
+			<a href="<?php echo make_permalink('?app=user&view=logout'); ?>" class="button btn"><?php echo Logout; ?></a>
 		</div>
 		<p>&nbsp;</p>
 		
-<a href="<?php echo make_permalink('?app=user') ?>" class="button btn"><?php echo Back; ?></a>
-		<a href="<?php echo make_permalink('?app=user&view=logout'); ?>" class="button btn"><?php echo Logout; ?></a>
 	</form>
 </div> 

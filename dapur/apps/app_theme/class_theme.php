@@ -1,20 +1,12 @@
 <?php
-/*
-	
-	== PHP FILE TREE ==
-	
-		Let's call it...oh, say...version 1?
-	
-	== AUTHOR ==
-	
-		Cory S.N. LaViska
-		http://abeautifulsite.net/
-		
-	== DOCUMENTATION ==
-	
-		For documentation and updates, visit http://abeautifulsite.net/notebook.php?article=21
-		
-*/
+/**
+* @version		2.0
+* @package		Fiyo CMS
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
+**/
+
+defined('_FINDEX_') or die('Access Denied');
 
 
 function php_file_tree($directory, $return_link, $extensions = array()) {

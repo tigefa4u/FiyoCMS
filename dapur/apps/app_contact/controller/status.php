@@ -20,10 +20,10 @@ $db->connect();
 if(isset($_GET['stat'])) {
 	if($_GET['stat']=='1'){
 		$db->update(FDBPrefix.'contact',array("status"=>"1"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		echo alert('success',Status_Applied);
 	}
 	if($_GET['stat']=='0'){
 		$db->update(FDBPrefix.'contact',array("status"=>"0"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		echo alert('success',Status_Applied);
 	}
 }

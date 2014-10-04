@@ -104,7 +104,7 @@ function parseFilesystem($displayResultForEditing = TRUE) {
 	} else {
 		$SETTINGS[PSNG_TIMEOUT_IS] = FALSE;
 	}
-
+	
 	return $FILE;
 }
 
@@ -120,7 +120,6 @@ function breakSession($force = FALSE) {
 	if (($t2 >= $SETTINGS[PSNG_TIMEOUT_TIME_DEADLINE]) || ($force == TRUE)) {
 		$header = $SETTINGS[PSNG_SCRIPT].'?'.PSNG_ACTION.'='.$SETTINGS[PSNG_SETTINGS_STATE];
 		$header = "?app=sitemap&action=parse";
-		$LAYOUT->addInfo('Please click <a href="'.$header.'"><b>here</b></a> to continue scanning your site.', 'Timeout occured');
 		$_SESSION[PSNG_SETTINGS] = $SETTINGS;
 		debug($SETTINGS, "settings in breakSession");
 
@@ -444,8 +443,8 @@ function displaySitemapEdit($FILE) {
 	$LAYOUT->setTitle("Result of scan");
 
 	require(PSNG_FILE_TEMPLATE_EDIT_FILES);
-
-	$LAYOUT->addText($layout, 'Found '. count($FILE) .' files');
+	
+	$LAYOUT->addText($layout, '<span class="info-result">Found '. count($FILE) .' pages</span>','info table-sitemap');
 }
 
 /**
@@ -454,7 +453,6 @@ function displaySitemapEdit($FILE) {
 function writeSitemap($FILE) {
 	global $SETTINGS, $openFile_error, $LAYOUT;
 	$LAYOUT->setTitle("Writing sitemap");
-	$gsg = new GsgXml($SETTINGS[PSNG_WEBSITE]);
 
 	$numb = 0;
 	$txtfilehandle = null;
@@ -472,9 +470,7 @@ function writeSitemap($FILE) {
 		if ($value[PSNG_FILE_ENABLED] != '') {
 			debug($value, "Adding file ".$value[PSNG_FILE_URL]);
 			if (isset($txtfilehandle)) fputs($txtfilehandle, $value[PSNG_FILE_URL]."\n");
-			if ($gsg->addUrl($value[PSNG_FILE_URL], FALSE, $value[PSNG_LASTMOD], FALSE, $value[PSNG_CHANGEFREQ], $value[PSNG_PRIORITY]) === FALSE) {
-				$LAYOUT->addError($value[PSNG_FILE_URL], 'Could not add file to sitemap' . $gsg->errorMsg);
-			}
+			
 		} else {
 			debug($value[PSNG_FILE_URL], 'Not enabled, so not writing file to sitemap');
 		}
@@ -485,20 +481,59 @@ function writeSitemap($FILE) {
 		$LAYOUT->addError($openFile_error, 'Could not write sitemap');
 		return FALSE;
 	}
-	$xml = $gsg->output(TRUE, $SETTINGS[PSNG_COMPRESS_SITEMAP], FALSE);
-
-	fputs ($filehandle, $xml);
-	fclose ($filehandle);
+	
 	if (isset($txtfilehandle)) fclose($txtfilehandle);
 
 	if ($numb > 50000) {
 		$LAYOUT->addWarning('Not implemented: split result into files with only 50000 entries','Only 50000 entries are allowed in one sitemap file at the moment!');
 	}
-	$LAYOUT->addSuccess('Sitemap successfuly created and saved to <a href="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_SITEMAP_URL].'" target="_blank">'.basename($SETTINGS[PSNG_SITEMAP_FILE]).'</a>! <input type="text" value="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_SITEMAP_URL].'" name="xml" size="50"/>');
-	if (isset($SETTINGS[PSNG_TXTSITEMAP_FILE]) && strlen($SETTINGS[PSNG_TXTSITEMAP_FILE])>0) $LAYOUT->addSuccess('Txt-Sitemap successfuly created and saved to <a href="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_TXTSITEMAP_FILE].'" target="_blank">'.basename($SETTINGS[PSNG_TXTSITEMAP_FILE]).'</a>!  <input type="text" value="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_TXTSITEMAP_FILE].'" name="txml" size="50"/>');
-	$LAYOUT->addText('<form action="?app=sitemap&action='.PSNG_ACTION_SETTINGS_PINGGOOGLE.'" method="post">' ."\n".
+	
+	
+	
+	include_once('apps/app_sitemap/settings/files.inc.php');
+	
+	/* Di Modifikasi oleh Fiyo Dev. */
+	$student_info = $FILES;
+
+	// creating object of SimpleXMLElement
+
+	// function defination to convert array to xml
+	function array_to_xml($student_info, &$xml_student_info) { $no =0;
+		foreach($student_info as $key => $value) {
+			if(is_array($value)) {
+				if(!is_numeric($key)){
+					$subnode = $xml_student_info->addChild("$key");
+					array_to_xml($value, $subnode);
+				}
+				else{
+					$subnode = $xml_student_info->addChild("url");
+					array_to_xml($value, $subnode);
+				}
+			}
+			else  {
+				if($key == 'file_enabled' AND $value == 1) continue;			
+				if($key == 'file_url') $key = 'loc';
+				$xml_student_info->addChild("$key",htmlspecialchars("$value"));
+			}
+			$no++;
+		}
+	}
+
+	$xml_student_info = new SimpleXMLElement("<?xml version=\"1.0\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>");
+
+	array_to_xml($student_info,$xml_student_info);
+	/* Di Modifikasi oleh Fiyo Dev. */
+	$myfile = fopen("../".$SETTINGS[PSNG_SITEMAP_FILE], "w") or die("Unable to open file!");
+	fwrite($myfile, $xml_student_info->asXML());
+	fclose($myfile);
+
+
+	$LAYOUT->addSuccess('Sitemap successfuly created and saved to <a href="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_SITEMAP_URL].'" target="_blank">'.basename($SETTINGS[PSNG_SITEMAP_FILE]).'</a>!');
+	
+	if (isset($SETTINGS[PSNG_TXTSITEMAP_FILE]) && strlen($SETTINGS[PSNG_TXTSITEMAP_FILE])>0) $LAYOUT->addSuccess('Txt-Sitemap successfuly created and saved to <a href="'.$SETTINGS[PSNG_CRAWLER_URL].$SETTINGS[PSNG_TXTSITEMAP_FILE].'" target="_blank">'.basename($SETTINGS[PSNG_TXTSITEMAP_FILE]).'</a>!');
+	$LAYOUT->addText('<form action="?app=sitemap&action='.PSNG_ACTION_SETTINGS_PINGGOOGLE.'" method="post" class="sitemap-wrap>' ."\n".
 			'<input type="hidden" name="'.PSNG_SETTINGS_ACTION.'" value="'.PSNG_ACTION_SETTINGS_PINGGOOGLE.'">' . "\n".
-			'<input type="Submit" value="Submit to google" class="button" name="submit" class="button" style="margin:5px 0;">' . "\n".
+			'<button type="Submit" value="Submit to Google" class="btn btn-primary" name="submit" class="button" style="margin:5px 0;">Submit to Google</button>' . "\n".
 			'</form>' . "\n");
 
 	return TRUE;
@@ -508,12 +543,12 @@ function writeSitemap($FILE) {
 /**
  *
  */
+ 
 function writeSitemapUserinput() {
 	// TODO add deselected files from user into "blacklist" in temp directory
 	global $SETTINGS, $openFile_error, $_REQUEST, $LAYOUT;
 	$LAYOUT->setTitle('Writing sitemap');
 
-	$gsg = new GsgXml($SETTINGS[PSNG_WEBSITE]);
 
  // create the sitemap file
 	$filesGot = $_REQUEST['FILE'];
@@ -552,14 +587,14 @@ function submitPageToGoogle() {
 	global $SETTINGS, $LAYOUT;
 	$LAYOUT->setTitle('Submit sitemap to google');
 
-	$res = fopen("http://www.google.com/webmasters/sitemaps/ping?sitemap=".urlencode($SETTINGS['website'].$SETTINGS[PSNG_SITEMAP_URL]),"r");
+	$res = @fopen("http://www.google.com/webmasters/tools/ping?sitemap=".urlencode($SETTINGS['website'].$SETTINGS[PSNG_SITEMAP_URL]),"r");
 	if ($res === FALSE) {
 		$LAYOUT->addError('', 'Error while submitting '.$SETTINGS[sitemap_url].'to google!');
 	}
 
 	$str = "";
-	while (!feof($res)) {
-		$str .= fread($res, 1000);
+	while (!@feof($res)) {
+		$str .= @fread($res, 1000);
 	}
 	fclose($res);
 	$LAYOUT->addSuccess('Result was: <i>'.	strip_tags($str, '<br> <h2> <h1>')	. '</i>',

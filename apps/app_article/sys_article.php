@@ -1,11 +1,11 @@
 <?php
 /**
 * @name			Article System
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-*/
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
+**/
 
 defined('_FINDEX_') or die('Access Denied');
 
@@ -68,6 +68,7 @@ function tagToLink($tags) {
 }
 function articleIntro($article) {
 	$article = str_replace('"',"'",$article);
+	$article = str_replace('&nbsp;'," ",$article);
 	$limit = strpos("$article","<hr id=");	
 	if(empty($limit)) 
 	$limit = strpos("$article","<div style='page-break-after: always");	
@@ -153,6 +154,8 @@ class Article {
 			DATE_FORMAT(date,'%d %M %Y') as date,
 			DATE_FORMAT(date,'%W') as D,
 			DATE_FORMAT(date,'%d') as f,
+			DATE_FORMAT(date,'%b') as b,
+			DATE_FORMAT(date,'%a') as a,
 			DATE_FORMAT(date,'%D') as d,
 			DATE_FORMAT(date,'%m') as n,
 			DATE_FORMAT(date,'%M') as m,
@@ -186,32 +189,44 @@ class Article {
 				$sdate 		= mod_param('show_date',$qr['parameter']);
 				$shits 		= mod_param('show_hits',$qr['parameter']);
 				$srate 		= mod_param('show_rate',$qr['parameter']);
-				$spanel		= mod_param('show_panel',$qr['parameter']);
+				$tpanel		= mod_param('panel_top',$qr['parameter']);
+				$bpanel		= mod_param('panel_bottom',$qr['parameter']);
 				$stag		= mod_param('show_tags',$qr['parameter']);
 				$voter 		= mod_param('rate_counter',$qr['parameter']);
 				$rate 		= mod_param('rate_value',$qr['parameter']);
+				$stitle 	= mod_param('show_title',$qr['parameter']);
 				$sauthor 	= mod_param('show_author',$qr['parameter']);
 				$comment	= mod_param('show_comment',$qr['parameter']);
 				$scategory 	= mod_param('show_category',$qr['parameter']);
-				
 				$catLinks	= categoryLink($qr['category']);	
 				$catHref	= "<a href='$catLinks'>$category</a>";
 				
 				$fpanel = "*" . menu_param('panel_format',Page_ID);
 				$panel = str_replace('%rel',"",$fpanel);
 				if(empty($panel) or !strpos($panel,'%')) {
+					$a = "<b>%A</b>  &#183;";
+					if(!$sauthor) $a = '';
 					if(siteConfig('lang') == 'id')
-					$panel = "<b>%a</b> &#183; %f %m %Y &#183; %c";
+					$date = "%f %m %Y &#183;";
 					else
-					$panel = "%m, %f %Y &#183; <b>%a</b> &#183; %c";
+					$date = "%m, %f %Y &#183;";
+					if(!$sdate) $date = '';
+					if(siteConfig('lang') == 'id')
+					$panel = "$a $date %c";
+					else
+					$panel = "$a %c";
 					
 				}
-				$panel = str_replace('%a',"$author",$panel);
+				$panel = str_replace('%A',"$author",$panel);
 				
 				if($scategory) 
 					$panel = str_replace('%c',"$catHref",$panel);
 				else
-					$panel = str_replace('%c','',$panel);;
+					$panel = str_replace('&#183; %c','',$panel);
+				if(!$sdate AND !$scategory) {
+					$panel = str_replace('&#183;','',$panel);
+					$panel = str_replace('%c','',$panel);
+				}
 					
 				$panel = str_replace('%h',$qr['hits'],$panel);
 				
@@ -219,6 +234,7 @@ class Article {
 				if($timeRel AND strpos($fpanel,'%rel')) {
 					$panel = str_replace(', ',"",$panel);
 					$panel = str_replace('%d',"",$panel);
+					$panel = str_replace('%b',"",$panel);
 					$panel = str_replace('%f',"$timeRel",$panel);
 					$panel = str_replace('%m',"",$panel);
 					$panel = str_replace('%n',"",$panel);
@@ -238,7 +254,10 @@ class Article {
 					else
 					$panel = str_replace('%f',$qr['d'],$panel);
 					$panel = str_replace("%rel",$panel,$panel);
+					$panel = str_replace('%d',$qr['d'],$panel);
 					$panel = str_replace('%D',$qr['D'],$panel);
+					$panel = str_replace('%b',$qr['b'],$panel);
+					$panel = str_replace('%a',$qr['a'],$panel);
 					$panel = str_replace('%m',$qr['m'],$panel);
 					$panel = str_replace('%n',$qr['n'],$panel);
 					$panel = str_replace('%y',$qr['y'],$panel);
@@ -256,8 +275,8 @@ class Article {
 				$rate = (@round($rate / $voter,1)) * 20; 
 				/* tags */
 				$tags = null;
-				if(!empty($qr['tag'])) {
-					$tags = tagToLink($qr['tag']);					
+				if(!empty($qr['tags'])) {
+					$tags = tagToLink($qr['tags']);					
 				}
 				
 				$article = $qr['article'];
@@ -281,14 +300,16 @@ class Article {
 					$this -> day 		= $qr['f'];
 					$this -> month 		= $qr['m'];
 					$this -> year 		= $qr['y'];
-					$this -> hits 		= $qr['hits'];	
+					$this -> hits 		= digit($qr['hits']);	
 					$this -> comment	= $comment;	
 					$this -> panel		= $panel;	
-					$this -> spanel		= $spanel;	
 					$this -> tags		= $tags ;	
 					$this -> stag		= $stag ;	
 					$this -> sdate		= $sdate;
 					$this -> sauthor	= $sauthor;	
+					$this -> stitle		= $stitle;	
+					$this -> tpanel		= $tpanel;	
+					$this -> bpanel		= $bpanel;	
 					$this -> scategory	= $scategory;	
 					$this -> shits		= $shits;	
 					$this -> srate		= $srate;	
@@ -327,10 +348,11 @@ class Article {
 		
 		}
 		else if($type == 'tag') {
-			$per_page = 10;
+			if(empty($per_page))
+				$per_page = 10;
 			$tag = app_param('tag');
 			$tag = str_replace("-"," ",$tag);
-			$where = "status=1 AND tag LIKE '%".$tag."%'";
+			$where = "status=1 AND tags LIKE '%".$tag."%'";
 		} 
 		if(_FEED_ == 'rss') {
 			$per_page = 20;
@@ -350,6 +372,8 @@ class Article {
 		DATE_FORMAT(date,'%a, %m %d %Y %H:%i:%s') as time,
 		DATE_FORMAT(date,'%d') as f,
 		DATE_FORMAT(date,'%D') as d,
+		DATE_FORMAT(date,'%b') as b,
+		DATE_FORMAT(date,'%a') as a,
 		DATE_FORMAT(date,'%W') as D,
 		DATE_FORMAT(date,'%m') as n,
 		DATE_FORMAT(date,'%M') as m,
@@ -359,7 +383,7 @@ class Article {
 		DATE_FORMAT(date,'%H') as H,
 		DATE_FORMAT(date,'%p') as p,
 		DATE_FORMAT(date,'%i') as i,
-		DATE_FORMAT(date,'%s') as s","$where  $accessLevel",'order_date DESC',$per_page);
+		DATE_FORMAT(date,'%s') as s","$where $accessLevel",'order_date DESC',$per_page);
 		
 		$no = 0;
 		$perrows = mysql_affected_rows();		
@@ -380,13 +404,15 @@ class Article {
 			/* Article Links */
 			$link	= "?app=article&amp;view=item&amp;id=$qr[id]";	
 			$vlink  = str_replace("&amp;","&",$link);
-			$link  	= make_permalink($vlink);			
+			$vlink  = make_permalink($vlink);
 				
 			/* Article Title */				
-			$title 	= "<a href='$link'>$qr[title]</a>";	
+			$title 	= "<a href='$vlink'>$qr[title]</a>";
+			
+			$link  	= make_permalink($link);
 				
 			/* Article Tags */
-			$tags 	= tagToLink($qr['tag']);
+			$tags 	= tagToLink($qr['tags']);
 				
 			/* Article Content */
 			$article = $qr['article'];	
@@ -400,7 +426,7 @@ class Article {
 			/* Article Comments */
 			
 	
-			$comm = FQuery('comment',"link='$vlink'AND status=1");
+			$comm = FQuery('comment',"link='$link'AND status=1");
 			if(FQuery('apps',"folder='app_comment'")) { 
 				$comment =  "<a class='send-comment' href='$link#comment'>";
 				if($comm > 1) $comment .= "<span>$comm</span> ".Comments;
@@ -419,7 +445,7 @@ class Article {
 			$content = $article;	
 			
 			/* Blog Style */
-			if($format == 'blog' or $type == 'tag') {
+			if($format == 'blog' or $type == 'tag' or $format == 'list') {
 				$image	= articleImage($content);	
 				$image	= str_replace("/media","/media/.thumbs",$image);
 				$imgH  = menu_param('imgH',Page_ID);
@@ -439,11 +465,11 @@ class Article {
 				
 				if(empty($panel) or !strpos($dpanel,'%')) {
 					if(siteConfig('lang') == 'id')
-					$panel = "<b>%a</b> &#183; %f %m %Y &#183; %c";
+					$panel = "<b>%A</b> &#183; %f %m %Y &#183; %c";
 					else
-					$panel = "%m, %f %Y &#183; <b>%a</b> &#183; %c";					
+					$panel = "%m, %f %Y &#183; <b>%A</b> &#183; %c";					
 				}
-				$panel = str_replace('%a',$author,$panel);
+				$panel = str_replace('%A',$author,$panel);
 				
 				$panel = str_replace('%c',"$catHref",$panel);
 					
@@ -474,7 +500,9 @@ class Article {
 						$panel = str_replace('%f',$qr['d'],$panel);
 						
 					$panel = str_replace("%rel",$panel,$panel);
-					$panel = str_replace('%D',$qr['D'],$panel);
+					$panel = str_replace('%d',$qr['d'],$panel);
+					$panel = str_replace('%a',$qr['a'],$panel);
+					$panel = str_replace('%b',$qr['b'],$panel);
 					$panel = str_replace('%m',$qr['m'],$panel);
 					$panel = str_replace('%n',$qr['n'],$panel);
 					$panel = str_replace('%y',$qr['y'],$panel);
@@ -549,7 +577,7 @@ class Article {
 		
 		if(_FEED_ == 'rss') {
 			$rssLink = make_permalink($rssLink);
-			$this -> rssTitle = SiteTitle;			
+			$this -> rssTitle = @clearXMLString(SiteTitle);			
 			$categoryLink = @clearXMLString($rssLink);
 			$categoryLink = str_replace(".xml","",$categoryLink);
 			$this -> rssLink  	= $categoryLink;
@@ -593,10 +621,11 @@ if($a){
 			$lcat = "$ncat";
 			
 			$i = 1;
-			while(empty($page) AND !check_permalink('link',getLink()) AND $i < 10 AND !empty($lcat)) {		
+			while(empty($page) AND !check_permalink('link',getLink()) AND $i < 10 AND !empty($lcat) AND $icat != 0) {	
 				$icat = categoryInfo('parent_id',$icat);
 				$ncat = categoryInfo('name',$icat);
 				$page = menuInfo('id',"?app=article&view=category&id=$icat");
+				if($icat == 0) break;
 				$lcat = "$ncat/$lcat";
 				$i++;
 			}
@@ -611,10 +640,11 @@ if($a){
 			$lcat = "$ncat";
 			
 			$i = 1;
-			while(empty($page) AND !check_permalink('link',getLink()) AND $i < 10) {		
+			while(empty($page) AND !check_permalink('link',getLink()) AND $i < 10 AND $icat != 0) {		
 				$icat = categoryInfo('parent_id',$icat);
 				$ncat = categoryInfo('name',$icat);
 				$page = menuInfo('id',"?app=article&view=category&id=$icat");
+				if($icat == 0) break;
 				$lcat = "$ncat/$lcat";
 				$i++;
 			}
@@ -650,20 +680,26 @@ if($a){
 /*			 Article Title				*/
 /****************************************/
 if($id > 0) {
+	$follow = true;
 	$a = FQuery("article_category","id=$id",'',1); 
 	if(!$a) {
 		$a = FQuery("article","id=$id",'',1); 
+		if(!$a) {
+			$follow = false;
+			define('MetaRobots',"noindex");
+		}
 	}
 	else {
 		if(app_param('view')=='featured')
 			$a = 1;
+		else 
+			$follow = false;
 	}
 }
-if($a){		
+if($a){
 	if(!checkHomePage()) {	
 		if ($view=="item") {
-			define('PageTitle', articleInfo('title'));
-			
+			define('PageTitle', articleInfo('title'));			
 			$desc = articleInfo('description');
 			if(!empty($desc)) 	
 				define('MetaDesc', articleInfo('description'));
@@ -675,12 +711,14 @@ if($a){
 				define('MetaKeys', articleInfo('keyword'));
 			else
 				define('MetaKeys', generateKeywords(articleInfo('article')));
-			
-			if(siteConfig('follow_link'))
+			if(!$follow)
+				$follow = 'noindex';
+			else if(siteConfig('follow_link'))
 				$follow = 'index, follow';
 			else
 				$follow = 'index, nofollow';
-				define('MetaRobots',"$follow");
+			
+			define('MetaRobots',"$follow");
 			
 			$author = articleInfo('author');
 			if(empty($author))
@@ -714,7 +752,7 @@ if($a){
 					$follow = 'index, nofollow';
 			}
 			else
-				$follow = 'none';
+				$follow = 'noindex';
 			define('MetaRobots',"$follow");
 			
 		}		
@@ -722,7 +760,10 @@ if($a){
 			define('PageTitle', "Archives");
 		else if($view=='featured')
 			define('PageTitle', "Featured");
-		else if (app_param('tag') != null)			
-			define('PageTitle', app_param('tag')."'s Tag");
+		else if (app_param('tag') != null)		{	
+			define('PageTitle', $p = str_replace("-"," ",ucfirst(app_param('tag'))));
+			define('Apps_Title', $p);
+			
+			}
 	}
 }

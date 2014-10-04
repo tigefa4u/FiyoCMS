@@ -78,18 +78,29 @@
 	*/
 	$black = imagecolorallocate($img,0,0,0);
 	$white = imagecolorallocate($img,255,255,255);
-	$grey = imagecolorallocate($img,215,215,215);
+	$grey = imagecolorallocate($img,100,100,100);
 	/*
 		make the background white
 	*/
 	imagefill( $img, 0, 0, $white );	
 	/* the background grid lines - vertical lines */
-	for ($t = $bg_size; $t<$captcha_w; $t+=$bg_size){
-		imageline($img, $t, 0, $t, $captcha_h, $grey);
+	for ($t = $bg_size; $t<$captcha_w+2; $t+=$bg_size){
+		$rr = rand(6,30);
+		$rs = rand(20,$captcha_w);
+		$cr = rand(100,200);
+		$cs = rand(100,200);
+		$grey = imagecolorallocate($img,$cs,$cr,100);
+		imageline($img, $rs-$rr, 0,  $rs-$t+10, $captcha_h, $grey);
 	}
 	/* background grid - horizontal lines */
 	for ($t = $bg_size; $t<$captcha_h; $t+=$bg_size){
-		imageline($img, 0, $t, $captcha_w, $t, $grey);
+		$rr = rand(1,30);
+		$rs = rand(1, $captcha_h);
+		$cr = rand(100,200);
+		$cs = rand(150,200);
+		$s =  rand(2,9);
+		$grey = imagecolorallocate($img,$cs,$cr,100);
+		imageline($img, 0, $rr+10, $captcha_w, $rr-$rs+$s, $grey);
 	}
 	
 	/* 

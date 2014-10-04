@@ -1,15 +1,14 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
 if(isset($article-> category)) :
-
 	$category 	= $article-> category;
 	$readmore	= $article-> readmore;
 	$catlink	= $article-> catlink;
@@ -18,6 +17,7 @@ if(isset($article-> category)) :
 	$perrows 	= $article-> perrows;
 	$author 	= $article-> author;
 	$title		= $article-> title;
+	$image  	= $article-> image;
 	$text  		= $article-> content;
 	$desc 		= $article-> desc;
 	$hits 		= $article-> hits;
@@ -26,15 +26,18 @@ if(isset($article-> category)) :
 	
 	if($text AND _FEED_ != 'rss') :	?>
 	
+		<div id="article">
 		<?php if(defined('Apps_Title')) : ?>
 			<h1><?php echo Apps_Title; ?></h1>
 		<?php endif; ?>
 				
 		<!-- Article Main Warp -->
-		<div id="article">
 			<?php for($i=0; $i < $perrows ;$i++) : ?>				
 			<!-- Article Main Box -->	
 			<div class="article-list">	
+				<?php if($image[$i]) : ?>
+					<img src="<?php echo $image[$i]; ?>" alt="<?php echo $title[$i]; ?>" class="image-intro" style="max-width:100px; max-height:80px; float: left;" width="<?php echo $article->imgW;?>" />
+				<?php endif; ?>
 				<h2 class="title"><?php echo $title[$i]; ?></h2>	
 					<?php if(!empty($article->show_panel)) {
 					echo "<div class='article-panel'>$panel[$i]</div>";
@@ -43,6 +46,11 @@ if(isset($article-> category)) :
 				<div class="clear"></div>
 			</div>	
 			<?php endfor; ?>	
+				
+			<!-- RSS Feed Icon -->
+			<?php if($article->show_rss) : ?>
+				<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
+			<?php endif; ?>
 			
 			<!-- Pagelinks -->
 			<?php if(!empty($pagelink)) : ?>
@@ -51,11 +59,6 @@ if(isset($article-> category)) :
 			</div>
 			<?php endif; ?>	
 		</div>
-		
-		<!-- RSS Feed Icon -->
-		<?php if($article->show_rss) : ?>
-			<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
-		<?php endif; ?>
 		
 	<!-- RSS Feed File Generator -->	
 	<?php elseif(_FEED_ == 'rss') : 
@@ -91,5 +94,5 @@ if(isset($article-> category)) :
 	<?php if(defined('Apps_Title')) : ?>
 			<h2><?php echo Apps_Title; ?></h2>
 	<?php endif; ?>
-	<h3>Sorry, no article in this category.!</h3>
+	<h3><?=Category_is_empty;?></h3>
 <?php endif; ?>

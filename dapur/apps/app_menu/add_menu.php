@@ -1,20 +1,18 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
-
 
 $_REQUEST['id']=0;
 
 if(isset($_POST['next']) or isset($_POST['apps'])) {
 	if(empty($_POST['apps'])) {
-		alert('error',Please_Select_Apps);
+		echo '<div class="alert error" id="status">'.Please_Select_Apps.'</div>';
 		 addappstep1();
 	}
 	else {			
@@ -28,37 +26,47 @@ else {
 function addappstep1() {
 ?>
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		oTable = $('table').dataTable({
-			"bJQueryUI": true,
-			"sPaginationType": "full_numbers",
-			"aaSorting": [[ 1, "asc" ]]
-				
-		});
+if (!$.isFunction($.fn.dataTable) ) {
+	var script = '../plugins/plg_jquery_ui/datatables.js';
+	document.write('<'+'script src="'+script+'" type="text/javascript"><' + '/script>');	
+}	
+$(function() {		
+	
+		$("input[type='radio']:checked").parents('tr').addClass('active');
+	$("input[type='radio']:checked").click(function(e){	
+		$("input[type='radio']:checked").parents('tr').addClass('active');
 	});
+	$("form").submit(function(e){
+		var ff = this;
+		var checked = $('input:checked').length > 0;
+		if(checked) {
+				ff.submit();
+		} else {
+			noticeabs("<?php echo alert('error',Please_Select_Menu); ?>");
+			$('input').next().addClass('input-error');
+			return false;
+		}
+	});
+	loadTable();
+});
 </script>
 <form method="post">
 	<div id="app_header">
 		<div class="warp_app_header">
 			<div class="app_title"><?php echo New_Menu; ?></div>			
 			<div class="app_link">
-				<a class="lbt link prev tooltip" href="?app=menu" title="<?php echo Back; ?>">Prev</a>
-				<input type="submit" value="Next"class="lbt next tooltip" title="<?php echo Next; ?>"name="next"/>
-				<hr class="lbt sparator tooltip">
-				<a class="lbt help popup  tooltip" href="#helper" title="<?php echo Help; ?>"></a>
-				<div id="helper"><?php echo Add_Menu_help; ?></div>
+				<a class="delete btn btn-default btn-sm btn-grad" href="?app=menu" title="<?php echo Back; ?>"><i class="icon-arrow-left"></i>&nbsp;<?php echo Prev; ?></a>
+				<button type="submit" class="btn btn-success  btn-sm btn-grad" title="<?php echo Delete; ?>" value="Next" name="next"><?php echo Next; ?> &nbsp;<i class="icon-arrow-right"></i></button>
 			</div>
 		</div>			 
-	</div>			
-		
+	</div>
 	<table class="data">
 		<thead>
-		<tr>
-				<th style="width:2%; text-align:center" class="no" ></th>
-				<th style="width:40% !important;"><?php echo Menu_Type_or_Apps_Name; ?></th>
-				<th style="width:30% !important;"><?php echo AddOns_Author; ?></th>
-				<th style="width:10% !important;"><?php echo Version; ?></th>
-				<th style="width:20% !important;"><?php echo Update_date; ?></th>
+			<tr>
+				<th style="width:1%; text-align:center" class="no" ></th>
+				<th style="width:18% !important;"><?php echo Menu_Type_or_Apps_Name; ?></th>
+				<th style="width:18% !important;"><?php echo AddOns_Author; ?></th>
+				<th style="width:65% !important;"><?php echo Description; ?></th>
 			</tr>
 		</thead>
 		</thead>
@@ -70,26 +78,23 @@ function addappstep1() {
 				$file = "../apps/$qr[folder]/app_details.php";
 				if(file_exists($file))
 				include("../apps/$qr[folder]/app_details.php");
-				echo "<tr>";
-				echo "<td align='center'><input type=\"radio\" name=\"apps\" value=\"$qr[folder]\"> </td><td><a class='tooltip help' title='$app_desc'>$qr[name]</a></td><td>$qr[author]</td>
-					<td>$apps_version </td>
-					<td>$apps_date</td>";
+				echo "<tr target-radio='$qr[folder]'>";
+				echo "<td align='center'><input type=\"radio\" name=\"apps\" value=\"$qr[folder]\" data-name='$qr[folder]' target-radio='$qr[folder]'></td><td><a>$qr[name]</a></td><td>$qr[author]</td>
+				<td>$app_desc</td>";
 				echo "</tr>";
 			}
 		?> 
-		<tr>
-			<td align="center"><input type="radio" name="apps" value="link"></td>
-			<td><a title="<?php echo External_Link_tip; ?>" class="tooltip help"><?php echo External_Link; ?></a></td>
+		<tr target-radio="link">
+			<td align="center"><input type="radio" name="apps" value="link" target-radio="link" data-name="link"></td>
+			<td><a data-placement='right' class='tips' ><?php echo External_Link; ?></a></td>
 			<td>Fiyo CMS</td>
-			<td>-</td>
-			<td>-</td>
+			<td><?php echo External_Link_tip; ?></td>
 		</tr>
-		<tr>
-			<td align="center"><input type="radio" name="apps" value="sperator"></td>
-			<td><a title="<?php echo Sperator_tip; ?>" class="tooltip help"><?php echo Sperator; ?></a></td>
+		<tr target-radio="sperator">
+			<td align="center"><input type="radio" name="apps" value="sperator" target-radio="link" data-name="sperator"></td>
+			<td><a data-placement='right' class='tips' ><?php echo Sperator; ?></a></td>
 			<td>Fiyo CMS</td>
-			<td>-</td>
-			<td>-</td>
+			<td><?php echo Sperator_tip; ?></td>
 		</tr>
 	</table>
 </form>			
@@ -97,19 +102,22 @@ function addappstep1() {
 }
 function addappstep2() { 
 ?>
-<form method="post">
+<form method="post" id="form">
 	<div id="app_header">
 		<div class="warp_app_header">
 			<div class="app_title"><?php echo New_Menu; ?></div>	
-			<div class="app_link">	
-				<a class="lbt prev tooltip" href="?app=menu&act=add" title="<?php echo Back; ?>"></a>
+			<div class="app_link">				
+				<a class="delete btn btn-default btn-sm btn-grad" href="?app=menu&view=add" title="<?php echo Back; ?>"><i class="icon-arrow-left"></i> <?php echo Prev; ?></a>				
 				<span class="lbt sparator"></span>
-				<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="apply_add"/>
-				<input type="submit" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_add"/>
-				<a class="lbt link cancel tooltip" href="?app=menu" title="<?php echo Cancel; ?>"></a>
+								
+				<button type="submit" class="btn btn-success btn-sm btn-grad" title="<?php echo Delete; ?>" value="Next" name="apply_add"><i class="icon-ok"></i> <?php echo Save; ?></button>
+				
+				<button type="submit" class="btn btn-metis-2 btn-sm btn-grad" title="<?php echo Delete; ?>" value="Next" name="save_add"><i class="icon-ok-sign"></i>  <?php echo Save_and_Quit; ?></button>
+				</button>				
+				<a class="danger btn btn-default btn-sm btn-grad" href="?app=menu" title="<?php echo Cancel; ?>"><i class="icon-remove-sign"></i> <?php echo Cancel; ?></a>
 				<span class="lbt sparator"></span>
-				<a class="lbt help popup  tooltip" href="#helper" title="<?php echo Help; ?>"></a>
-				<div id="helper"><?php echo Add_Menu_2_help; ?></div>
+				<a class="lbt help popup  tooltip" href="#helper" title="<?php echo Help; ?>"></a><!--
+				<div id="helper"><?php echo Add_Menu_2_help; ?></div>-->
 			
 			</div>
 		</div>
@@ -120,4 +128,3 @@ function addappstep2() {
 </form>		
 <?php
 }
-?>

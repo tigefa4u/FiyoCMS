@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		1.4.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -28,19 +28,22 @@ if($sub_title==0){$sut2="selected";}
 <input type="hidden" value="type" name="nameParam2" />
 <input type="hidden" value="sub_menu" name="nameParam3" />
 <input type="hidden" value="sub_title" name="nameParam4" />
-<li>
-	<h3>Menu Configuration</h3>
-		<div class="isi">
-		<div class="acmain open">
-					<table class="data2">
+<div class="panel box">								
+	<header>
+		<a data-parent="#accordion" class="accordion-toggle" data-toggle="collapse" href="#article_list">
+				<h5>Menu Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
+		<table class="data2">
 				
 			<!-- Menampilkan menu menurut kategori pilihan -->	
 			<tr>
-				<td class="djudul">Menu Category</td>
+				<td class="row-title">Menu Category</td>
 				<td>	
 					<select name='param1'>
 					<?php 	
-						$sql = $db->select(FDBPrefix.'menu_category'); 
+						$sql = $db->select(FDBPrefix.'menu_category','*',"category != 'adminpanel'"); 
 						while($cat = mysql_fetch_array($sql)) {		
 							if($category==$cat[category])
 								$s="selected";
@@ -55,7 +58,7 @@ if($sub_title==0){$sut2="selected";}
 			
 			<!-- Tipe tampilan menu -->
 			<tr>
-				<td class="djudul">Menu Type</td>
+				<td class="row-title">Menu Type</td>
 				<td>
 					<select name='param2'>
 					<option value="1"<?php echo @$tipe1;?>>Per-rows</option>
@@ -65,7 +68,7 @@ if($sub_title==0){$sut2="selected";}
 			</tr>
 			
 			<tr>
-				<td class="djudul" >Show Sub-menu</td>
+				<td class="row-title" >Show Sub-menu</td>
 				<td>
 					<select name='param3'>
 					<option value="1"<?php echo @$sub1;?> >Yes</option>
@@ -74,7 +77,7 @@ if($sub_title==0){$sut2="selected";}
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul">Show Sub-tiltle</td>
+				<td class="row-title">Show Sub-tiltle</td>
 				<td>
 					<select name='param4'>
 					<option value="1"<?php echo @$sut1;?> >Yes</option>
@@ -84,6 +87,5 @@ if($sub_title==0){$sut2="selected";}
 			</tr>			
 		</table>
 					
-		</div>	
 	</div>	
-</li>
+</div>	

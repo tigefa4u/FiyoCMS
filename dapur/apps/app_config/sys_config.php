@@ -1,18 +1,16 @@
 <?php 
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
-* @description	
 **/
 
 defined('_FINDEX_') or die('Access Denied');
-
 /*
 * Access only for Super Administrator
 */
-if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] != 1)
+if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] > 2)
 	redirect('index.php');
 	
 if (get_magic_quotes_gpc()) {
@@ -26,11 +24,10 @@ if (get_magic_quotes_gpc()) {
     array_walk_recursive($_REQUEST, 'stripslashes_gpc');
 }
 	
-if(isset($_POST['config_save'])) 
-{ 	
+if(isset($_POST['config_save'])) {
 	if(empty($_POST['site_name']) AND empty($_POST['site_title']) AND empty($_POST[site_url]) AND empty($_POST['site_status']) AND empty($_POST['site_title']) AND empty($_POST['file_allowed']) AND empty($_POST['file_size'])) 
 	{	
-		alert('error','invalid');
+		notice('error','invalid');
 	}			
 	else	
 	{	
@@ -49,8 +46,7 @@ if(isset($_POST['config_save']))
 		$pxt = str_replace("*","",$pxt);
 		$pxt = str_replace("!","",$pxt);
 		if($ext != $pxt) {
-			if(empty($pxt))
-				$str = str_replace(")\\$ext$",")/$",$str);
+			if(empty($pxt)) ;
 			else if(empty($ext)) {
 				if(!strpos("x$pxt","/")) {
 				$pxt = str_replace(".","",$pxt);
@@ -97,21 +93,20 @@ if(isset($_POST['config_save']))
 			$ok = @rename("../$old_folder","../$new_folder");
 			if($ok) {
 				$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[folder_new]"),"name='backend_folder'");
+				$_SESSION['notice'] = true;
+				notice('success',Status_Applied,2);
 				redirect("../$new_folder/?app=config");			
 			}
-			else					
-				alert('error',Folder_unchange);
-		}
-		else if($qr)
-		{					
-			alert('info',Status_Applied);
-			if($_POST['lang'] != $lang) {
-				alert('loading');
-				htmlRedirect('',2);
+			else {		
+				$_SESSION['notice'] = true;		
+				notice('error',Folder_unchange,2);
 			}
 		}
+		else if($qr)
+		{				
+			notice('success',Status_Applied);
+			refresh();
+		}
 		$_SESSION['media_theme'] = $_POST['media_theme'];
-	}
+	}		
 }
-	
-	

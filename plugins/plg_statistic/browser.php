@@ -38,8 +38,7 @@ function _print($name, $ret)
 	elseif ($ret == '1')
 	{
 		$ret = 'true';
-	}
-	
+	}	
 	echo '<blockquote><pre>';
 	print_r($ret);
 	echo '</pre></blockquote>';
@@ -69,8 +68,7 @@ function w($a = '', $d = false)
 			$e[$v] = $d;
 			unset($e[$i]);
 		}
-	}
-	
+	}	
 	return $e;
 }
 

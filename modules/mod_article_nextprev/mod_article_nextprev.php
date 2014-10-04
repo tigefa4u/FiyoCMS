@@ -28,7 +28,7 @@ foreach ($cat as $idx => $qry ) {
 	$c .= "category=$qry";
 }
 
-
+if(function_exists('articleInfo')) :
 $level	= Level_Access;
 $date = articleInfo('date');
 $sql = $db->select(FDBPrefix."article",'*',"status = 1 AND ($c) AND date < '$date' $level ","date DESC LIMIT 1");
@@ -67,3 +67,7 @@ echo "<div class='next'>
 }
 echo "</div>";
 
+else :
+
+echo "Not found any article.";
+endif;

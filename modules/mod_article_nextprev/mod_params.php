@@ -33,15 +33,18 @@ $(document).ready( function(){
 <input type="hidden" value="2" name="totalParam"/>
 <input type="hidden" value="cat" name="nameParam1"/>
 <input type="hidden" value="filter" name="nameParam2"/>
-<li>
-<h3>Article NextPrev Configutarion</h3>
-<div class="isi">
-	<div class="acmain open">
+<div class="panel box">								
+	<header>
+		<a data-parent="#accordion" class="accordion-toggle" data-toggle="collapse" href="#article_list">
+				<h5>Article NextPrev Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
 		<table class="data2">
 		<tr>
-				<td class="djudul">Category</td>
+				<td class="row-title">Category</td>
 				<td>	
-					<select name="param1[]" multiple style="height:160px; width:120px; font-size:11px; font-family:Arial ; ">
+					<select name="param1[]" multiple style="height:160px; width:200px; ">
 					<?php	
 						$_GET['id']=0;
 						$db = new FQuery();  
@@ -67,7 +70,7 @@ $(document).ready( function(){
 			</tr>	
 			<!--
 			<tr>
-				<td class="djudul tooltip" title="Show gravatar image">Show Images</td>
+				<td class="row-title tooltip" title="Show gravatar image">Show Images</td>
 				<td>	
 					<p class="switch">
 						<input id="radio21"  value="1" name="param2" type="radio" <?php echo $swimg1;?> class="invisible">
@@ -81,4 +84,3 @@ $(document).ready( function(){
 		</table>
 	</div>
 </div>
-</li>

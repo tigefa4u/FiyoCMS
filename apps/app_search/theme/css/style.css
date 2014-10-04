@@ -3,18 +3,23 @@
 	border-bottom: dotted 1px #eee;
 }
 .article-main {	
-	padding: 5px 0;
+	padding: 5px 0 10px;
 }
 
 .article-box h2.title {
 	padding: 0 0 2px;
 }
 .article-box {
-	margin: 20px 0 20px;
-	border-bottom: dotted 1px #aaa;
+	margin: 10px 0 20px;
+	border-bottom: dotted 1px #ccc;
 	overflow: hidden;
 }
-
+.pagination {
+	margin-top: 30px;
+}
+#app-search .alert, .notice {
+	margin-top: 10px !important;
+}
 /* pagging */
 ul.paging {
 	

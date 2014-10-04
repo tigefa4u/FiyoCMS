@@ -1,6 +1,6 @@
 <?php 
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -25,10 +25,6 @@ define('USER_NAME', userInfo('name'));
 define('USER_LEVEL',userInfo('level'));
 define('USER_EMAIL',userInfo('email'));
 
-/*
-* Quick Acces Level
-*/
+// Quick sql access level
 define('Level_Access',"AND level >= ".USER_LEVEL);
-
-
-
+define('SQL_USER_LEVEL',"level >= ".USER_LEVEL);

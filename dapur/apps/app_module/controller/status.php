@@ -1,19 +1,18 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
-if(isset($_SESSION['USER_LEVEL']) <= 2) :
 define('_FINDEX_',1);
+session_start();
+if(!isset($_SESSION['USER_LEVEL']) AND $_SESSION['USER_LEVEL'] > 2) die ();
 
 require_once ('../../../system/jscore.php');
 $db = new FQuery();  
 $db->connect(); 
-
 
 /****************************************/
 /*	    Enable and Disbale Modules		*/
@@ -21,11 +20,11 @@ $db->connect();
 if(isset($_GET['stat'])) {
 	if($_GET['stat']=='1'){
 		$db->update(FDBPrefix.'module',array("status"=>"1"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		alert('success',Status_Applied,1);
 	}
 	if($_GET['stat']=='0'){
 		$db->update(FDBPrefix.'module',array("status"=>"0"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		alert('success',Status_Applied,1);
 	}
 }
 
@@ -35,11 +34,10 @@ if(isset($_GET['stat'])) {
 if(isset($_GET['name'])) {
 	if($_GET['name']=='1'){
 		$db->update(FDBPrefix.'module',array("show_title"=>"1"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		alert('success',Status_Applied,1);
 	}
 	if($_GET['name']=='0'){
 		$db->update(FDBPrefix.'module',array("show_title"=>"0"),'id='.$_GET['id']);
-		alert('info',Status_Applied);
+		alert('success',Status_Applied,1);
 	}
 }
-endif;

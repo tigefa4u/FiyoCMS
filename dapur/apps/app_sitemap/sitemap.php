@@ -20,23 +20,29 @@ switch ($state) {
 		break;
 
 	case PSNG_ACTION_SETTINGS_GET: // & parse
+		echo "<div class='sitemap-wrap sitemap-title'>";
 		getSettings();
+			echo "</div>";
 		
 	case PSNG_ACTION_SETTINGS_PARSE:
+		echo "<div class='sitemap-wrap'>";
 		$FILE = parseFilesystem();
 		
 		// check for timeout
 		if ($SETTINGS[PSNG_TIMEOUT_ACTION] != '') break;
 		// if no timeout, print result or write it
 		if ($SETTINGS[PSNG_EDITRESULT] == PSNG_EDITRESULT_TRUE) {
+			echo "</div>";
 			displaySitemapEdit($FILE);
 		} else {
-			writeSitemap($FILE); 
+		echo "<div class='sitemap-wrap'>";
+			writeSitemap($FILE); echo "</div>";
 		}
 		break;
 		
 	case PSNG_ACTION_SETTINGS_WRITESITEMAP_USERINPUT:
-		writeSitemapUserinput();
+		echo "<div class='sitemap-wrap'>";
+		writeSitemapUserinput();echo "</div>";
 		break;
 	
 	case PSNG_ACTION_SETTINGS_PINGGOOGLE:

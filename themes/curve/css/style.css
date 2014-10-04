@@ -8,7 +8,9 @@ body {
 	background: url(images/body.png) repeat 0 0;
 	min-width: 100%;
 }
-
+* {
+	box-sizing: border-box; outline: 0;
+}
 /*font-family: 'Ubuntu', sans-serif;*/
 
 a { color: #0252aa; text-decoration: none; cursor: pointer; }
@@ -28,11 +30,11 @@ article, aside, details, footer, header, menu, nav, section { display: block; }
 
 .shell { width: 990px; margin: 0 auto; }
 .container { background: #fff; box-shadow: 0px 0px 13px rgba(0,0,0,0.3) ; -moz-box-shadow: 0px 0px 13px rgba(0,0,0,0.3) ; -webkit-box-shadow: 0px 0px 13px rgba(0,0,0,0.3) ; -o-box-shadow: 0px 0px 13px rgba(0,0,0,0.3) ;  }
-#header { height: 66px; padding-top: 20px; padding-left: 25px; padding-right: 25px;  }
+#header { height: 66px; padding-top: 20px; padding-left: 25px; padding-right: 25px; margin-bottom: 20px  }
 #logo {font-size: 3em; color: #333; line-height: 22px;  font-family: 'Ubuntu', sans-serif; font-weight: 500; margin:0; float: left; }
 #logo a{text-decoration: none; display:block; color : #029daa }
 #logo a:hover{text-decoration: none; color :#333 }
-#logo span{font-size:50% }
+#logo span{font-size:50% ;margin: 2px;display: inline-table;}
 
 /* Layout */
 .left-box {
@@ -132,6 +134,8 @@ ul.paging li a{
 	text-decoration: none;	
 	padding: 10px 10px;
 	margin: 0 -10px;
+font-size: 12px;
+position: relative;
 }
 #article ul.paging li {
 	display: inline;
@@ -144,8 +148,8 @@ input[type="submit"]:hover{
 input[type="submit"]:active{
 	box-shadow: inset 0 1px 5px #ccc;
 }
-#navigation { height: 52px; padding-top: 4px; font-family: 'Ubuntu', sans-serif; font-weight: 700; background: url(images/navigation.png) repeat-x 0 0; box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -moz-box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -webkit-box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -o-box-shadow: 0px -1px 2px rgba(0,0,0,0.1);  }
-#navigation ul { margin: -2px -40px; padding: 0 0 0 40px; list-style: none; list-style-position: outside; }
+#navigation { height: 55px; padding-top: 4px; font-family: 'Ubuntu', sans-serif; font-weight: 700; background: url(images/navigation.png) repeat-x 0 0; box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -moz-box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -webkit-box-shadow: 0px -1px 2px rgba(0,0,0,0.1); -o-box-shadow: 0px -1px 2px rgba(0,0,0,0.1);  }
+#navigation ul { display: inline-block; margin: -2px -40px; padding: 0 0 0 40px; list-style: none; list-style-position: outside; }
 #navigation ul li { float: left; padding-right: 2px; line-height: 52px; background: url(images/nav-border.png) no-repeat right 0;  font-size: 13px; text-transform: uppercase; }
 #navigation ul li a { display: block; padding: 0 30px; color: #878787;  }
 #navigation ul li a:hover,
@@ -266,7 +270,7 @@ input[type="submit"]:active{
 .main .title {margin-bottom: 0; margin-top: 10px;}
 .main h2 { font-size: 22px; color: #2d5900; line-height: 22px; font-family: 'Ubuntu', sans-serif; font-weight: 500;margin-bottom: 0; }
 .main h3 { font-size: 18px; color: #5e5e5e; line-height: 22px; padding-bottom: 8px; font-family: 'Ubuntu', sans-serif; font-weight: 500;  }
-.main section { clear: both; background: url(images/section-shadow.png) no-repeat center bottom; padding: 0 20px 40px; }
+.main section { clear: both; background: url(images/section-shadow.png) no-repeat center bottom; padding: 0 20px 25px; }
 .main ul {list-style-position: outside; padding: 0 5px; }
 .main p { margin-top:0;}
 .main ul li { padding-bottom: 6px;   }
@@ -571,23 +575,22 @@ background: rgb(240, 240, 240);
 
 /* notification */
 
-.notice{ 
+.notice, .alert{ 
 	text-shadow: 0 0 0 #fff;
 	margin: 5px 0 10px !important;
-	font-size: 110%;
-	padding: 5px 5px 5px 38px;	
+	padding: 7px 5px 6px 38px;	
 }
-.notice.info{ 
-	color: rgb(48, 132, 189);
+.notice.info, .alert.info{ 
+	color: rgb(13, 120, 192);
 	border: 1px solid rgba(147, 181, 197, 1);
-	background: url(images/notice-info.png) no-repeat 5px 2px rgb(212, 227, 245);
+	background: url(images/notice-info.png) no-repeat 5px 4px rgb(212, 227, 245);
 	background-size: 30px;
 
 }
-.notice.error{ 		
+.notice.error, .alert.error{ 		
 	color: rgb(218, 98, 98);
 	border: 1px solid rgba(142, 0, 0, 0.12);
-	background: url(images/notice-error.png) no-repeat 5px 2px #ffecec;
+	background: url(images/notice-error.png) no-repeat 5px 3px #ffecec;
 	background-size: 30px;
 }
 

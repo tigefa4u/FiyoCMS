@@ -1,8 +1,8 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 **/
 
@@ -32,28 +32,35 @@ if(isset($text)) :
 	$voter		= $article-> voter;
 	$rate		= $article-> rate;
 	
-	$editable = $editable2 = null;
-	if($_SESSION['USER_LEVEL'] <= 3 AND (!empty($_SESSION['USER_EMAIL']) or $_SESSION['USER_EMAIL'] == $autmail)) {
-		$editable = 'contenteditable="true" title="Click to edit"';
-		$editable2 = 'contenteditable="true" id="article-main" title="Click to edit"';
+	$editable = "class=title";
+	$editable2 = null;
+	if($_SESSION['USER_LEVEL'] <= 3 OR (!empty($_SESSION['USER_EMAIL']) AND $_SESSION['USER_EMAIL'] == $autmail)) {
+		$editable = ' class="title editordb" title="Click to edit"';
+		$editable2 = ' class="editordb"  id="article-main" title="Click to edit"';
 		addJs (FUrl."plugins/plg_ckeditor/ckeditor.js");
-		addJs (FUrl."plugins/plg_jquery_ui/scrollfixed.js");
+		addJs (FUrl."apps/app_article/theme/js/scrollfixed.js");
+		$_SESSION["ARTICLE_EDITOR_$id"] = "$text";
+		?>
+				
+		<div>
+			<input type="hidden" value="<?php echo $id; ?>" id="article-id" />
+			<input type="hidden" value="<?php echo $_SESSION["ARTICLE_EDITOR_$id"]; ?>" id="article-revert" />
+		</div>
+		<div id="editor-panel"> 
+			<input type="submit" value="Save" class="save editor-button" title="Save"/>	
+			<input type="submit" value="Revert" class="revert editor-button" title="Revert to last saved"/>	
+		</div>
+		
+		<?php
 	}
-	$_SESSION["ARTICLE_EDITOR_$id"] = "$text";
 ?>
-<div>
-	<input type="hidden" value="<?php echo $id; ?>" id="article-id" />
-	<input type="hidden" value="<?php echo $_SESSION["ARTICLE_EDITOR_$id"]; ?>" id="article-revert" />
-</div>
-<div id="editor-panel"> 
-	<input type="submit" value="Save" class="save editor-button" title="Save"/>	
-	<input type="submit" value="Revert" class="revert editor-button" title="Revert to last saved"/>	
-</div>
 
 <div id="article">
-	<span class='saved title-saving' style='display : none'></span>
-	<h1 class="title" <?php echo $editable; ?>><?php echo $title; ?></h1>
-	<?php if(!empty($article->spanel)) {
+	
+	<?php if(!empty($article->stitle)) : ?>
+	<h1  <?php echo $editable; ?>><?php echo $title; ?></h1>	
+	<?php endif; ?>
+	<?php if(!empty($article->tpanel)) {
 		echo "<div class='article-panel'>";
 		echo $panel;
 		loadModule('article-panel'); 
@@ -70,11 +77,12 @@ if(isset($text)) :
 		</div>	
 	</div>
 		
+	<?php if(!empty($article->bpanel)) : ?>
 	<?php if($shits or $stag or $srate) : ?>	
 	<div class='panel-bottom'>
 		<?php if($shits) : ?>	
 		<div class='article-read'>		
-			Read <?php echo "<b>$hits</b> times";  ?>	
+			<?=Reads;?> <?php echo "<b>$hits</b>";  ?> <?=times;?>	
 		</div>	
 		<?php endif; ?>				
 		<?php if($srate) : ?>
@@ -124,6 +132,7 @@ if(isset($text)) :
 	</div>
 	<?php endif; ?>
 	
+	<?php endif; ?>
 	<?php loadModule('article-bottom'); ?>
 	
 	<?php if($comment AND !checkModule('article-comment')) : ?>
@@ -138,28 +147,37 @@ if(isset($text)) :
 </div>
 
 
-
-<script>		
-	$(document).ready(function() {
-		if (navigator.onLine) {
-			$('.gravatar[data-gravatar-hash]').prepend(function(index){
+<script>
+$(function() {	
+	var hash = $('.gravatar[data-gravatar-hash]').attr('data-gravatar-hash');
+	$.ajax({
+		url: 'http://gravatar.com/avatar/'+ hash +'?size=100' ,
+		type : 'GET',
+		timeout: 5000, 
+		error:function(data){
+			$('.gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="100" height="100" alt="" src="http://gravatar.com/avatar/'+hash+'?size=100">'
+				return '<img width="100" height="100" alt="" src="../apps/app_article/theme/images/stock.png" >'; 
+			});	
+		},
+		success: function(data){
+			$('.gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
+				var hash = $(this).attr('data-gravatar-hash')
+				return '<img width="100" height="100" alt="" src="http://gravatar.com/avatar.php?size=100&gravatar_id=' + hash + '">';
 			});
-		} 
-		else{		
-			$('.gravatar[data-gravatar-hash]').prepend(function(index){
-				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="100" height="100" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
-			});			
 		}
-		
+	});	
+	
 		getRating();
 		// get rating function
 		function getRating(){
 			$.ajax({
 				type: "POST",
-				url: '<?php echo FUrl; ?>/apps/app_article/controller/rating.php',
+				url: '<?php echo FUrl; ?>apps/app_article/controller/rating.php',
 				data: 'id=<?php echo $id; ?>&do=getrate',
 				cache: false,
 				async: false,
@@ -172,8 +190,6 @@ if(isset($text)) :
 				}
 			});
 		}
-		
-		
 		// link handler
 		$('#ratelinks li a').click(function(){
 			$.ajax({
@@ -200,6 +216,11 @@ if(isset($text)) :
 			
 		});
 	});	
+	
+	<?php 
+	if($_SESSION['USER_LEVEL'] <= 3 AND (!empty($_SESSION['USER_EMAIL']) or $_SESSION['USER_EMAIL'] == $autmail)) :
+		?>
+		
 	$("#article-main").focus(function(){
 		$('.editor-button').show();
 		$('.editor-button').attr("style","display: block !important");
@@ -235,21 +256,29 @@ if(isset($text)) :
 				
 	$('#editor-panel').scrollToFixed({ marginTop: 40, limit: $('.limit-editor-panel').offset().top } );
 	
+	$('.editordb').dblclick(function() {
+		$(this).attr('contenteditable','true');
+		$(this).focus();
+		CKEDITOR.disableAutoInline = true;
+		var editor = CKEDITOR.inline( 'article-main' );
+			
+		
+	});
 	// We need to turn off the automatic editor creation first.
-	CKEDITOR.disableAutoInline = true;
-	var editor = CKEDITOR.inline( 'article-main' );
 	var id = $('#article-id').attr('value');
 	
 	$(".title").keypress(function(e){
 		var title = $('#article h1.title').html();
 		title = encodeURIComponent(title);
 		if (e.which == 13){
+			$(".saved.title-saving").remove();
+			$(this).parent().prepend("<span class='saved title-saving'>a</span>");
 			$(".title-saving").show();
 			$(".title-saving").html("Saving...");
 			$.ajax({			
-				url: "<?php echo FUrl; ?>apps/app_article/controller/ajaxquery.php",
+				url: "<?php echo FUrl; ?>apps/app_article/controller/editor.php",
 				type: "POST",
-				data: "art_title="+title+"&id="+id,
+				data: "art_title="+title+"&id="+id+"&uid=+<?php echo USER_ID; ?>",
 				success: function(data){
 					$(".title-saving").html(data);
 					$(".title-saving").show();
@@ -268,15 +297,16 @@ if(isset($text)) :
 		$('.editor-button').show();
 		$('.article-warp').addClass("display");	
 		var content = $('#article-main').html();
+	
 		content = encodeURIComponent(content);
 		$(".editor-button.save").attr('value','Saving');	
 		$("#article-main").css({opacity: "0.5"});
 		$("#article-main").addClass("saving");
 		$("#article-main").removeAttr("contenteditable");
 		$.ajax({			
-			url: "<?php echo FUrl; ?>apps/app_article/controller/ajaxquery.php",
+			url: "<?php echo FUrl; ?>apps/app_article/controller/editor.php",
 			type: "POST",
-			data: "flocal=<?php echo FLocal; ?>&_content_article="+content+"&id="+id,
+			data: "flocal=<?php echo FLocal; ?>&_content_article="+content+"&id="+id+"&uid=+<?php echo USER_ID; ?>",
 			success: function(data){		
 				$(".editor-button.save").attr('value','Saved');			
 				$("#article-main").css({opacity: "1"});
@@ -297,6 +327,12 @@ if(isset($text)) :
 		$("#article-main").html(content_r);			
 		$("#article-main").focus();
 	});
+	/*
+	$("#article .article-main img").after(function(){
+		var title = $(this).attr('alt');
+		return "<div>"+title+"</div>";
+	});*/
+	<?php endif; ?>
 	
 </script>
 <?php 

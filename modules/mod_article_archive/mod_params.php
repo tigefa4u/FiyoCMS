@@ -17,14 +17,14 @@ $type	= mod_param('type',modParam);
 /********* tooltip language *************/
 if(siteConfig('lang') == 'id') {
 	$catTip 	= "Pilih kategori artikel yang akan ditampilkan";
-	$endTip		= "Tentukan tanggal untuk membatasi tanggal akhir terbit artikel<br><i>kosongkan untuk tanggal otomatis</i>";
-	$startTip	= "Tentukan tanggal untuk membatasi tanggal awal terbit artikel<br><i>kosongkan untuk tanggal otomatis</i>";
+	$endTip		= "Tanggal untuk membatasi akhir terbit artikel. Kosongkan untuk tanggal otomatis";
+	$startTip	= "Tanggal untuk membatasi awal terbit artikel. Kosongkan untuk tanggal otomatis";
 	$typeTip	= "Jenis tampilan modul arsip artikel";
 }
 else {
 	$catTip = "Select a category of articles that will show";
-	$endTip = "Specify dates to limit the date of the final published article <br><i>blank for automatic date</i>";
-	$startTip = "Please specify the date for the start date published article limit <br><i>blank for automatic date</i>";
+	$endTip = "Specify dates to limit the date of the final published article blank for automatic date";
+	$startTip = "Please specify the date for the start date published article limit blank for automatic date";
 	$typeTip = "Type display module archive of articles";
 }
 
@@ -38,15 +38,18 @@ if($type=='category'){$a2="selected";}
 <input type="hidden" value="end" name="nameParam2" />
 <input type="hidden" value="cat" name="nameParam3" />
 <input type="hidden" value="type" name="nameParam4" />
-<li>
-	<h3>Article Archive Configuration</h3>
-	<div class="isi">
-		<div class="acmain open">
-			<table class="data2">	
+<div class="panel box">								
+	<header>
+		<a data-parent="#accordion" class="accordion-toggle" data-toggle="collapse" href="#article_list">
+				<h5>Article Archive Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
+		<table class="data2">	
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $catTip ?>">Category</td>
+				<td class="row-title"><span class="tips" title="<?php echo $catTip ?>">Category</span></td>
 				<td>	
-					<select name="param3[]" multiple style="height:160px; min-width: 150px; max-width:100%; font-size:11px; font-family:Arial ; ">
+					<select name="param3[]" multiple style="height:160px; width:80%; font-size:11px; font-family:Arial ; ">
 					<?php	
 						$_GET['id']=0;
 						$db = new FQuery();  
@@ -73,20 +76,20 @@ if($type=='category'){$a2="selected";}
 				</td>
 			</tr>				
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $startTip ?>">Start Date</td>
+				<td class="row-title"><span class="tips" title="<?php echo $startTip ?>">Start Date</span></td>
 				<td>	
-					<input name="param1" size="16" type="date"  value="<?php echo $start; ?>" />
+					<input name="param1" size="16" type="date" data-format="yyyy-MM-dd" value="<?php echo $start; ?>" />
 				</td>
 			</tr>			
 			
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $endTip ?>">End Date</td>
+				<td class="row-title"><span class="tips" title="<?php echo $endTip ?>">End Date</span></td>
 				<td>	
-					<input name="param2" size="16" type="date"  value="<?php echo $end; ?>"/>
+					<input name="param2" size="16" type="date" data-format="yyyy-MM-dd" value="<?php echo $end; ?>"/>
 				</td>
 			</tr>	
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $typeTip ?>">Order by</td>
+				<td class="row-title"><span class="tips" title="<?php echo $typeTip ?>">Order by</span></td>
 				<td>	
 					<select name='param4' id="type">
 						<option value="default" <?php echo @$a1;?>>Date</option>
@@ -94,8 +97,6 @@ if($type=='category'){$a2="selected";}
 					</select>
 				</td>
 			</tr>
-		</table>
-					
-		</div>	
+		</table>					
 	</div>	
-</li>
+</div>	

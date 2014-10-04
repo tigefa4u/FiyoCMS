@@ -84,7 +84,7 @@ if(isset($_POST['login'])) {
                        <input name="user" autocomplete="OFF" type="text" class="name" placeholder="Username" />
                    	</p>
                     <p>
-                        <input name="pass" type="password" class="pass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" /> 						
+                        <input name="pass" autocomplete="OFF" type="password" class="pass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" /> 						
 					</p>
                     <p class="button">
                         <button type="submit" name="login" class="submit">Login</button>

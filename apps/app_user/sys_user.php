@@ -1,11 +1,10 @@
 <?php
 /**
 * @name			User
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS 
-* @copyright	Copyright (C) 2011 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
-* @description	
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -19,7 +18,8 @@ $res = @mysql_real_escape_string($_GET['res']);
 
 $linkLogin = make_permalink('?app=user&view=login');
 $linkUser = make_permalink('?app=user');
-
+$btnClass = 'style="text-align: center;  font-size: 11px;  font-family: arial,sans-serif;  color: white;  font-weight: bold;  border-color: #3079ed;  background-color: #4d90fe;  background-image: linear-gradient(top,#4d90fe,#4787ed);  text-decoration: none;  display: inline-block;  min-height: 27px;  padding-left: 8px;  padding-right: 8px;  line-height: 27px;  border-radius: 2px;  border-width: 1px;
+"';
 if($view == 'register' or $view == 'login' or $view == 'forgot' ){
 	if(!empty($_SESSION['USER_ID']))
 		redirect($linkUser);
@@ -41,7 +41,7 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 		$_POST['password']==$_POST['kpassword'] AND 
 		$us>2 AND $ps>3 AND !$matches) {
 		if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-			define("userNotice", alert("error",user_Email_Invalid,true));
+			define("userNotice", alert("error",user_Email_Invalid));
 		}
 		else if($_POST['capthca'] == $_SESSION['captcha']) {
 			$group = siteConfig('member_group');
@@ -55,8 +55,8 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 			if($activator == 0) $key = 'Waiting for activation...';
 			else if($activator == 1) $key = null;
 			$webmail = siteConfig('site_mail'); 
-			$domain  = str_replace("/","",FUrl()); 
-			if(empty($webmail)) $webmail = "no-reply@$domain";
+			$domain  = substr(FUrl(),0,strpos(FUrl(),"/")); 
+			if(empty($webmail)); $webmail = "noreply@$domain";
 			
 			if($activator == 0) { 
 				$pass = MD5($_POST['password']);
@@ -73,29 +73,23 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 				if($activator == 2) {
 					if($siteLang == 'id') {
 					$subject = "Aktifasi Akun Baru";
-					$message = "<p>Halo, $_POST[user],</p> 
+					$message = "<p>Hi, $_POST[user],</p> 
 						<p>Terimakasih sudah bergabung bersama kami di $siteName.</p>
-						<p>Kami perlu melakukan konfirmasi untuk mengaktifkan akun Anda. Klik link berikut untuk mengaktifkan akun Anda. :</p>
+						<p>Kami perlu melakukan konfirmasi untuk mengaktifkan akun Anda.<br>Klik link berikut untuk mengaktifkan akun Anda. :</p>
+						<p><a href='".FUrl."?$keys' $btnClass> Aktifasi Akun </a></p>
+						<p>Jaga selalu data Anda dari segala sesuatu yang tidak diinginkan.<br>Terimakasih.</p>
 						<p>&nbsp;</p>
-						<p><a href='".FUrl."?$keys'>".FUrl."?$keys</a></p>
-						<p>&nbsp;</p>
-						<p>Jaga selalu data Anda dari segala sesuatu yang tidak diinginkan.</p>
-						<p>Terimakasih.</p>
-						<p>&nbsp;</p><p>&nbsp;</p>
 						<p><b>$siteName.</b><br>
 						".FUrl."</p>";		
 					}
 					else {
 					$subject = "New Account Activation";
-					$message = "<p>Hello, $_POST[user],</p>
+					$message = "<p>Hi, $_POST[user],</p>
 						<p>Thank you, you have to register and join us on $siteName.</p>
-						<p>We need to confirm to activate your account. Click the following link to activate your account:</p>
+						<p>We need to confirm to activate your account.<br>Click the following link to activate your account:</p>
+						<p><a href='".FUrl."?$keys' $btnClass> Account Activation </a></p>
+						<p>Please save your data account carefully.<br>Thankyou.</p>
 						<p>&nbsp;</p>
-						<p><a href='".FUrl."?$keys'>".FUrl."?$keys</a></p>
-						<p>&nbsp;</p>
-						<p>Take good care of your accounts from any forms of crime.</p>
-						<p>Thankyou.</p>
-						<p>&nbsp;</p><p>&nbsp;</p>
 						<p><b>$siteName.</b><br>
 						".FUrl."</p>";
 					}
@@ -103,7 +97,7 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 				else {
 					if($siteLang == 'id') {
 					$subject = "Informasi Data Login";
-					$message = "<p>Halo, $_POST[user],</p> 
+					$message = "<p>Hi, $_POST[user],</p> 
 						<p>Terimakasih sudah bergabung bersama kami di $siteName.</p>";
 						
 					if($activator == 0)
@@ -125,7 +119,7 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 					}
 					else {
 					$subject = "Account Login Information";
-					$message = "<p>Hello, $_POST[user],</p>
+					$message = "<p>Hi, $_POST[user],</p>
 						<p>Thank you, you have to register and join us on $siteName.</p>";
 					if($activator == 0)
 					$message = $message . "<p>Your account is still waiting for approval to be activated.</p>";
@@ -133,13 +127,10 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 					$message = $message . "			
 						<p>&nbsp;</p>	
 						<p>Here are details of your account :</p><p>&nbsp;</p>
-						<p>Username : $_POST[user]</p>
-						<p>Password : $_POST[password]</p>
-						<p>&nbsp;</p>
+						<p>Username : $_POST[user]<br>Password : $_POST[password]</p>
 						<p>URL login : $linkLogin</p>
 						<p>&nbsp;</p>
-						<p>Take good care of your accounts from any forms of crime.</p>
-						<p>Thankyou.</p>
+						<p>Take good care of your accounts from any forms of crime.<br>Thankyou.</p>
 						<p>&nbsp;</p><p>&nbsp;</p>
 						<p><b>$siteName.</b><br>
 						".FUrl."</p>";
@@ -173,16 +164,16 @@ if(isset($_POST['register']) AND siteConfig('member_registration')) {
 				}		
 				else if(!$email) {		
 					$db->delete(FDBPrefix."user","user = '$_POST[user]'");
-					define("userNotice",alert("error","Sorry, mail server error :(",true));
+					define("userNotice",alert("error","Sorry, mail server error :("));
 				}
 			}
 			else 
-				define("userNotice",alert("error",user_Registration_Exists,true));
+				define("userNotice",alert("error",user_Registration_Exists));
 		} else 
-			define("userNotice",alert("error",user_Security_Invalid,true));
+			define("userNotice",alert("error",user_Security_Invalid));
 	}
 	else  {						
-		define("userNotice",alert("error",user_Please_Complete_Fields,true));
+		define("userNotice",alert("error",user_Please_Complete_Fields));
 	}
 }
 		
@@ -211,7 +202,7 @@ if(isset($_POST['login'])) {
 		redirect($_POST['prevpage']);
 	}
 	else {
-		define("userNotice",alert("error",user_Login_Error,true));
+		define("userNotice",alert("error",user_Login_Error));
 	}
 }
 	
@@ -242,17 +233,17 @@ if(isset($_POST['edit'])){
 		if($qr AND isset($_POST['edit'])){	
 			$_SESSION['USER_EMAIL'] = $_POST['email'];
 			$_SESSION['USER_NAME'] = $_POST['name'];
-			define("userNotice",alert('info',Status_Updated,true));
+			define("userNotice",alert('info',Status_Updated));
 		}
 		else if($_POST['password']!=$_POST['kpassword']) {			
-			define("userNotice",alert("error",user_Password_Not_Match,true));
+			define("userNotice",alert("error",user_Password_Not_Match));
 		}
 		else {				
-			define("userNotice",alert("error",Status_Invalid,true));
+			define("userNotice",alert("error",Status_Invalid));
 		}					
 	}
 	else {				
-		define("userNotice",alert("error",Status_Invalid,true));
+		define("userNotice",alert("error",Status_Invalid));
 	}
 }
 	
@@ -269,7 +260,7 @@ if(isset($_POST['logout'])) {
 		
 if(isset($_POST['forgot']))	{		
 	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){						
-		define("userNotice",alert("error",user_Email_None,true));
+		define("userNotice",alert("error",user_Email_None));
 	} 
 	else {
 	$qr = $db->select(FDBPrefix."user","*","status=1 AND email='$_POST[email]'"); 
@@ -282,38 +273,30 @@ if(isset($_POST['forgot']))	{
 			$reminder = "app=user&res=$reminder";
 			$to  = "$_POST[email]" ;
 			$webmail = siteConfig('site_mail'); 
-			$domain  = str_replace("/","",FUrl()); 
-			if(empty($webmail)) $webmail = "no-reply@$domain";
+			$domain  = substr(FUrl(),0,strpos(FUrl(),"/")); 
+			if(empty($webmail)); $webmail = "noreply@$domain";
 			
 			if(siteConfig('lang') == 'id') {
 				$subject = 'Konfirmasi Reset Password';
 				$message = "<font color='#333'>
-				<p>Halo, $qr[name]</p> 
-				<p>Anda telah meminta kami untuk mengirimkan password baru.</p>
-				<p>Konfirmasi pesan ini dengan klik link konfirmasi berikut.</p>
-				<p>&nbsp;</p>
-				<p><a href='".FUrl."?$reminder'>".FUrl."?$reminder</a></p>
-				<p>&nbsp;</p>
-				<p>Pesan ini akan valid dalam 1-2 hari hingga Anda melakukan konfirmasi untuk reset password.</p>
-				<p>Jika Anda ingin membatalkan proses ini, abaikan saja email ini hingga kode kadaluarsa dalam 1-2 hari.</p>
+				<p>Hi, $qr[name]</p> 
+				<p>Anda telah meminta kami untuk mengirimkan password baru.<br>Konfirmasi pesan ini dengan klik link konfirmasi berikut.</p>
+				<p><a href='".FUrl."?$reminder' $btnClass> Konfirmasi Reset </a></p>
+				<p>Pesan ini akan valid dalam 1-2 hari hingga Anda melakukan konfirmasi untuk reset password.<br>Jika Anda ingin membatalkan proses ini, abaikan saja email ini hingga kode kadaluarsa dalam 1-2 hari.</p>
 				<p>Terimakasih.</p>
-				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p><b>".SiteTitle."</b><br>".FUrl."</p></font>";
 			}
 			else {
 				$subject = 'Password Reset Confirmation';
 				$message = "<font color='#333'>
-				<p>Hello, $qr[name]</p> 
-				<p>You have asked us to send you a new password.</p>
-				<p>Confirm this message by click the following link.</p>
+				<p>Hi, $qr[name]</p> 
+				<p>You have asked us to send you a new password.<br>Confirm this message by click the following link.</p>
 				<p>&nbsp;</p>
-				<p><a href='".FUrl."?$reminder'>".FUrl."?$reminder</a></p>
+				<p><a href='".FUrl."?$reminder' $btnClass> Reset Confirmation </a></p>
 				<p>&nbsp;</p>
-				<p>This message will be valid within 1-2 days so you do confirm to reset the password.</p>
-				<p>If you want to cancel this process, ignore this letter to Expired code in 1-2 days.</p>
+				<p>This message will be valid within 1-2 days so you do confirm to reset the password.<br>If you want to cancel this process, ignore this letter to Expired code in 1-2 days.</p>
 				<p>Thankyou.</p>
-				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p><b>".SiteTitle."</b><br>".FUrl."</p></font>";			
 			}
@@ -324,22 +307,22 @@ if(isset($_POST['forgot']))	{
 		// Additional headers
 			$headers .= "To: $qr[name] <$_POST[email]>" . "\r\n";
 			
-			$headers .= "From: ".SiteTitle. "<$webmail>" ."\r\n";
+			$headers .= "From: ".SiteName. "<$webmail>" ."\r\n";
 			$headers .= "cc :" . "\r\n";
 			$headers .= "Bcc :" . "\r\n";
 		// Mail it
 			$mail = @mail($to,$subject,$message,$headers);
 			if($mail) {
-				define("userNotice",alert("info",user_Password_Reset_Sent,true));
+				define("userNotice",alert("info",user_Password_Reset_Sent));
 			}
 			else
-				define("userNotice",alert("error","System error : function mail() can not executed.",true));		
+				define("userNotice",alert("error","System error : function mail() can not executed."));		
 		}
 		else {
-			define("userNotice",alert("error",user_Email_None,true));
+			define("userNotice",alert("error",user_Email_None));
 		}
 	}	
-}	
+}
 
 if(!defined("userNotice")) define("userNotice","");
 		

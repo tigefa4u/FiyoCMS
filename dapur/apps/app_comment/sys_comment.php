@@ -30,7 +30,7 @@ if(isset($_POST['save_edit']) or isset($_POST['apply_edit'])){
 		if($qr AND isset($_POST['save_edit'])){	
 			alert('loading');
 			alert('info',Comment_Updated);
-			htmlRedirect('?app=comment',2);
+			redirect('?app=comment',2);
 		}
 		else if($qr AND isset($_POST['apply_edit'])){ 
 			alert('info',Comment_Updated);
@@ -88,33 +88,6 @@ function update($a,$b) {
 }
 
 
-function make_permalink($source,$id = null,$page = null){			
-	if(defined('SEF_URL'))
-	{
-		$db = new FQuery();  
-		$db -> connect(); 
-		$sql  = $db->select(FDBPrefix."permalink","*","link='$source'");
-		$link = mysql_fetch_array($sql);		
-		$link = FUrl."$link[permalink]".SEF_EXT;
-		if(!empty($id)) 	{
-			$source = FUrl.$source."&pid=$id";
-		}
-		else {
-			$source = FUrl.$source;
-		}
-		if(mysql_affected_rows()>0)
-			return $link;
-		else
-			return $source;
-	}
-	else if((defined('Page_ID')) or  $_GET['id'] = Page_ID)
-	{
-		if($id) $pid = "&pid=$id";
-		else $pid = "";
-		$source = FUrl."$source$pid";
-		return $source;
-	}
-}
 
 if(isset($_POST['save_config'])) { 	
 	$qr = update('auto_submit',$_POST['auto']);

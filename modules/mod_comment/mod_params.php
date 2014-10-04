@@ -1,8 +1,8 @@
 <?php
 /**
-* @version		v.1.2.3
+* @version		2.0
 * @package		Fi Comments
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 * @description	
 **/
@@ -60,13 +60,16 @@ $(document).ready( function(){
 <input type="hidden" value="date" name="nameParam5" />
 <input type="hidden" value="text" name="nameParam6" />
 <input type="hidden" value="item" name="nameParam7" />
-<li>
-	<h3>Comments Configuration</h3>
-	<div class="isi">
-		<div class="acmain open">
-			<table class="data2">				
+<div class="panel box">								
+	<header>
+		<a data-parent="#accordion" class="accordion-toggle" data-toggle="collapse" href="#article_list">
+			<h5>Comments Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
+		<table>				
 			<tr>
-				<td class="djudul tooltip" title="Show author comment">Show Name</td>
+				<td class="row-title"><span class="tips" title="Show author comment">Show Name</td>
 				<td>	
 					<p class="switch">
 						<input id="radio11" value="1" name="param1" type="radio" <?php echo $enpar1;?> class="invisible">
@@ -77,7 +80,7 @@ $(document).ready( function(){
 				</td>
 			</tr>				
 			<tr>
-				<td class="djudul tooltip" title="Show gravatar image">Show Gravatar</td>
+				<td class="row-title"><span class="tips" title="Show gravatar image">Show Gravatar</td>
 				<td>	
 					<p class="switch">
 						<input id="radio31"  value="1" name="param2" type="radio" <?php echo $enpar2;?> class="invisible">
@@ -89,7 +92,7 @@ $(document).ready( function(){
 			</tr>			
 			
 			<tr>
-				<td class="djudul tooltip" title='Show article title'>Show Article Title</td>
+				<td class="row-title"><span class="tips" title='Show article title'>Show Article Title</td>
 				<td>	
 					<p class="switch">
 						<input id="radio5" value="1"  name="param3" type="radio" <?php echo $enpar3;?> class="invisible">
@@ -100,7 +103,7 @@ $(document).ready( function(){
 				</td>
 			</tr>			
 			<tr>
-				<td class="djudul tooltip" title='Show text comments' >Show Comment</td>
+				<td class="row-title"><span class="tips" title='Show text comments' >Show Comment</td>
 				<td>	
 					<p class="switch">
 						<input id="radio7" value="1"  name="param4" type="radio" <?php echo $enpar4;?> class="invisible">
@@ -111,7 +114,7 @@ $(document).ready( function(){
 				</td>
 			</tr>						
 			<tr>
-				<td class="djudul tooltip" title='Show comments date' >Show Date</td>
+				<td class="row-title"><span class="tips" title='Show comments date' >Show Date</td>
 				<td>	
 					<p class="switch">
 						<input id="radio9" value="1"  name="param5" type="radio" <?php echo $enpar5;?> class="invisible">
@@ -122,19 +125,17 @@ $(document).ready( function(){
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title='Limit text comments' >Limit Words</td>
-				<td>				
-					<input type="text" value="<?php echo $param6; ?>" name="param6" size="7" />
+				<td class="row-title"><span class="tips" title='Limit text comments' >Limit Words</span></td>
+				<td>	
+					<input type="text" value="<?php echo $param6; ?>" name="param6" size="7" class="spinner numeric"  />
 				</td>
 			</tr>	
 			<tr>
-				<td class="djudul tooltip" title='Num of comments' >Limit Item</td>
-				<td>				
-					<input type="text" value="<?php echo $param7; ?>" name="param7" size="7" />
+				<td class="row-title"><span class="tips" title='Num of comments' >Limit Item</span></td>
+				<td>	
+					<input type="text" value="<?php echo $param7; ?>" name="param7" size="7" class="spinner numeric" />
 				</td>
 			</tr>		
-		</table>
-					
-		</div>	
+		</table>					
 	</div>	
-</li>
+</div>	

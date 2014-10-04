@@ -13,28 +13,39 @@ if(isset($_REQUEST['act']))
 	$act=$_REQUEST['act'];
 else
 	$act = null;
+
+if(isset($_REQUEST['view']))
+	$view=$_REQUEST['view'];
+else
+	$view = null;
 	
-switch($act)
+switch($view)
 {	
 	default :
-	 require('view_contact.php');
+	 switch($act) {	
+		default :		
+		 require('view_contact.php');
+		break;
+		case 'add':	 
+		 require('add_contact.php');
+		break;
+		case 'edit':
+		 require('edit_contact.php');
+		break;	
+	}
 	break;
-	case 'add':	 
-	 require('add_contact.php');
-	break;
-	case 'edit':
-	 require('edit_contact.php');
-	break;
-	case 'view':
-	 require('view_contact.php');
-	break;	
-	case 'group':	 
+	case 'group':			 
+	 switch($act) {	
+		default :
 	 require('group/view_group.php');
 	break;
-	case 'edit_group':	 
+	case 'edit':	 
 	 require('group/edit_group.php');
 	break;
-	case 'add_group':	 
+	case 'add':	 
 	 require('group/add_group.php');
+	 
+	 
+	 }
 	break;		
 }

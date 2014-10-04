@@ -1,9 +1,9 @@
 <?php
 /**
 * @name			Plugin SEF
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 */
 
@@ -35,8 +35,6 @@ function redirect_link(){
 			if(_Page == 1) {
 				if(strpos(getUrl(),"&page="))
 					redirect(str_replace("&page="._Page,"",getUrl()));
-				else
-					redirect(str_replace("?page="._Page,"",getUrl()));
 			}
 			if(empty($app)) {
 			//redirect for 404 page
@@ -107,7 +105,7 @@ function add_permalink($title, $cat = NULL, $pid = null, $ext = null, $next = nu
 	$page = _Page;
 	if(!preg_match("/[0-9]/",$page))
 		$page = null;
-	if(SEF_URL AND !checkHomePage() AND !is_numeric(_Page))
+	if(SEF_URL AND !checkHomePage() AND !$page)
 	{
 		$db = new FQuery();  
 		$db->connect(); 		
@@ -286,15 +284,17 @@ function add_permalink($title, $cat = NULL, $pid = null, $ext = null, $next = nu
 			
 			if(check_permalink('link',$link))
 				redirect(FUrl.$permalink);
-			else if(!empty($permalink)){	
-				if($c = check_permalink('permalink',$permalink) AND $next) {
+			else if(!empty($permalink)){
+				if($c = check_permalink('permalink',$permalink)) {
 					$x = 2;
+					$permalink = str_replace(SEF_EXT,"",$permalink);
 					while($c) {
 						$p = "$permalink-$x";
-						$c = check_permalink('permalink',"$p");
-						$x++;
+						$c = check_permalink('permalink',$p.SEF_EXT);
+						$x++;				
+						
 					}
-					$permalink = $p;					
+					$permalink = $p.SEF_EXT;
 				}
 				if(!empty($permalink) AND $permalink != "-" AND !empty($link))
 					$qr=$db->insert(FDBPrefix.'permalink',array("","$link","$permalink",$pid,1,0)); 
@@ -305,33 +305,6 @@ function add_permalink($title, $cat = NULL, $pid = null, $ext = null, $next = nu
 	}	
 }
 
-function make_permalink($source, $id = null, $page = null, $like = null){			
-	if(SEF_URL)
-	{
-		$db = new FQuery();  
-		$db -> connect(); 
-		$sql  = $db->select(FDBPrefix."permalink","*","link ='$source'");
-		if($like == true)
-		$sql  = $db->select(FDBPrefix."permalink","*","link LIKE '%$source%'");
-		$link = mysql_fetch_array($sql);		
-		$link = FUrl."$link[permalink]";
-		if(!empty($id)) 	{
-			$source = FUrl.$source;
-		}
-		else {
-			$source = FUrl.$source;
-		}
-		if(mysql_affected_rows()>0)
-			$source = $link;
-		else
-			$source = $source;
-	}
-	else if((defined('Page_ID')) or  $_GET['id'] = Page_ID)
-	{
-		$source = FUrl."$source";
-	}
-	return str_replace("&","&amp;",$source);
-}
 function delete_permalink($link) {
 	$db = new FQuery();  
 	$db -> connect(); 

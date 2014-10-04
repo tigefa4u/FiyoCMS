@@ -24,7 +24,7 @@ define("Login","Masuk");
 define("Logout","Keluar");
 define("Register", "Daftar");
 define("Readmore","Selengkapnya");
-define("Save_and_Quit","Simpan lalu keluar");
+define("Save_and_Quit","Simpan & keluar");
 define("Apply","Simpan perubahan");
 define("Delete","Hapus");
 define("Cancel","Keluar");
@@ -34,9 +34,11 @@ define("Prev","Kembali");
 define("View","Lihat");
 define("Send","Kirim");
 define("Print","Cetak");
+define("New_", "Baru");
 define("Comment","Komentar");
 define("Comments","Komentar");
 define("Send_Comment","Beri Komentar");
+define("Send_Message","Kirim Pesan");
 define("Download","Unduh");
 define("Featured","Unggulan");
 define("Click_for_helps","Klik untuk bantuan");
@@ -89,16 +91,19 @@ define("Set_disable","Non-aktifkan");
 define("Set_enable","Aktifkan");
 define("Add_New_Item","Tambahkan data baru");
 define("Plugin_Name","Nama Plugin");
+define("Reads","Dibaca");
+define("times","kali");
 
 
 /************************************
 * 		 	  Article  				*
 *************************************/
-define ("second_ago", "detik lalu");
-define ("minutes_ago", "menit lalu");
-define ("hours_ago", "jam lalu");
-define ("days_ago", "hari lalu");
+define ("second_ago", "detik &");
+define ("minutes_ago", "menit &");
+define ("hours_ago", "jam &");
+define ("days_ago", "hari &");
 define ("Article_cant_access", "<h2>Oops!</h2>Maaf anda tidak memiliki izin untuk melihat konten ini.<br>Mungkin anda belum login atau memang tidak diberi izin.");
+define ("Category_is_empty", "Sorry, there are no articles in this category.");
 
 
 /************************************
@@ -140,6 +145,8 @@ define("File_uploaded_not_valid","File bukan termasuk Fiyo Addons!");
 define("Success_installed_new_AddOns","Addons baru berhasil di install.");
 define("Please_choose_AddOns_first","Pilih file terlebih dahulu!");
 define("Written_by","Ditulis oleh");
+
+
 
 
 

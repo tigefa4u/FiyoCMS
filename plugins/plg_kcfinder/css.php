@@ -34,8 +34,8 @@ a {
 }
 
 * {
-    font-family: Tahoma, Verdana, Arial, sans-serif;
-    font-size: 11px;
+    font-family: Arial;
+    font-size: 12px;
 }
 
 table {
@@ -70,7 +70,7 @@ table {
 }
 
 #folders {
-    padding: 5px;
+    padding: 7px 3px;
     overflow: auto;
 }
 

@@ -8,7 +8,7 @@
 */
 
 defined('_FINDEX_') or die('Access Denied');
-echo "<ul class=\"nav\">";	
+echo "<ul class=\"nav navbar-nav navbar-inline\">";	
 $no = 1;
 $qr = $db->select(FDBPrefix."menu","*","category='$category' AND status=1 AND parent_id=0 ".Level_Access,"short ASC");
 $sum = mysql_affected_rows();		

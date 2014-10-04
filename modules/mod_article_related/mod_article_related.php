@@ -21,7 +21,8 @@ $showImg = mod_param('showImg',$modParam);
 $db 	= new FQuery();  
 $db->connect(); 	
 $level	= Level_Access;
-$t 	= articleInfo($filter);
+if(app_param() == 'article') :
+$t 	= @articleInfo($filter);
 $t 	= str_replace("'",'',$t);
 $t 	= str_replace('"','',$t);
 $t 	= str_replace('%','',$t);
@@ -91,5 +92,8 @@ while($qr=mysql_fetch_array($sql) AND $x < $limit){
 		echo "<li><a title='$qr[title]' href='$link'>$img$qr[title]</a></li>";
 	$x++;
 }
-echo "</ul>";	
+echo "</ul>";
+else :	
+echo "";	
+endif;	
 

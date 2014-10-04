@@ -1,9 +1,9 @@
 <?php 
 /**
 * @name			Comment
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 * @description	
 **/
@@ -15,7 +15,7 @@ $db->connect();
 
 loadLang(__dir__);
 
-if(!defined('SEF_URL')) {	
+if(!defined('SEF_URL')) {
 	$link = check_permalink('link',getLink(),'link');	
 	$go_link = FUrl.getLink()."&pid=$_GET[pid]";
 	}
@@ -27,6 +27,15 @@ else {
 
 require('entry_comment.php');
 
+define('CAPTCHA',false);
+
+if(!CAPTCHA) {
+	$valid = true;
+	if(!isset($_SESSION['captcha'])) $_SESSION['captcha'] = 99;
+	$_POST['secure'] = $_SESSION['captcha'];
+	$_SESSION['ENABLE_CAPTCHA'] = false;
+}
+	
 if(isset($_POST['send-comment'])){
 	//reCaptcha
 	$privatekey = oneQuery('comment_setting','name',"'recaptcha_privatekey'",'value');
@@ -37,8 +46,9 @@ if(isset($_POST['send-comment'])){
 			   $_POST["recaptcha_challenge_field"],
 			   $_POST["recaptcha_response_field"]);			
 		if($capthca->is_valid AND checkOnline()) 
-		$valid = 1;
+		$valid = true;
 	}
+	
 	
 	if(empty($_POST['name']) or empty($_POST['email']) or empty($_POST['com'])) {	
 		$notice =  alert("error",comment_Notice_Error,true);
@@ -46,7 +56,7 @@ if(isset($_POST['send-comment'])){
 	else if(!preg_match("/^.+@.+\\..+$/",$_POST['email'])){	
 		$notice =  alert("error",comment_Notice_Error2,true);
 	}
-	else if($_POST['secure'] == $_SESSION['captcha'] or isset($valid)){
+	else if($_POST['secure'] == $_SESSION['captcha'] or isset($valid) ){ 
 		$name = oneQuery('comment_setting','name',"'name_filter'",'value');
 		$name = explode(",",$name);
 		foreach($name as $namef) {
@@ -88,7 +98,9 @@ if(isset($_POST['send-comment'])){
 			$_POST['web'] = str_replace(" ","",$_POST['web']);
 			$_POST['web'] = str_replace("  ","",$_POST['web']);
 			$text = htmlentities($_POST['com']);
-			$com = $db->insert(FDBPrefix.'comment',array("","$link",$_SESSION['USER_LEVEL'],"$_POST[name]","$_POST[email]","$_POST[web]",date("Y-m-d H:i:s",time()),"$text","$auto","$no"));
+			$parent = 1;
+			$apps = app_param();
+			$com = $db->insert(FDBPrefix.'comment',array("","$link",$_SESSION['USER_ID'],"$_POST[name]","$_POST[email]","$_POST[web]",date("Y-m-d H:i:s",time()),"$text","$auto","$apps","$parent","$parent","$parent"));
 			
 			if($com AND $auto)
 				$notice =  alert("info",comment_Notice_Info,true);
@@ -98,7 +110,6 @@ if(isset($_POST['send-comment'])){
 			if(empty($no)) $no = 1;
 			//Comment will appear after page reload
 			$link = "$go_link#comment-$no";
-			htmlRedirect($link,2);
 		}
 	}
 	else {
@@ -115,4 +126,5 @@ $email = oneQuery('comment_setting','name',"'email_filter'",'value');
 $email = $_SESSION['USER_EMAIL'];
 
 if(empty($email)) $email = @$_POST['email']; 
+
 require('form_comment.php');

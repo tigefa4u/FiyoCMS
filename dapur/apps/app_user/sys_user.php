@@ -1,13 +1,13 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
+
 
 $db = new FQuery();  
 $db->connect();
@@ -20,25 +20,23 @@ if(isset($_POST['add_group']) or isset($_POST['apply_group'])){
 	$db->connect();			
 	if(!empty($_POST['group']) AND !empty($_POST['level'])) {
 		$qr=$db->insert(FDBPrefix.'user_group',array("","$_POST[group]","$_POST[level]","$_POST[desc]","","")); 
-		if($qr AND isset($_POST['add_group'])){
-			alert('loading');	
-			alert('info',User_Group_Added);
-			htmlRedirect('?app=user&act=group',2);
+		if($qr AND isset($_POST['add_group'])){	
+			notice('success',User_Group_Added);
+			redirect('?app=user&view=group');
 		}
 		else if($qr AND isset($_POST['apply_group'])){
 			$sql = $db->select(FDBPrefix.'user_group','id','','id DESC' ); 	  
-			$qr = mysql_fetch_array($sql);	
-			alert('loading');	
-			alert('info',User_Group_Added);
-			htmlRedirect('?app=user&act=edit_group&id='.$qr['id'],2);
+			$qr = mysql_fetch_array($sql);		
+			notice('success',User_Group_Added);
+			redirect('?app=user&view=group&act=edit&id='.$qr['id']);
 		}
 		else {				
-			alert('error',User_Group_Exists);
+			notice('error',User_Group_Exists,2);
 		}					
 	}
 	else 
 	{				
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid,2);
 	}
 }
 	
@@ -46,18 +44,22 @@ if(isset($_POST['add_group']) or isset($_POST['apply_group'])){
 /****************************************/
 /*			Delete Group User			*/
 /****************************************/
-if(isset($_POST['delete_group'])){
+if(isset($_POST['check']) or isset($_POST['delete_confirm'])){
 	$source = @$_POST['check'];
 	$source = multipleSelect($source);
-	$delete = multipleDelete('user_group',$source,'user','level');	
-	
-	if($delete == 'noempty') 
-		alert('error',User_Group_Not_Empty);
-	else if(isset($delete))
-		alert('info',Category_Deleted);
-	else
-		alert('error',Please_Select_Category);
-	
+	$delete = multipleDelete('user_group',$source,'user','level');		
+	if($delete == 'noempty') {
+		notice('error',User_Group_Not_Empty);
+		refresh();		
+	}
+	else if(isset($delete)) {
+		notice('info',Category_Deleted);
+		refresh();		
+	}
+	else {
+		notice('error',Please_Select_Category);
+		refresh();		
+	}
 }
 
 	
@@ -77,27 +79,29 @@ if(isset($_POST['edit_group']) or isset($_POST['save_group'])){
 		"level"=>"$_POST[level]"),
 		"level=$_POST[levels]"); 
 		if($qr AND isset($_POST['save_group'])){
-			alert('info',User_Group_Saved);
+			notice('success',User_Group_Saved);
+			refresh();			
 		}
 		else if($qr AND isset($_POST['edit_group'])){
-			alert('info',User_Group_Saved);
-			alert('loading');	
-			htmlRedirect('?app=user&act=group',2);
+			notice('success',User_Group_Saved);
+			redirect('?app=user&view=group');
 		}
 		else {				
-			alert('error',Status_Fail);	
+			notice('error',Status_Fail);
 		}					
 	}		
 	else 
 	{				
-		alert('error',Status_Invalid);	
+		notice('error',Status_Invalid);
 	}			
 }
+
+	
 	
 /****************************************/
 /*				Add User				*/
 /****************************************/
-if(isset($_POST['save']) or isset($_POST['applysave'])){
+if(isset($_POST['save']) or isset($_POST['apply'])){
 	$us=strlen("$_POST[user]");
 	$ps=strlen("$_POST[password]");
 	$user = $_POST['user'];
@@ -112,24 +116,23 @@ if(isset($_POST['save']) or isset($_POST['applysave'])){
 		$us>2 AND $ps>3 AND @ereg("^.+@.+\\..+$",$_POST['email']) AND !$matches) {
 		
 		$qr=$db->insert(FDBPrefix.'user',array("","$user","$name",MD5("$_POST[password]"),"$_POST[email]","$_POST[status]","$_POST[level]",date('Y-m-d H:i:s'),'',"$_POST[bio]")); 
-		if($qr AND isset($_POST['save'])){		
-			alert('loading');	
-			alert('info',User_Added);
-			htmlRedirect('?app=user',2);
+		
+		if($qr AND isset($_POST['save'])){			
+			notice('success',User_Added);
+			redirect('?app=user');
 		}
-		else if($qr AND isset($_POST['applysave'])){
-			$sql = $db->select(FDBPrefix.'user','id','','id DESC' ); 	  
-			$qr = mysql_fetch_array($sql);	
-			alert('loading');	
-			alert('info',User_Added);
-			htmlRedirect('?app=user&act=edit&id='.$qr['id'],2);
+		else if($qr AND isset($_POST['apply'])){
+			$sql = $db->select(FDBPrefix.'user','id','','id DESC'); 	  
+			$qr = mysql_fetch_array($sql);		
+			notice('success',User_Added);
+			redirect('?app=user&act=edit&id='.$qr['id']);
 		}
-		else {		
-			alert('error',Status_Fail);
+		else {				
+			notice('error',Status_Fail);
 		}					
 	}
 	else  {							
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid);
 	}
 }
 	
@@ -145,20 +148,21 @@ if(isset($_POST['edit']) or isset($_POST['applyedit'])){
 		preg_match('/[^a-zA-Z0-9]+/', $user, $matches);
 		if(!empty($_POST['user'])AND !empty($_POST['name'])AND !empty($_POST['email'])AND !empty($_POST['level']) AND $us>2 AND @ereg("^.+@.+\\..+$",$_POST['email']) AND !$matches) 
 		{
-			if($_POST['id'] == userInfo('id')) $_POST['status'] = 1;
+			$qr = false;
+			if($_POST['id'] == $_SESSION['USER_ID']) $_POST['status'] = 1;
 			if(empty($_POST['password'])){
-				$qrq=$db->update(FDBPrefix.'user',array(				
-				"user"=>"$user",
-				"name"=>"$name",
+				$qr = $db->update(FDBPrefix.'user',array(				
+				"user"=>"$_POST[user]",
+				"name"=>"$_POST[name]",
 				"email"=>"$_POST[email]",
 				"status"=>"$_POST[status]",
 				"about"=>"$_POST[bio]",
 				"level"=>"$_POST[level]"),
 				"id=$_POST[id]"); }
 			elseif($_POST['password']==$_POST['kpassword']){
-				$qrq=$db->update(FDBPrefix.'user',array(				
-				"user"=>"$user",
-				"name"=>"$name",
+				$qr = $db->update(FDBPrefix.'user',array(				
+				"user"=>"$_POST[user]",
+				"name"=>"$_POST[name]",
 				"password"=>MD5("$_POST[password]"),
 				"email"=>"$_POST[email]",
 				"about"=>"$_POST[bio]",
@@ -167,22 +171,21 @@ if(isset($_POST['edit']) or isset($_POST['applyedit'])){
 				"id=$_POST[id]"); 
 				}
 				
-			$qr=$qrq;
-			if($qr AND isset($_POST['edit'])){					
-				alert('loading');	
-				alert('info',User_Saved);
-				htmlRedirect('?app=user',2);
+			if($qr AND isset($_POST['edit'])){		
+				notice('success',User_Saved);
+				redirect('?app=user');
 			}
 			else if($qr AND isset($_POST['applyedit'])){
-				alert('info',User_Saved);				
+				notice('success',User_Saved);	
+				redirect(getUrl());			
 			}
 			else {				
-				alert('error',Status_Invalid);
+				notice('error',Status_Invalid);
 			}					
 		}
 		else 
 		{				
-			alert('error',Status_Invalid);
+			notice('error',Status_Invalid);
 		}
 	}
 
@@ -190,14 +193,15 @@ if(isset($_POST['edit']) or isset($_POST['applyedit'])){
 /****************************************/
 /*				User Delete				*/
 /****************************************/
-if(isset($_POST['delete'])){
+if(isset($_POST['delete']) or isset($_POST['delete_confirm'])){
 	$source = @$_POST['check'];
 	$source = multipleSelect($source);
 	$delete = multipleDelete('user',$source);	
 	if(isset($delete))
-		alert('info',User_Deleted);
+		notice('info',User_Deleted);
 	else
-		alert('error',Please_Select_User);
+		notice('error',Please_Select_User);
+	redirect(getUrl());		
 }
 
 
@@ -206,16 +210,15 @@ if(isset($_POST['delete'])){
 /****************************************/
 if(!isset($_POST['save_edit']) AND !isset($_POST['apply_edit'])) {
 	if(isset($_REQUEST['act']))
-	if($_REQUEST['act']=='edit'){
+	if($_REQUEST['act']=='edit' AND !isset($_REQUEST['view'])){
 		$id=$_REQUEST['id'];
 		$db = new FQuery();  
 		$db->connect(); 
 		$sql=$db->select(FDBPrefix.'user','*','id='.$id); 
 		$jml=mysql_num_rows($sql);
 		if($jml<=0) {
-			alert('info','UserID is null, wait for redirecting ...');
-			alert('loading');
-			htmlRedirect('?app=user',3);
+			notice('info','UserID is null, wait for redirecting ...');
+			redirect('?app=user',3);
 		}
 	}
 }
@@ -227,5 +230,5 @@ if(!isset($_POST['save_edit']) AND !isset($_POST['apply_edit'])) {
 if(isset($_POST['config'])){
 	$qr=$db->update(FDBPrefix."setting",array('value'=>"$_POST[new_member]"),"name='new_member'");	
 	if(isset($qr))
-		alert('info',Status_Applied);
+		notice('info',Status_Applied);
 }

@@ -1,7 +1,7 @@
 <?php
 /**
 * @name			Fi User
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -16,7 +16,7 @@ if(siteConfig('member_registration'))
 <h1>Password Reminder</h1>
 	<form action="" method="post">
 	<?php echo userNotice; ?>
-		<div class="user-desc"><?php echo user_Password_Reminder; ?></div>
+		<p class="user-desc"><?php echo user_Password_Reminder; ?></p>
 		<div>
 			<span>Email</span>  <input type="text" name="email" /></div>
 		<div class="user-link">

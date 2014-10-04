@@ -1,193 +1,290 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
+
 
 defined('_FINDEX_') or die('Access Denied');
 
-$db = @new FQuery() or die;  
+$db = @new FQuery() or die; 
 
-//set request id 
-if(isset($_REQUEST['id']))
-	$id=$_REQUEST['id'];
+//set GET id 
+if(isset($_GET['id']))
+	$id=$_GET['id'];
 else
 	$id = null;
 if(!isset($id)) {
-	$_REQUEST['id']=0;	
+	$_GET['id']=0;	
 	$qr = null;
-	$new =1;
+	$new =1;	
+	$show_comment = $panel_top = $show_title = $panel_bottom = $show_author = $show_date = $show_category = $show_hits=$show_tags = $show_rate = 2; 
+	$rate_value = $rate_counter = 0;
 }
 else {
-	$sq = $db->select(FDBPrefix.'article','*','id='.$id);  
+	$sq = $db->select(FDBPrefix.'article','*','id='.$id); 
 	$qr = @mysql_fetch_array($sq);
+		
+	$show_comment	= mod_param('comment',$qr['parameter']);
+	$panel_top 		= mod_param('panel_top',$qr['parameter']);
+	$panel_bottom 	= mod_param('panel_bottom',$qr['parameter']);
+	$show_author 	= mod_param('show_author',$qr['parameter']);
+	$show_date  	= mod_param('show_date',$qr['parameter']);
+	$show_category	= mod_param('show_category',$qr['parameter']);
+	$show_hits  	= mod_param('show_hits',$qr['parameter']);
+	$show_tags  	= mod_param('show_tags',$qr['parameter']);
+	$show_rate	 	= mod_param('show_rate',$qr['parameter']);
+	$show_title	 	= mod_param('show_title',$qr['parameter']);
+	$rate_value		= mod_param('rate_value',$qr['parameter']);
+	$rate_counter 	= mod_param('rate_counter',$qr['parameter']);
+	$editor_level 	= mod_param('editor_level',$qr['parameter']);
 }	
 $article = $qr['article'];
 if(checkLocalhost()) {
 	$article = str_replace("media/",FLocal."media/",$article);			
 }
-addJs ("../plugins/plg_jquery_ui/ui.slider.js");
-addCss("../plugins/plg_jquery_ui/base/ui.all.css");
-addJs ("../plugins/plg_jquery_ui/ui.core.js");
-addJs ("../plugins/plg_jquery_ui/ui.datepicker.js");
-addJs ("../plugins/plg_jquery_ui/ui.timepicker.js");
-addJs ("../plugins/plg_ckeditor/ckeditor.js");
-addJs ("apps/app_article/controller/jquery.tagsinput.min.js");
-addCSS("apps/app_article/controller/jquery.tagsinput.css");
-?>
-<script type="text/javascript">
-	$(function() {
-		$("#datepicker").datetimepicker({ 
-			showSecond: true,
-			timeFormat: 'HH:mm:ss',
-			dateFormat: 'yy-mm-dd'
-		});
-		$("#tags").tagsInput();
-		$(".reset").click(function(){
-			$("#hits").html("0");	
-		});
-		
-		$(".cb-enable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-disable',parent).removeClass('selected');
-			$(this).addClass('selected');
-		});
-		$(".cb-disable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-enable',parent).removeClass('selected');
-			$(this).addClass('selected');
-		});	
-	});
+if(!is_numeric($rate_value) or empty($rate_value)) $rate_value = 0;			
+if(!is_numeric($rate_value) or empty($rate_counter)) $rate_counter = 0;	
 
+if(empty($rate_counter)) $rates = $rate_counter = $rate_value = 0;
+else if(($rate_value/$rate_counter) >= $rate_counter) $rates = 10;
+else $rates = angka2($rate_value/$rate_counter);
+
+
+if($_GET['id']) :
+?>
+<?php endif; ?>
+<script type="text/javascript">
+$(function() {		
+	CKEDITOR.replace('editor');	
+	$('#datetimepicker').datetimepicker({
+		language: 'pt-BR'
+	});
+	
+	$("#content form").submit(function(e){
+		e.preventDefault();
+		var ff = this;
+		var text = CKEDITOR.instances.editor.getData();
+		if(text && $("#content form").valid()) {
+			$(".inner .alert").remove();
+			ff.submit();
+		}else if(!text) {
+			noticeabs("<?php echo alert('error',Please_write_some_text); ?>");
+			CKEDITOR.instances.editor.focus();
+		}
+	});
+	
+	$("#datepicker").mask("9999-99-99 99:99:99");
+	
+	$('.chosen-with-drop').hide();
+});
 </script>	
-<div class="cols">
-	<div class="col first panin"  style="width: 70%;">			
-		<div class="isi">				
-			<table class="data2">				
-				<tr>
-					<td class="djudul tooltip" title="<?php echo Article_Title; ?>" style="width:10%"><?php echo Title; ?> *</td>
-					<td><input value="<?php echo $qr['id'];?>" type="hidden" name="id"><input <?php formRefill('title',$qr['title']);?> type="text" name="title" size="43" style="width:100%" required></td>
-					<td class="djudul tooltip" title="<?php echo Article_category; ?>"><?php echo Category; ?></td>
-					<td><select name="cat">
+<div id="article">
+<div class="col-lg-9 box-left">
+	<div class="box article-editor">								
+		<div>
+			<input value="<?php echo $qr['id'];?>" type="hidden" name="id">
+					<input <?php formRefill('title',$qr['title']);?> placeholder="<?php echo Enter_title_here; ?>" type="text" name="title" required>
+		</div>
+		<div style="padding:10px 0 0; overflow: hidden;">
+			<div class="load-editor">
+				<textarea required id="editor" name="editor" rows="30" cols="90" style="opacity:0"><?php formRefill('editor',htmlentities($article),'textarea'); ?></textarea>
+			</div>					
+		</div>
+	</div>
+</div>
+			
+
+
+<div class="panel-group col-lg-3 box-right article-box" id="accordion">
+ <div class="panel box"> 		
+	<header>
+		<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+			<h5>Umum</h5>
+		</a>
+	</header>
+	<div id="collapseOne" class="panel-collapse in">
+		<table class="data2">
+			<tr>
+				<td class="row-title" style="width: 35%; min-width:90px;"><span class="tips" title="<?php echo Hits; ?>"><?php echo Category.$qr['category']; ?></span></td>
+				<td> <select name="cat" class="chosen-select" data-placeholder="<?php echo Choose_category; ?>" style="min-width:120px;" required="required">
+				<option value=""></option>
 					<?php	
 						$_GET['id']=0;
-						$db = new FQuery();  
+						$db = new FQuery(); 
 						$db->connect(); 
 						$sql = $db->select(FDBPrefix.'article_category','*','parent_id=0'); 
 						while($qrs=mysql_fetch_array($sql)){
-							if($qrs['level'] >= $_SESSION['USER_LEVEL'] ){
-								if($qr['category']==$qrs['id'])$s="selected";else$s="";
+							if($qrs['level'] >= $_SESSION['USER_LEVEL']){
+								if($qr['category']==$qrs['id']) $s="selected";else$s="";
 								echo "<option value='$qrs[id]' $s>$qrs[name]</option>";
 								option_sub_cat($qrs['id'],'');
 							}
 						}						
 					?>
+				</select></td>
+			</tr>			
+			<tr>
+				<td class="row-title" title="<?php echo Active_Status; ?>">Status</td>
+				<td>
+				<?php 
+					if($qr['status'] or $_GET['act'] == 'add'){$status1="selected checked"; $status0 = "";}
+					else {$status0="selected checked"; $status1= "";}
+					?>
+					<p class="switch">
+						<input id="radio15" value="1" name="status" type="radio" <?php echo $status1;?> class="invisible">
+						<input id="radio16" value="0" name="status" type="radio" <?php echo $status0;?> class="invisible">
+						<label for="radio15" class="cb-enable <?php echo $status1;?>"><span><?php echo Enable; ?></span></label>
+						<label for="radio16" class="cb-disable <?php echo $status0;?>"><span><?php echo Disable; ?></span></label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="row-title" title="<?php echo Featured; ?>"><?php echo Featured; ?></td>
+				<td>
+				<?php 
+					if($qr['featured'] or $_GET['act'] == 'add'){$status1="selected checked"; $status0 = "";}
+					else {$status0="selected checked"; $status1= "";}
+					?>
+					<p class="switch">
+						<input id="radio3" value="1" name="featured" type="radio" <?php echo $status1;?> class="invisible">
+						<input id="radio4" value="0" name="featured" type="radio" <?php echo $status0;?> class="invisible">
+						<label for="radio3" class="cb-enable <?php echo $status1;?>"><span><?php echo Yes; ?></span></label>
+						<label for="radio4" class="cb-disable <?php echo $status0;?>"><span><?php echo No; ?></span></label>
+					</p>
+				</td>
+			</tr>	
+					
+			<tr>
+				<td class="row-title" title="<?php echo Article_level_tip; ?>" style="width:30%"><?php echo Access_Level; ?></td>
+				<td><select name="level" placeholder="">
+				<option value=""></option>
+					<?php
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'user_group');
+						while($qrs=mysql_fetch_array($sql)){
+							if($qrs['level']==$qr['level']){
+								echo "<option value='$qrs[level]' selected>$qrs[group_name]</option>";}
+							else {
+								echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
+							}
+						}
+						if($qr['level']==99 or !$qr['level']) $s="selected"; else $s="";
+						echo "<option value='99' $s>"._Public."</option>"
+					?>
 					</select>
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="djudul tooltip" title="<?php echo Tags_tip; ?>"  style="min-width: 35px;">Tags</td>
-					<td>
-						<input <?php formRefill('tags',$qr['tag']);?> type="text" name="tags" id="tags" size="38">
-					</td>	
-					<td class="djudul tooltip" title="<?php echo Featured_tip; ?>"><?php echo Featured; ?></td>
-					<td style="width:20%;padding: 9px 6px;	vertical-align:top !important;">
-						<?php 
-							if($qr['featured']){$f1="selected checked"; $f0 = "";}
-							else {$f0="selected checked"; $f1= "";}
-						?>
-						<p class="switch">
-							<input id="radio17"  value="1" name="featured" type="radio" <?php echo $f1;?> class="invisible">
-							<input id="radio18"  value="0" name="featured" type="radio" <?php echo $f0;?> class="invisible">
-							<label for="radio17" class="cb-enable <?php echo $f1;?>"><span>Yes</span></label>
-							<label for="radio18" class="cb-disable <?php echo $f0;?>"><span>No</span></label>
-						</p>
-					</td>
-				</tr>
-				<tr>
-				<td colspan="4" style="padding:10px 0 0; margin-right:-20px">
-					<textarea class="ckeditor" id="editor" name="editor"  rows="30" cols="90"><?php formRefill('editor',htmlentities($article),'textarea'); ?></textarea>
-
-				</td>	
-			
-			</table>
-			</div>
-		</div>
-		
- 
-		<div class="col noborder" style="width: 29.7%;">		
-			<ul class="accordion"> 				 
-				<li>
-					<h3>Article Information</h3>
-					<div class="isi">
-						<div class="acmain open">
-						<table class="data2">	
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Hits; ?>"><?php echo Hits; ?></td>
-								<td><span id="hits"><?php echo $qr['hits']; ?></span>
-								<input name="viewed" type="hidden" value="<?php echo $qr['hits']; ?>"/> <label class="reset tooltip" title="<?php echo Hits_Reset; ?>"><input type="radio" value="1" name="hits_reset">Reset</label></td>
-							</tr>
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Author_tip; ?>"><div style ='width: 80px !important;'><?php echo Author; ?></div></td>
-								<td><input name="author" size="15" type="text"  value="<?php echo $qr['author']; ?>"/></td>
-							</tr>
-							
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Article_level_tip; ?>" style="width:30%"><?php echo Access_Level; ?></td>
-								<td><select name="level" >
-								<?php
-									$db = new FQuery();  
-									$db->connect(); 
-									$sql = $db->select(FDBPrefix.'user_group');
-									while($qrs=mysql_fetch_array($sql)){
-										if($qrs['level']==$qr['level']){
-											echo "<option value='$qrs[level]' selected>$qrs[group_name]</option>";}
-										else {
-											echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
-										}
-									}
-									if($qr['level']==99 or !$qr[level]) $s="selected"; else $s="";
-									echo "<option value='99' $s>"._Public."</option>"
-								?>
-								</select></td>
-							</tr>
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Date_tip; ?>"><?php echo Date; ?></td>
-								<td><input name="date"  id="datepicker" size="17" type="datetime"  value="<?php if($qr['date']) echo $qr['date']; else echo date("Y-m-d H:i:t"); ?>"/></td>
-							</tr>
-							
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Last_Updated_tip; ?>"><?php echo Last_Updated; ?></td>
-								<td><?php if($qr['updated']) echo $qr['updated']; else echo date("Y-m-d H:i:t"); ?></td>
-							</tr>
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Editor_tip; ?>"><?php echo Editor; ?></td>
-								<td><?php if(!empty($qr['editor'])) echo oneQuery("user","id",$qr['editor'],"name"); else echo "None"; ?></td>
-							</tr>
-							<tr>
-								<td class="djudul tooltip" title="<?php echo Active_Status; ?>"><?php echo Active_Status; ?></td>
-								<td>
-								<?php 
-								if($qr['status'] or $_GET['act'] == 'add'){$status1="selected checked"; $status0 = "";}
-								else {$status0="selected checked"; $status1= "";}
-								?>
-								<p class="switch">
-									<input id="radio15"  value="1" name="status" type="radio" <?php echo $status1;?> class="invisible">
-									<input id="radio16"  value="0" name="status" type="radio" <?php echo $status0;?> class="invisible">
-									<label for="radio15" class="cb-enable <?php echo $status1;?>"><span>On</span></label>
-									<label for="radio16" class="cb-disable <?php echo $status0;?>"><span>Off</span></label>
-								</p>
-								</td>
-							</tr>
-						</table>
-						</div>
-					</div>
-				</li>
-			<input type="hidden" name="totalparam" value="10"/>
+				</td>
+			</tr>	
+			<tr>
+				<td class="row-title" title="<?php echo Tags_tip; ?>"><?php echo Tags; ?></td>
+				<td> <select name="tags[]" class="chosen-select w-max" data-placeholder="<?php echo Choose_tags; ?>" style="min-width:150px; width:100%;" multiple>
+				<option value=""></option>
+					<?php	
+						$_GET['id']=0;
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'article_tags'); 
+						while($qrs=mysql_fetch_array($sql)){
+							$sel = multipleSelected($qr['tags'],$qrs['name']);
+							echo "<option value='$qrs[name]' $sel>$qrs[name]</option>";
+						}						
+					?>
+				</select></td>
+			</tr>
+			<?php if($_GET['act'] != 'add') : ?>
+			<tr>
+				<td class="row-title" title="<?php echo Hits; ?>"><?php echo Hits; ?></td>
+				<td><span id="hits"><?php echo $qr['hits']; ?></span>
+				<input name="viewed" type="hidden" value="<?php echo $qr['hits']; ?>"/> 
+				<?php if(userInfo('level') < 3 AND !empty($qr['hits'])) : ?><label class="reset" title="<?php echo Hits_Reset; ?>" style="margin-left:5px; cursor: pointer;"><input type="checkbox" value="1" name="hits_reset">Reset</label><?php else : ?><?php endif; ?></td>
+			</tr>
+			<tr>
+				<td class="row-title" title="<?php echo Rate; ?>"><?php echo Rate; ?></td>
+				<td><span id="hits"><b><?php echo $rates; ?></b>/10 <?php echo of.' '.$rate_counter.' '.ratings; ?></span></td>
+			</tr>
+			<?php endif; ?>
+		</table>
+  </div>
+ </div>
+ <div class="panel box"> 		
+	<header>
+		<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#publishing">
+			<h5><?php echo Publishing; ?></h5>
+		</a>
+	</header>
+  <div id="publishing" class="panel-collapse collapse">
+		<table class="data2">
+			<tr>
+				<td class="row-title" style="width: 35%" title="<?php echo Author_tip; ?>"><?php echo Author; ?></td>
+				<td><input name="author" style="min-width: 83.5%" disabled size="15" type="text"value="<?php echo userInfo('name',$qr['author_id']); ?>"/></td>
+			</tr>
+			<tr>
+				<td class="row-title" style="width: 35%" title=""><?php echo Author_Alias; ?></td>
+				<td><input name="author" style="min-width: 83.5%" size="15" type="text"value="<?php echo $qr['author']; ?>"/></td>
+			</tr>	
+			<tr>
+				<td class="row-title" style="width: 35%" title="<?php echo Date_tip; ?>"><?php echo Date; ?></td>
+				<td>		
+				 <div id="datetimepicker" class="input-append date input-group" style="  width: 160px;">
+					<input data-format="yyyy-MM-dd hh:mm:ss" type="text" name="date" id="datepicker" size="16" type="date" value="<?php if($qr['date']) echo $qr['date']; else echo date("Y-m-d H:i:t"); ?>"/>
+					<span class="add-on input-group-addon">
+					 <i class="icon-calendar">
+					 </i>
+					</span>
+				 </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="row-title" style="width: 35%" title="<?php echo Last_Updated_tip; ?>"><?php echo Updated; ?></td>
+				<td>							
+				 <div class="input-append date input-group" style="  width: 160px;">
+					<input type="text" disabled value="<?php if($qr['updated']) echo $qr['updated']; ?>" size="16">
+					<span class="add-on input-group-addon">
+					 <i class="icon-calendar">
+					 </i>
+					</span>
+				 </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="row-title" style="width: 35%" title="<?php echo Editor_tip; ?>"><?php echo Editor; ?></td>
+				<td><input type="text" disabled value="<?php if(!empty($qr['editor'])) echo oneQuery("user","id",$qr['editor'],"name"); ?>" style="min-width: 83.5%" size="18"></td>
+			</tr>
+			<tr>
+				<td class="row-title" title="<?php echo Editor_level_tip; ?>" style="width:30%"><?php echo Editor_Level; ?></td>
+				<td><select name="param12" placeholder="">
+				<option value=""></option>
+					<?php
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'user_group','*','level >= '.USER_LEVEL);
+						while($qrs=mysql_fetch_array($sql)){
+							if($qrs['level']==3 AND !$editor_level) {
+								echo "<option value='$qrs[level]' selected>$qrs[group_name]</option>";}
+							else if($qrs['level'] == $editor_level){
+								echo "<option value='$qrs[level]' selected>$qrs[group_name]</option>";}
+							else {
+								echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
+							}
+						}
+					?>
+					</select>
+				</td>
+			</tr>		
+		</table>
+  </div>
+ </div>
+ <div class="panel box parameter"> 		
+  <header>
+		<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+			<h5>Parameter</h5>
+		</a>
+	</header>
+  <div id="collapse2" class="panel-collapse collapse">   
+			<input type="hidden" name="totalparam" value="13"/>
 			<input type="hidden" name="nameParam1" value="show_comment" />
 			<input type="hidden" name="nameParam2" value="show_author" />
 			<input type="hidden" name="nameParam3" value="show_date" />
@@ -197,179 +294,139 @@ addCSS("apps/app_article/controller/jquery.tagsinput.css");
 			<input type="hidden" name="nameParam7" value="show_rate" />
 			<input type="hidden" name="nameParam8" value="rate_value" />
 			<input type="hidden" name="nameParam9" value="rate_counter" />
-			<input type="hidden" name="nameParam10" value="show_panel" />
+			<input type="hidden" name="nameParam10" value="panel_top" />
+			<input type="hidden" name="nameParam11" value="panel_bottom" />
+			<input type="hidden" name="nameParam12" value="editor_level" />
+			<input type="hidden" name="nameParam13" value="show_title" />
 			
-			<?php
-			
-				$show_commt	 = mod_param('comment',$qr['parameter']);
-				$show_panel  = mod_param('show_panel',$qr['parameter']);
-				$show_author = mod_param('show_author',$qr['parameter']);
-				$show_date   = mod_param('show_date',$qr['parameter']);
-				$show_cate	 = mod_param('show_category',$qr['parameter']);
-				$show_hits   = mod_param('show_hits',$qr['parameter']);
-				$show_tags   = mod_param('show_tags',$qr['parameter']);
-				$show_rate	 = mod_param('show_rate',$qr['parameter']);
-				$rate_value	 = mod_param('rate_value',$qr['parameter']);
-				$rate_counter= mod_param('rate_counter',$qr['parameter']);
-				if(!$show_commt)	$param1 = true;
-				if(!$show_author)  	$param2 = true;
-				if(!$show_date) 	$param3 = true;
-				if(!$show_cate) 	$param4 = true;
-				if(!$show_tags) 	$param5 = true;
-				if(!$show_hits) 	$param6 = true;
-				if(!$show_rate) 	$param7 = true;
-				if(!$show_panel) 	$param10 = true;
-				
-				if(!is_numeric($rate_value) or empty($rate_value)) $rate_value=0;			
-				if(!is_numeric($rate_value) or empty($rate_counter)) $rate_counter=0;	
-				
-				if(!isset($param1) or isset($new)){$enpar1="selected checked"; $dispar1 = "";}
-				else {$dispar1="selected checked"; $enpar1= "";}
-
-				if(!isset($param2) or isset($new)){$enpar2="selected checked"; $dispar2 = "";}
-				else {$dispar2="selected checked"; $enpar2= "";}
-
-				if(!isset($param3) or isset($new)){$enpar3="selected checked"; $dispar3 = "";}
-				else {$dispar3="selected checked"; $enpar3= "";}
-
-				if(!isset($param4) or isset($new)){$enpar4="selected checked"; $dispar4 = "";}
-				else {$dispar4="selected checked"; $enpar4= "";}
-
-				if(!isset($param5) or isset($new)){$enpar5="selected checked"; $dispar5 = "";}
-				else {$dispar5="selected checked"; $enpar5= "";}
-				
-				if(!isset($param6) or isset($new)){$enpar6="selected checked"; $dispar6 = "";}
-				else {$dispar6="selected checked"; $enpar6= "";}
-
-				if(!isset($param7) or isset($new)){$enpar7="selected checked"; $dispar7 = "";}
-				else {$dispar7="selected checked"; $enpar7= "";}
-				
-				if(!isset($param10) or isset($new)){$enpar10="selected checked"; $dispar10 = "";}
-				else {$dispar10="selected checked"; $enpar10= "";}
-			
-			
-			?>	
-			<li>
-				<h3>Article Parameter</h3>
-				<div class="isi">
-					<div class="acmain">
-						<table class="data2">				
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Panel; ?></td>
-							<td>
-								<p class="switch">
-									<input id="radio21"  value="1" name="param10" type="radio" <?php echo $enpar10;?> class="invisible">
-									<input id="radio22"  value="0" name="param10" type="radio" <?php echo $dispar10;?> class="invisible">
-									<label for="radio21" class="cb-enable <?php echo $enpar10;?>"><span>Show</span></label>
-									<label for="radio22" class="cb-disable <?php echo $dispar10;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>								
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Author; ?></td>
-							<td>
-								<p class="switch">
-									<input id="radio1"  value="1" name="param2" type="radio" <?php echo $enpar2;?> class="invisible">
-									<input id="radio2"  value="0" name="param2" type="radio" <?php echo $dispar2;?> class="invisible">
-									<label for="radio1" class="cb-enable <?php echo $enpar2;?>"><span>Show</span></label>
-									<label for="radio2" class="cb-disable <?php echo $dispar2;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>
-																
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Date; ?></td>
-							<td>	
-								<p class="switch">
-									<input id="radio3"  value="1" name="param3" type="radio" <?php echo $enpar3;?> class="invisible">
-									<input id="radio4"  value="0" name="param3" type="radio" <?php echo $dispar3;?> class="invisible">
-									<label for="radio3" class="cb-enable <?php echo $enpar3;?>"><span>Show</span></label>
-									<label for="radio4" class="cb-disable <?php echo $dispar3;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>
-
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Category; ?></td>
-							<td>	
-								<p class="switch">
-									<input id="radio5"  value="1" name="param4" type="radio" <?php echo $enpar4;?> class="invisible">
-									<input id="radio6"  value="0" name="param4" type="radio" <?php echo $dispar4;?> class="invisible">
-									<label for="radio5" class="cb-enable <?php echo $enpar4;?>"><span>Show</span></label>
-									<label for="radio6" class="cb-disable <?php echo $dispar4;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Tags; ?></td>
-							<td>	
-								<p class="switch">
-									<input id="radio7"  value="1" name="param5" type="radio" <?php echo $enpar5;?> class="invisible">
-									<input id="radio8"  value="0" name="param5" type="radio" <?php echo $dispar5;?> class="invisible">
-									<label for="radio7" class="cb-enable <?php echo $enpar5;?>"><span>Show</span></label>
-									<label for="radio8" class="cb-disable <?php echo $dispar5;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>	
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Rate; ?></td>
-							<td>	
-								<p class="switch">
-									<input id="radio9"  value="1" name="param7" type="radio" <?php echo $enpar7;?> class="invisible">
-									<input id="radio10"  value="0" name="param7" type="radio" <?php echo $dispar7;?> class="invisible">
-									<label for="radio9" class="cb-enable <?php echo $enpar7;?>"><span>Show</span></label>
-									<label for="radio10" class="cb-disable <?php echo $dispar7;?>"><span>Hide</span></label>
-								</p>
-								<input type="hidden" name="param8" value="<?php echo @$rate_value; ?>">
-								<input type="hidden" name="param9" value="<?php echo @$rate_counter; ?>">
-							</td>
-						</tr>					
-						<tr>
-							<td class="djudul" id="article_sum"><?php echo Show_Hits; ?></td>
-							<td>	
-								<p class="switch">
-									<input id="radio13"  value="1" name="param6" type="radio" <?php echo $enpar6;?> class="invisible">
-									<input id="radio14"  value="0" name="param6" type="radio" <?php echo $dispar6;?> class="invisible">
-									<label for="radio13" class="cb-enable <?php echo $enpar6;?>"><span>Show</span></label>
-									<label for="radio14" class="cb-disable <?php echo $dispar6;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>
-						<tr>
-							<td class="djudul"><div><?php echo Show_Comment; ?></div></td>
-							<td>
-								<p class="switch">
-									<input id="radio11"  value="1" name="param1" type="radio" <?php echo $enpar1;?> class="invisible">
-									<input id="radio12"  value="0" name="param1" type="radio" <?php echo $dispar1;?> class="invisible">
-									<label for="radio11" class="cb-enable <?php echo $enpar1;?>"><span>Show</span></label>
-									<label for="radio12" class="cb-disable <?php echo $dispar1;?>"><span>Hide</span></label>
-								</p>
-							</td>
-						</tr>		
-					</table>
-					</div>
-				</div>
-			</li>
-				  
-			<!-- CSS Style --> 
-			<li>
-				<h3>Article Meta</h3>
-				<div class="isi">
-					<div class="acmain">
-					<table class="data2">
-						<tr>
-							<td class="djudul tooltip " title="<?php echo Keywords_tip; ?>"><?php echo Keyword; ?></td>
-							<td><textarea rows="3" cols="19" type="text" name="keyword" style="min-width:95%"><?php formRefill('keyword',$qr['keyword'],'textarea'); ?></textarea></td>
-						</tr>							
-						<tr>
-							<td class="djudul tooltip " title="<?php echo Meta_Desc_tip; ?>"><?php echo Description; ?></td>
-							<td><textarea rows="5" cols="19" type="text" name="desc" style=" min-width: 95%;"><?php formRefill('description',$qr['description'],'textarea'); ?></textarea></td>
-						</tr>
-					</table>
-					</div>
-				</div>
-			</li>				 				 
-		</ul>
-	</div>
-</div>	
+		<table class="data2">				
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Panel.' '.Top; ?></td>
+				<td>
+					<select name="param10" class="chosen-gsh <?php echo "s-$panel_top"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($panel_top == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($panel_top == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($panel_top == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>				
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Panel.' '.Bottom; ?></td>
+				<td>
+					<select name="param11" class="chosen-gsh <?php echo "s-$panel_bottom"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($panel_bottom == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($panel_bottom == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($panel_bottom == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>				
+			<tr>
+				<td class="row-title" style="width: 40%"><div><?php echo Comment; ?></div></td>
+				<td>
+					<select name="param1" class="chosen-gsh <?php echo "s-$show_comment"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_comment == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_comment == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_comment == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>					
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Title; ?></td>
+				<td>
+					<select name="param13" class="chosen-gsh <?php echo "s-$show_title"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_title == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_title == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_title == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>					
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Author; ?></td>
+				<td>
+					<select name="param2" class="chosen-gsh <?php echo "s-$show_author"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_author == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_author == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_author == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>											
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Date; ?></td>
+				<td>	
+					<select name="param3" class="chosen-gsh <?php echo "s-$show_date"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_date == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_date == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_date == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Category; ?></td>
+				<td>	
+					<select name="param4" class="chosen-gsh <?php echo "s-$show_category"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_category == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_category == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_category == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="row-title" style="width: 40%"><?php echo Tags; ?></td>
+				<td>	
+					<select name="param5" class="chosen-gsh <?php echo "s-$show_tags"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_tags == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_tags == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_tags == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>	
+			<tr>
+				<td class="row-title" style="width: 40%" id="article_sum"><?php echo Rates; ?></td>
+				<td>	
+					<select name="param7" class="chosen-gsh <?php echo "s-$show_rate"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_rate == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_rate == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_rate == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+					<input type="hidden" name="param8" value="<?php echo @$rate_value; ?>">
+					<input type="hidden" name="param9" value="<?php echo @$rate_counter; ?>">
+				</td>
+			</tr>					
+			<tr>
+				<td class="row-title" style="width: 40%" id="article_sum"><?php echo Hits; ?></td>
+				<td>	
+					<select name="param6" class="chosen-gsh <?php echo "s-$show_hits"; ?>" style="min-width:150px; width:100%;">
+						<option value="2" <?php if($show_hits == 2) echo'selected'; ?>>Global</option>
+						<option value="1" <?php if($show_hits == 1) echo'selected'; ?>><?php echo Show;?></option>
+						<option value="0" <?php if($show_hits == 0) echo'selected'; ?>><?php echo Hide;?></option>
+					</select>
+				</td>
+			</tr>	
+		</table>
+  </div>
+ </div>
+ <div class="panel box"> 		
+  <header>
+		<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+			<h5>Meta Data</h5>
+		</a>
+	</header>
+  <div id="collapse3" class="panel-collapse collapse">
+		<table class="data2">
+			<!--tr>
+				<td class="row-title"  style="width: 30%" title="<?php echo Keywords_tip; ?>">SEF URLs</td>
+				<td><textarea rows="2" cols="19" type="text" name="keyword" style="min-width:100%; max-width: 100%; resize: vertical;"><?php formRefill('keyword',$qr['keyword'],'textarea'); ?></textarea></td>
+			</tr-->			
+			<tr>
+				<td class="row-title " title="<?php echo Keywords_tip; ?>"><?php echo Keyword; ?></td>
+				<td><textarea rows="3" cols="19" type="text" name="keyword"style="min-width:100%; max-width: 100%; resize: vertical;"><?php formRefill('keyword',$qr['keyword'],'textarea'); ?></textarea></td>
+			</tr>							
+			<tr>
+				<td class="row-title " title="<?php echo Meta_Desc_tip; ?>"><?php echo Description; ?></td>
+				<td><textarea rows="5" cols="19" type="text" name="desc"style="min-width:100%; max-width: 100%; resize: vertical;"><?php formRefill('description',$qr['description'],'textarea'); ?></textarea></td>
+			</tr>
+		</table>
+  </div>
+ </div>
+</div>
+</div>

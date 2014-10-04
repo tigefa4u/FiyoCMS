@@ -1,10 +1,10 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-*/
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
+**/
 
 defined('_FINDEX_') or die('Access Denied');
 
@@ -31,16 +31,18 @@ if(!defined('MetaRobots')) {
 /********************************************/
 /*  		Define Type & Site Title	  	*/
 /********************************************/
-if(!defined('PageTitle')) 
+if(isset($_GET['theme']) AND $_GET['theme'] =='module')
+	define('PageTitle','Module_Position'); 
+else if(!defined('PageTitle')) 
 	define('PageTitle','404');
 if(TitleType==1)
-	define('FTitle',PageTitle.TitleDiv.SiteName);
+	define('FTitle',PageTitle.TitleDiv.SiteTitle);
 else if(TitleType==2) 
-	define('FTitle',SiteName.TitleDiv.PageTitle);
+	define('FTitle',SiteTitle.TitleDiv.PageTitle);
 else if(TitleType==3) 
 	define('FTitle',PageTitle);
 else if(TitleType==0) 
-	define('FTitle',SiteName);	
+	define('FTitle',SiteTitle);	
 
 	
 /********************************************/

@@ -1,6 +1,11 @@
 <?php
 
 if (!isset($SETTINGS[PSNG_COMPRESS_SITEMAP])) $SETTINGS[PSNG_COMPRESS_SITEMAP] = '';
+$iv = ''; $ivv = false;
+if (isset($_REQUEST['action'])) {
+ $iv = 'invisible';
+ $ivv = true;
+ }
 
 	$layout = '
 	<script type="text/javascript">
@@ -34,13 +39,14 @@ if (!isset($SETTINGS[PSNG_COMPRESS_SITEMAP])) $SETTINGS[PSNG_COMPRESS_SITEMAP] =
 	}
 	//-->
 	</script>
-	<form name="setupExpert" action="?app=sitemap" method="post">
+	<form name="setupExpert" action="" method="post">
 	<input type="hidden" name="'.PSNG_ACTION.'" value="'.PSNG_ACTION_SETTINGS_GET.'">
-	<div>
 	
-	<table border="0" cellpadding="5" cellspacing="0" width="495">
+	<div class="panel box"> 	
+	<div class="'.$iv.'">
+	<table>
 	  <tr>
-	  	<td width="200" valign="top"><label for="ipage_root" accesskey="R">Page root</label></td>
+	  	<td width="200" valign="top" class="row-title"><label for="ipage_root" accesskey="R">Page root</label></td>
 		<td width="396">
 			<input class="required" type="Text" name="'.PSNG_PAGEROOT.'" id="ipage_root" align="LEFT" size="50" value="'.((strpos($SETTINGS[PSNG_PAGEROOT],"\\") === FALSE)?$SETTINGS[PSNG_PAGEROOT]:stripslashes($SETTINGS[PSNG_PAGEROOT])).'"/>
 			<br/><font size="-1">website root path on <b>local file system</b> of your webserver</font>
@@ -57,7 +63,7 @@ if (!isset($SETTINGS[PSNG_COMPRESS_SITEMAP])) $SETTINGS[PSNG_COMPRESS_SITEMAP] =
 	  <tr>
 	  	<td valign="top"><label for="iping" accesskey="W">Ping google</label></td>
 		<td>
-			<input type="checkbox" '. (($SETTINGS[PSNG_PINGGOOGLE] != '') ? 'checked':'') .' name="'.PSNG_PINGGOOGLE.'" id="iping" align="LEFT" size="50" value="TRUE"/>Ping after update<br />
+			<input type="checkbox" '. (($SETTINGS[PSNG_PINGGOOGLE] != '') ? 'checked':'') .' name="'.PSNG_PINGGOOGLE.'" id="iping" align="LEFT" size="50" value="TRUE"/> Ping after update<br />
 			<font size="-1">always inform google when sitemap is created</font>
 		</td>
 	  </tr>
@@ -200,13 +206,39 @@ if (!isset($SETTINGS[PSNG_COMPRESS_SITEMAP])) $SETTINGS[PSNG_COMPRESS_SITEMAP] =
 					</select><br/>
 		</td>
 	  </tr>
-	  <tr>
-	    <td style="border:none">&nbsp;</td>
-		<td style="border:none;padding: 10px 10px 7px;"><input type="Submit" value="Submit Settings" name="'.PSNG_ACTION_SETTINGS_GET.'" class="button">&nbsp;
-			<input type="Submit" value="Reset to initial values" name="'.PSNG_ACTION_SETTINGS_RESET.'" class="button">&nbsp;
-		</td>
-	  </tr>
 	</table>
-	</div>
-	</form>';
+	</div>';
+	
+			if(!$ivv) $layout .= '
+		<div class="box-footer box"> 	';
+		
+		
+			if($ivv) $layout .= '
+		<div class="box no-border"> 	';
+		
+		
+		$layout .= '
+			<footer>';
+			
+			if($ivv)
+ $layout .= '
+			<div style=" margin:0; padding:10px; width: 100%;"><p>
+Please remember! It will take a long time doing the tracking link on your site.<br/>
+Please wait until the process is completed. If you understand you can start now.<br></p><button type="Submit" value="" name="'.PSNG_ACTION_SETTINGS_GET.'" class="btn btn-grad btn-primary">'.Start_Now.'</button>
+</div>';
+
+
+			if(!$ivv)
+ $layout .= '
+
+<div>	</div>
+			<div class='.$iv.'>	
+				<button type="Submit" value="" name="'.PSNG_ACTION_SETTINGS_GET.'" class="btn btn-grad btn-primary">Submit Settings</button>
+				<button type="Submit" value="" name="'.PSNG_ACTION_SETTINGS_RESET.'" class="btn btn-grad">Reset to initial values</button>
+				</div>';
+			
+ $layout .= '</footer>
+		</div>
+	</form>
+	</div>';
 ?>

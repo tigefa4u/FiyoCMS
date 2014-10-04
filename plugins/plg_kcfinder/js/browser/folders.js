@@ -97,7 +97,7 @@ browser.buildTree = function(root, path) {
 browser.expandDir = function(dir) {
     var path = dir.data('path');
     if (dir.children('.brace').hasClass('opened')) {
-        dir.parent().children('.folders').hide(500, function() {
+        dir.parent().children('.folders').slideUp('fast', function() {
             if (path == browser.dir.substr(0, path.length))
                 browser.changeDir(dir);
         });
@@ -105,7 +105,7 @@ browser.expandDir = function(dir) {
         dir.children('.brace').addClass('closed');
     } else {
         if (dir.parent().children('.folders').get(0)) {
-            dir.parent().children('.folders').show(500);
+            dir.parent().children('.folders').slideDown('fast');
             dir.children('.brace').removeClass('closed');
             dir.children('.brace').addClass('opened');
         } else if (!$('#loadingDirs').get(0)) {
@@ -133,7 +133,7 @@ browser.expandDir = function(dir) {
                             dir.parent().append('<div class="folders">' + html + '</div>');
                             var folders = $(dir.parent().children('.folders').first());
                             folders.css('display', 'none');
-                            $(folders).show(500);
+                            $(folders).fadeIn('fast');
                             $.each(data.dirs, function(i, cdir) {
                                 browser.setTreeData(cdir, path);
                             });

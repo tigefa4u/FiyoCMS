@@ -10,7 +10,7 @@
 defined('_FINDEX_') or die('Access Denied');
 
 // Access only for Administrator
-if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] > 2)
+if($_SESSION['USER_LEVEL'] > 2)
 	redirect('index.php');
 
 $db = new FQuery();  
@@ -51,8 +51,8 @@ if(isset($_POST['themes_admin'])) {
 		}
 	}
 }
-
+/*
 if(isset($_GET['theme']) or isset($_GET['theme']) == 'files') {
 	if(empty($_GET['theme']) or !file_exists("../themes/$_GET[theme]/index.php"))
 		redirect('?app=theme');
-}
+}*/

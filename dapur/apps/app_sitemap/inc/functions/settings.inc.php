@@ -208,6 +208,7 @@ function getSettings() {
 	debug($SETTINGS, 'Got and computed settings');
 
 	return TRUE;
+	
 }
 
 function checkUpdateStatus() {

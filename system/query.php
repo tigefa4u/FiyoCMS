@@ -178,7 +178,7 @@ class FQuery {
         {
             if($where == null)
             {
-                $delete = 'DELETE '.$table;
+                $delete = 'DELETE FROM '.$table;
             }
             else
             {

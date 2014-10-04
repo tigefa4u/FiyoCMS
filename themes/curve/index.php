@@ -1,3 +1,4 @@
+<?php defined('_FINDEX_') or die('Access Denied!'); ?>
 <!DOCTYPE html>
 <html lang="<?php echo SiteLang;  ?>">
 <head>
@@ -59,20 +60,26 @@
 						<div class="col">				
 							<?php loadModule('top3');?>
 						</div>
-						<div class="cl"> </div>
+						<div class="cl"></div>
 					</section>
 				<?php endif; ?>
 					<section class="post">
+						<?php if(checkModule('right')) : ?>
 						<div class="col left-box">
+						<?php else : ?>
+						<div class="col">
+						<?php endif; ?>
 							<?php loadApps(); ?>
-						</div>
+						</div>		
+						<?php if(checkModule('right')) : ?>
 						<div class="col  right-box">			
 							<?php loadModule('right');?>
 						</div>
+						<?php endif; ?>
 						
 					</section>
 
-						<div class="cl"> </div>
+						<div class="cl"></div>
 				
 				</div>
 				<!-- end of main -->
@@ -81,14 +88,14 @@
 				<div class="socials">
 					<div class="socials-inner">									
 							<?php loadModule('breadchumb');?>						
-						<div class="cl"> </div>
+						<div class="cl"></div>
 					</div>
 				</div>					
 				<?php endif; ?>	
 				
 				<div id="footer">
 					<div class="footer-bottom">
-						<p class="copy">&copy; Copyright <?php echo siteConfig('site_name')." ".date("Y"); ?><br/><strong>My Engine is <a href="http://www.fiyo.org" target="_blank">Fiyo CMS</a></strong></p>
+						<p class="copy">Â© Copyright <?php echo siteConfig('site_name')." ".date("Y"); ?><br/><strong>My Engine is <a href="http://www.fiyo.org" target="_blank">Fiyo CMS</a></strong></p>
 						<div class="cl"></div>
 					</div>
 				</div>

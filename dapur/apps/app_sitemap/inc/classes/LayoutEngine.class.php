@@ -217,6 +217,6 @@ class LayoutEngine {
     		$res = '';
     	}    	
     	return $res;
-    }    
+    }
 }
 ?>

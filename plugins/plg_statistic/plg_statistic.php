@@ -9,7 +9,7 @@
 **/
 
 defined('_FINDEX_') or die('Access Denied');
-
+if(!isset($_GET['theme'])) {
 $timezones = DateTimeZone::listAbbreviations();
 
 $cities = array();
@@ -53,12 +53,19 @@ $_ip = new ip_codehelper();
 // Detect Real IP Address & Location
 $ip = $_ip->getRealIP();
 if(!empty($_SERVER['REMOTE_ADDR'])) $ip =  $ip;
-$visitor_location       = $_ip->getLocation($ip);
+if(!checkLocalhost()) {
 
+$visitor_location = $_ip->getLocation($ip);
 // Output result
-$country = $visitor_location['CountryName']."";
-$city 	= $visitor_location['CityName']."";
+$country	= $visitor_location['CountryName']."";
+$city 		= $visitor_location['CityName']."";
 $timeZone 	= $visitor_location['LocalTimeZone']."";
+} else {
+	$country	= "Local"."";
+	$city 		= "Local"."";
+	$timeZone 	= siteConfig('timezone')."";
+}
+
 $browser 	= _browser();
 $platform	= ucfirst($browser['platform']);
 $browser 	= ucfirst($browser['browser']);
@@ -109,3 +116,4 @@ else if (time() - $_SESSION['VISIT_SESSION_DAILY'] > 7200) {
 
 //set visitor timezone
 @date_default_timezone_set($visitor_location['LocalTimeZone']);
+}

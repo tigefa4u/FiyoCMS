@@ -92,24 +92,10 @@ function openFile($filename, $writable = FALSE) {
 function init() {
 	global $SETTINGS, $_REQUEST, $LAYOUT;
 
-	session_start();
-	
-	// set layout engine
-	$LAYOUT = new LayoutEngine("phpSitemapNG");
-	$LAYOUT->setTitle("");
+	session_start();	// set layout engine
+	$LAYOUT = new LayoutEngine("Fiyo CMS");
+	$LAYOUT->setTitle("Fiyo CMS");
 	$LAYOUT->setCharSet("iso-8859-1");
-	$LAYOUT->addCss('.history, .required { background-color:#E0E0E0; }');
-	$LAYOUT->addCss('.source_fs { background-color:#FF70CC; }');
-	$LAYOUT->addCss('.source_website { background-color:#CCFF70; }');
-	$LAYOUT->addCss('.source_fs_website { background-color:#70CCFF; }');
-
-	$LAYOUT->addCss('.notfound { background-color:#FF3030; }');
-	$LAYOUT->addCss('Label {color:#000099; font-weight: bold; }');
-	$LAYOUT->addCss('h1,h2,h3 {color:#000099; }');
-	$LAYOUT->addCss('.error {color:#cc0000; font-weight: bold; }');
-	$LAYOUT->addCss('.warning {color:#000000; font-weight: italic; }');
-	$LAYOUT->addCss('.info {color:#000000; font-weight: normal; }');
-	$LAYOUT->addCss('.success {color:#009900; font-weight: bold; }');
 	$LAYOUT->switchOffBuffer();
 	print $LAYOUT->getHeaderLayout();
 

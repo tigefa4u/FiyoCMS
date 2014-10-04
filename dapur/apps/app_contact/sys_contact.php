@@ -15,28 +15,26 @@ $db->connect();
 /****************************************/
 /*			 Add group contact			*/
 /****************************************/
-if(isset($_POST['add_group']) or isset($_POST['D'])){
+if(isset($_POST['add_group']) or isset($_POST['save_group'])){
 	if(!empty($_POST['name']) AND !empty($_POST['desc'])) {
 	$qr=$db->insert(FDBPrefix.'contact_group',array("","$_POST[name]","$_POST[desc]")); 
-		if($qr AND isset($_POST['save_add_group'])){		
-			alert('loading');
-			alert('info',Group_Saved);
-			htmlRedirect('?app=contact&act=group',2);
+		if($qr AND isset($_POST['save_group'])){		
+			notice('success',Group_Saved);
+			redirect('?app=contact&view=group');
 		}
 		else if($qr AND isset($_POST['add_group'])){
 			$sql = $db->select(FDBPrefix.'contact_group','id','','id DESC' ); 	  
 			$qr = mysql_fetch_array($sql);
-			alert('loading');
-			alert('info',Group_Saved);
-			htmlRedirect('?app=contact&act=edit_group&id='.$qr['id'],2);
+			notice('success',Group_Saved);
+			redirect('?app=contact&view=group&act=edit&id='.$qr['id']);
 		}
 		else {				
-			alert('error',Status_Fail);
+			notice('error',Status_Fail);
 		}					
 	}
 	else 
 	{				
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid);
 	}
 }
 	
@@ -49,19 +47,19 @@ if(isset($_POST['delete_group'])){
 	$source = multipleSelect($source);
 	$delete = multipleDelete('contact_group',$source,'contact','id');		
 	if($delete == 'noempty') 
-		alert('error',Group_contact_Not_Empty);
+		notice('error',Group_contact_Not_Empty);
 	else if(isset($delete))
-		alert('info',Group_Deleted);
+		notice('info',Group_Deleted);
 	else
-		alert('error',Please_Select_Group);
-	
+		notice('error',Please_Select_Group);
+	redirect(getUrl());		
 }
 		
 	
 /****************************************/
 /*			 Edit group contact			*/
 /****************************************/
-if(isset($_POST['edit_group']) or isset($_POST['save_edit_group'])){
+if(isset($_POST['edit_group']) or isset($_POST['apply_group'])){
 	if(!empty($_POST['name']) AND !empty($_POST['desc'])){
 		$qr=$db->update(FDBPrefix.'contact_group',array("name"=>"$_POST[name]",
 		'description'=>"$_POST[desc]"),
@@ -71,20 +69,20 @@ if(isset($_POST['edit_group']) or isset($_POST['save_edit_group'])){
 		while(mysql_fetch_array($sql)){	
 			$qrs=$db->update(FDBPrefix.'contact',array("group_id"=>$_POST['id']),'id='.$_POST['id']);
 		}					
-		if($qr AND isset($_POST['save_edit_group'])){
-			alert('loading');
-			alert('info',Group_Saved);
-			htmlRedirect('?app=contact&act=group',2);
+		if($qr AND isset($_POST['edit_group'])){
+			notice('success',Group_Saved);
+			redirect('?app=contact&view=group');
 		}		
-		else if($qr AND isset($_POST['edit_group'])){
-			alert('info',Group_Saved);
+		else if($qr AND isset($_POST['apply_group'])){
+			notice('success',Group_Saved);
+			redirect(getUrl());
 		}
 		else {
-			alert('error',Status_Fail);
+			notice('error',Status_Fail);
 		}
 	}
 	else {
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid);
 	}
 }
 
@@ -102,21 +100,19 @@ if(isset($_POST['save_add']) or isset($_POST['apply_add'])){
 		if($qr AND isset($_POST['apply_add'])){
 			$sql = $db->select(FDBPrefix.'contact','id','','id DESC' ); 	  
 			$qr = mysql_fetch_array($sql);
-			alert('loading');
-			alert('info',Contact_Saved);
-			htmlRedirect('?app=contact&act=edit&id='.$qr['id'],2);
+			notice('success',Contact_Saved);
+			redirect('?app=contact&act=edit&id='.$qr['id'],2);
 		}
 		elseif($qr AND isset($_POST['save_add'])) {	
-			alert('loading');
-			alert('info',Contact_Saved);
-			htmlRedirect('?app=contact',2);
+			notice('success',Contact_Saved);
+			redirect('?app=contact',2);
 		}
 		else {				
-			alert('error',Status_Fail);
+			notice('error',Status_Fail);
 		}
 	}
 	else {	
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid);
 	}	
 }
 
@@ -125,7 +121,7 @@ if(isset($_POST['save_add']) or isset($_POST['apply_add'])){
 /****************************************/ 		
 if(isset($_POST['save_edit']) or isset($_POST['apply_edit'])){	
 	if( !empty($_POST['name']) AND !empty($_POST['gender']) AND !empty($_POST['group'])) {	
-		$qr=$db->update(FDBPrefix.'contact',array(	
+		$qr=$db->update(FDBPrefix.'contact',array(
 		"name"=>"$_POST[name]",			
 		"gender"=>"$_POST[gender]",
 		"group_id"=>"$_POST[group]",
@@ -146,16 +142,16 @@ if(isset($_POST['save_edit']) or isset($_POST['apply_edit'])){
 		"description"=>"$_POST[desc]"),
 		"id=$_POST[id]");
 		if($qr AND isset($_POST['save_edit'])){	
-			alert('loading');
-			alert('info',Contact_Saved);
-			htmlRedirect('?app=contact',2);
+			notice('success',Contact_Saved);
+			redirect('?app=contact');
 		}
 		else if($qr AND isset($_POST['apply_edit'])){ 
-			alert('info',Contact_Saved);
+			notice('success',Contact_Saved);
+			refresh();
 		}
-		else {alert('error',Status_Fail);}					
+		else {notice('error',Status_Fail);}					
 	}
-	else {alert('error',Status_Invalid);}
+	else {notice('error',Status_Invalid);}
 }
 
 
@@ -167,43 +163,19 @@ if(isset($_POST['delete'])){
 	$source = multipleSelect($source);
 	$delete = multipleDelete('contact',$source);	
 	if(isset($delete))
-		alert('info',Contact_Deleted);
+		notice('info',Contact_Deleted);
 	else
-		alert('error',Please_Select_contact);
+		notice('error',Please_Select_contact);	
+	redirect(getUrl());		
 }
 
-		
-/****************************************/
-/*		      Make Home Page					*/
-/****************************************/ 	
-if(isset($_REQUEST['act']) AND $_REQUEST['act']=='home'){
-	$qr = $db->update(FDBPrefix.'contact',array("home"=>"0"),'id!='.$_REQUEST['id']);
-	$qr = $db->update(FDBPrefix.'contact',array("home"=>"1"),'id='.$_REQUEST['id']);
-	if($qr) alert('info',Status_Applied);
-}
-	
-
-/****************************************/
-/*	    Enable and Disbale contact			*/
-/****************************************/
-if(isset($_REQUEST['act'])) {
-	if(!isset($_POST['delete']) AND $_REQUEST['act']=='enable'){
-		$db->update(FDBPrefix.'contact',array("status"=>"1"),'id='.$_REQUEST['id']);
-		alert('info',Status_Applied);
-	}
-
-	if(!isset($_POST['delete']) AND $_REQUEST['act']=='disable'){
-		$db->update(FDBPrefix.'contact',array("status"=>"0"),'id='.$_REQUEST['id']);
-		alert('info',Status_Applied);
-	}
-}
 
 /****************************************/
 /*	 Redirect when contact-Id not found	*/
 /****************************************/
 if(!isset($_POST['save_edit']) AND !isset($_POST['apply_edit'])) {
-	if(isset($_REQUEST['act']))
-		if($_REQUEST['act']=='edit'){
+	if(isset($_REQUEST['view']))
+		if($_REQUEST['view']=='edit'){
 		$id = $_REQUEST['id'];
 		$react = oneQuery('contact','id',$id,'id');
 		if(!isset($react)) header('location:?app=contact');

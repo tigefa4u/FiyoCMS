@@ -22,18 +22,20 @@ $db 	= new FQuery();
 
 $level	= Level_Access;
 $tags = '';
-$sql = $db->select(FDBPrefix."article",'tag',"status = 1 AND tag != '' $level","RAND() LIMIT 50");
+$sql = $db->select(FDBPrefix."article",'tags',"status = 1 AND tags != '' $level","RAND() LIMIT 50");
 while($tag = mysql_fetch_array($sql)) {
-	$tags .= $tag['tag'].",";
+	$tags .= $tag['tags'].",";
 }
 
 $tagz = explode(",",$tags);
-//sort($tagz);
+sort($tagz);
 $tags = $tagb = null;
 foreach($tagz as $tag) {
-	$size = rand(1,4);
-	$link = make_permalink("?app=article&tag=$tag");
+	$size = rand(1,4);	
+	$link = str_replace(" ","-","?app=article&tag=$tag");
+	$link = make_permalink($link);
 	$ltag = strtolower($tag);
+	
 	if(!empty($tag) AND $tag != $tagb)
 	$tags .= "<a class='tag$size tag-$ltag' href='$link'>$tag</a> ";		
 	$tagb = $tag;			

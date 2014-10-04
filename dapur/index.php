@@ -11,11 +11,15 @@ session_start();
 //mendefinisikan _FINDEX_ sebagai halaman utama
 define('_FINDEX_', 'BACK' );
 
+$start_time = microtime(TRUE);
+define('_START_TIME_', $start_time );
+
 $sn = substr($_SERVER['PHP_SELF'],1);
 $sm = strpos($sn,'/');
 $sm = substr($sn,0,$sm);
 
 define('_ADMINPANEL_', $sm );
+
 
 //mengecek file konfigurasi
 if(!file_exists('../config.php')) 

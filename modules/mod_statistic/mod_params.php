@@ -43,17 +43,19 @@ $(document).ready( function(){
 <input type="hidden" value="lastmonth" name="nameParam6" />
 <input type="hidden" value="all" name="nameParam7" />
 <input type="hidden" value="info" name="nameParam8" />
-<li>
-	<h3>Statistic Configuration</h3>
-	<div class="isi">
-		<div class="acmain open">
-		
+<div class="panel box">								
+	<header>
+		<a class="accordion-toggle" data-toggle="collapse" href="#article_list" data-parent="#accordion">
+				<h5>Statistics Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
 			<table class="data2">				
 			<tr>
-				<td class="djudul tooltip" title="Show author comment">Show Today</td>
+				<td class="row-title"><span title="Show author comment">Show Today</td>
 				<td>	
 					<?php 
-					if($param1){$f1="selected checked"; $f0 = "";}
+					if($param1 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -65,10 +67,10 @@ $(document).ready( function(){
 				</td>
 			</tr>				
 			<tr>
-				<td class="djudul tooltip" title="Show gravatar image">Show Yesterday</td>
+				<td class="row-title"><span title="Show gravatar image">Show Yesterday</td>
 				<td>	
 					<?php 
-					if($param2){$f1="selected checked"; $f0 = "";}
+					if($param2 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -81,10 +83,10 @@ $(document).ready( function(){
 			</tr>			
 			
 			<tr>
-				<td class="djudul tooltip" title='Show article title'>Show Thisweek</td>
+				<td class="row-title"><span title='Show article title'>Show This Week</td>
 				<td>	
 					<?php 
-					if($param3){$f1="selected checked"; $f0 = "";}
+					if($param3 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -96,10 +98,10 @@ $(document).ready( function(){
 				</td>
 			</tr>			
 			<tr>
-				<td class="djudul tooltip" title='Show text comments' >Show Lastweek</td>
+				<td class="row-title"><span title='Show text comments' >Show Last Week</td>
 				<td>	
 					<?php 
-					if($param4){$f1="selected checked"; $f0 = "";}
+					if($param4 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -111,10 +113,10 @@ $(document).ready( function(){
 				</td>
 			</tr>						
 			<tr>
-				<td class="djudul tooltip" title='Show comments date' >Show Thismonth</td>
+				<td class="row-title"><span title='Show comments date' >Show This Month</td>
 				<td>	
 					<?php 
-					if($param5){$f1="selected checked"; $f0 = "";}
+					if($param5 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -126,7 +128,7 @@ $(document).ready( function(){
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title='Show comments date' >Show Lastmonth</td>
+				<td class="row-title"><span title='Show comments date' >Show Last Month</td>
 				<td>	
 					<?php 
 					if($param6){$f1="selected checked"; $f0 = "";}
@@ -141,10 +143,10 @@ $(document).ready( function(){
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title='Show comments date' >Show Total</td>
+				<td class="row-title"><span title='Show comments date' >Show Total</td>
 				<td>	
 					<?php 
-					if($param7){$f1="selected checked"; $f0 = "";}
+					if($param7 or $_GET['act'] == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
 					?>
 					<p class="switch">
@@ -155,7 +157,7 @@ $(document).ready( function(){
 					</p>
 				</td>
 			</tr><tr>
-				<td class="djudul tooltip" title='Show comments date' >Guest Information</td>
+				<td class="row-title"><span title='Show comments date' >Guest Information</td>
 				<td>	
 					<?php 
 					if($param8){$f1="selected checked"; $f0 = "";}

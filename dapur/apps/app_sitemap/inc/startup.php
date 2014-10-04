@@ -28,7 +28,6 @@ include_once('apps/app_sitemap/inc/functions/settings.inc.php');
 include_once('apps/app_sitemap/inc/classes/Crawler.class.php');
 include_once('apps/app_sitemap/inc/classes/FilesystemHandler.class.php');
 include_once('apps/app_sitemap/inc/classes/LayoutEngine.class.php');
-include_once('apps/app_sitemap/inc/gsgxml/GsgXml.class.php');
 
 $SETTINGS[PSNG_FILE_SETTINGS] = 	'apps/app_sitemap/settings/settings.inc.php';
 $SETTINGS[PSNG_FILE_FILES] = 		'apps/app_sitemap/settings/files.inc.php';

@@ -1,38 +1,25 @@
 <?php
 /**
-* @version		v 1.2.1
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see license.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
-$db = new FQuery();  
-$db->connect();
+$view = $folder = false;
+if(isset($_REQUEST['folder']))
+	$folder=$_REQUEST['folder'];
 
-if(isset($_REQUEST['act']))
-	$act=$_REQUEST['act'];
-else
-	$act = null;
-
-switch($act)
-{
-	case 'admin':	 
+if(isset($_REQUEST['view']))
+	$view=$_REQUEST['view'];
+			
+if($view == 'admin')
 	 require('admin_theme.php');
-	break;
-	case 'files':	 
-	 require('file_theme.php');
-	break;
-	case 'afiles':	 
-	 require('file_theme.php');
-	break;
-	case 'site':
+else if($folder AND $folder != 'blank') 
+	 require('edit_theme.php');
+else
 	 require('site_theme.php');
-	break;
-	default :
-	 require('site_theme.php');
-	break;
-}
+	 
 ?>

@@ -1,20 +1,19 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
-if(isset($_REQUEST['act']))
-	$act=$_REQUEST['act'];
+if(isset($_REQUEST['view']))
+	$view =$_REQUEST['view'];
 else
-	$act = null;
+	$view = null;
 	
-switch($act)
+switch($view)
 {	
 	default :
 	 require('view_menu.php');
@@ -29,12 +28,12 @@ switch($act)
 	 require('view_menu.php');
 	break;	
 	case 'category':	 
-	 require('category/view_cat_menu.php');
+	 require('category/view_category.php');
 	break;
 	case 'edit_category':	 
-	 require('category/edit_cat_menu.php');
+	 require('category/edit_category.php');
 	break;
 	case 'add_category':	 
-	 require('category/add_cat_menu.php');
+	 require('category/add_category.php');
 	break;		
 }

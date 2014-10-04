@@ -1,13 +1,12 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 **/
 
 defined('_FINDEX_') or die('Access Denied');
-
 /****************************************/
 /*			 Loader Function 			*/
 /****************************************/
@@ -59,7 +58,7 @@ function load_themes(){
 		$_SESSION['USER_NAME']	= null ;
 		$_SESSION['USER_EMAIL'] = null ;
 		$_SESSION['USER_LEVEL'] = null ;		
-		load_login();
+		redirect(getUrl());
 	}	
 	else {		
 		redirect_www();
@@ -94,15 +93,19 @@ function load_login() {
 		else {
 			select_themes('login');
 			alert('error',Login_Error);	
-		}		
+		}
 	}
 	else {
-		select_themes('login');
+		if(isset($_GET['theme']) AND $_GET['theme'] == 'blank')
+			echo "Redirecting...";
+		else
+			select_themes('login');
 	}
 }
+
 //memilih tema AdminPanel sesuai dengan nilai admin_theme pada tabel setting
 function select_themes($log, $stat = NULL){
-	$themePath = oneQuery("setting","name","'admin_theme'",'value');
+	$themePath = siteConfig('admin_theme');
 	define("AdminPath","themes/$themePath");		
 	if($log=="login") {
 		$file =  "themes/$themePath/login.php";
@@ -114,8 +117,14 @@ function select_themes($log, $stat = NULL){
 	}
 	else if($log=="index" AND $_SESSION['USER_LEVEL'] <= 3) {	
 		$file =   "themes/$themePath/index.php";
-		if(file_exists($file)) {
-			require $file;}
+		if(isset($_GET['theme']) AND $_GET['theme'] =='blank') {
+			loadAdminApps();
+			$end_time = microtime(TRUE);
+			$n = substr($end_time - _START_TIME_,0,7);
+			echo "<input type='hidden' value='$n' class='load-time'>";
+		}
+		else if(file_exists($file)) 
+			require $file;
 		else
 			echo "Failed to load AdminTheme";
 	}

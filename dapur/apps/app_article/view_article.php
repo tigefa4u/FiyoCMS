@@ -1,200 +1,238 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
 $db = new FQuery();  
-$db->connect(); 			
-?>	
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {			
-		$(".cb-enable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-disable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', true);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_article/controller/article_status.php",
-				data: type+"=1&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				}
-			});
-		});
-		
-		$(".cb-disable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-enable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', false);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_article/controller/article_status.php",
-				data: type+"=0&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				
-				}
-			});
-		});
-	
-	
-		oTable = $('table').dataTable({			
-			"bJQueryUI": true,
-			"sPaginationType": "full_numbers",	
-			"aoColumns": [ null, { "sType": 'string-case' }, null,  null, null, null, null, null ,null ]	
-		});		
-		
-		$('#checkall').click(function(){
-		    $(this).parents('form:eq(0)').find(':checkbox').attr('checked', this.checked);
-		});
-		
-		$("#form").submit(function(e){
-		if (!confirm("<?php echo Sure_want_delete; ?>"))
-			{
-				e.preventDefault();
-				return;
-			} 
-		});
-	});
+$db->connect();
 
+printAlert('NOTICE');
+
+$_GET['cat'] = $_GET['level'] = $_GET['user'] = '';
+?>
+<script type="text/javascript">	
+$(function() {		
+	$("#form").submit(function(e){
+		e.preventDefault();
+		var ff = this;
+		var checked = $('input[name="check[]"]:checked').length > 0;
+		if(checked) {	
+			$('#confirmDelete').modal('show');	
+			$('#confirm').on('click', function(){
+				ff.submit();
+			});		
+		} else {
+			noticeabs("<?php echo alert('error',Article_Not_Select); ?>");
+			$('input[name="check[]"]').next().addClass('input-error');
+			return false;
+		}
+	});
+	
+function iniTable () {
+	if ($.isFunction($.fn.dataTable)) {	
+		$('table.data').show();	
+		var cat = $('.category').val();
+		var user = $('.user').val();
+		var level = $('.level').val();
+		
+		oTable = $('table.data').dataTable({
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "apps/app_article/controller/article_list.php?cat="+cat+"&user="+user+"&level="+level,
+			"bJQueryUI": true,  
+			"sPaginationType": "full_numbers",
+			"fnDrawCallback": function( oSettings ) {
+				selectCheck();
+				$('[data-toggle=tooltip]').tooltip();
+				$('[data-tooltip=tooltip]').tooltip();
+				$('.tips').tooltip();			
+				$("tr").click(function(e){
+					var i =$("td:first-child",this).find("input[type='checkbox']");					
+					var c = i.is(':checked');
+					if($(e.target).is('.switch *, a[href]')) {					   
+					} else if(i.length){
+						if(c) {
+							i.prop('checked', 0);		
+							$(this).removeClass('active');			
+						}
+						else {
+							i.prop('checked', 1);
+							$(this).addClass('active');
+						}
+					}
+				});			
+				$(".editor.activator label").click(function(){
+					var parent = $(this).parents('.switch');
+					var id = $('.number',parent).attr('value');	
+					var value = $('.type',parent).attr('value');
+					if(value == 1) value = 0; else value = 1;
+					$.ajax({
+						url: "apps/app_article/controller/article_status.php",
+						data: "stat="+value+"&id="+id,
+						success: function(data){
+							$('.type',parent).attr('value',0);					
+							notice(data);	
+						}
+					});
+				});
+				
+				$(".editor.featured label").click(function(){
+					var parent = $(this).parents('.switch');
+					var id = $('.number',parent).attr('value');	
+					var value = $('.type',parent).attr('value');
+					if(value == 1) value = 0; else value = 1;
+					$.ajax({
+						url: "apps/app_article/controller/article_status.php",
+						data: "fp="+value+"&id="+id,
+						success: function(data){
+							$('.type',parent).attr('value',0);					
+							notice(data);		
+						}
+					});
+				});
+							
+				$(".editor .cb-enable").click(function(){		
+					var parent = $(this).parents('.switch');
+					$('.cb-disable',parent).removeClass('selected');
+					$(this).addClass('selected');
+					$('.checkbox',parent).attr('checked', false);	
+				});
+				$(".editor .cb-disable").click(function(){		
+					var parent = $(this).parents('.switch');
+					$('.cb-enable',parent).removeClass('selected');
+					$(this).addClass('selected');
+					$('.checkbox',parent).attr('checked', false);	
+				});
+		
+				
+				$('input[type="checkbox"],input[type="radio"]').wrap("<label>");
+				$('input[type="checkbox"],input[type="radio"]').after("<span class='input-check'>");
+				$('table.data tbody a[href]').on('click', function(e){
+				   if ($(this).attr('target') !== '_blank'){
+					e.preventDefault();	
+					loadUrl(this);
+				   }				
+				});
+			}
+			
+		});
+		
+		
+		$('table.data th input[type="checkbox"]').parents('th').unbind('click.DT');
+		if ($.isFunction($.fn.chosen) ) {
+			$("select").chosen({disable_search_threshold: 10});
+		}
+	}
+}
+	$('.filter').change(function () {
+		oTable.fnDestroy();
+		iniTable();		
+	});
+	
+	iniTable();
+});
 </script>
-<div id="stat"></div>
 <form method="post" id="form">
 	<div id="app_header">
-		<div class="warp_app_header">		
-		  <div class="app_title"><?php echo Article_Manager; ?></div>
-		  <div class="app_link">			
-			<a class="lbt add tooltip link" Value="Create" href="?app=article&act=add" title="<?php echo Add_new_article; ?>"><?php echo Add_new_article; ?></a>
-			<input type="submit" class="lbt delete tooltip" title="<?php echo Delete; ?>" value="<?php echo Delete; ?>" value="ok" name="delete"/>	
-			<hr class="lbt sparator tooltip">
-			<a class="lbt help popup tooltip" href="#helper" title="<?php echo Help; ?>">Help</a>	
-			<div id="helper"><?php echo Article_help; ?></div>
+		<div class="warp_app_header">				
+			<div class="app_title"><?php echo Article_Manager; ?></div>
+			<div class="app_link">			
+				<a class="add btn btn-primary" Value="Create" href="?app=article&act=add" title="<?php echo Add_new_article; ?>"><i class="icon-plus"></i> <?php echo New_Article; ?></a>
+				<button type="submit" class="delete btn btn-danger btn-sm btn-grad" title="<?php echo Delete; ?>" value="<?php echo Delete; ?>" name="delete"><i class="icon-trash"></i> &nbsp;<?php echo Delete; ?></button>
+				<input type="hidden" value="true" name="delete_confirm"  style="display:none" />
+						
+				<span class="filter-table">
+				<?=Category; ?>:
+				<select name="cat" class="category filter" chosen-select" data-placeholder="<?php echo Choose_category; ?>" style="min-width:120px;">
+				<option value="">All</option>
+					<?php	
+						$_GET['id']=0;
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'article_category','*','parent_id=0'); 
+						while($qrs=mysql_fetch_array($sql)){
+							if($qrs['level'] >= $_SESSION['USER_LEVEL']){
+								if($_GET['cat']==$qrs['id']) $s="selected";else$s="";
+								echo "<option value='$qrs[id]' $s>$qrs[name]</option>";
+								option_sub_cat($qrs['id'],'');
+							}
+						}						
+					?>
+				</select>
+				<?=Author; ?>:
+				<select name="user"  class="user filter"  placeholder="">
+				<option value="">All</option>
+					<?php
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'user');
+						while($qrs=mysql_fetch_array($sql)){
+							if($qrs['level']==$_GET['user']){
+								echo "<option value='$qrs[id]' selected>$qrs[name]</option>";}
+							else {
+								echo "<option value='$qrs[id]'>$qrs[name]</option>";
+							}
+						}
+					?>
+					</select>
+				<?=Access_Level; ?>:
+				<select name="level" class="level filter" placeholder="">
+				<option value="">All</option>
+					<?php
+						$db = new FQuery(); 
+						$db->connect(); 
+						$sql = $db->select(FDBPrefix.'user_group');
+						while($qrs=mysql_fetch_array($sql)){
+							if($qrs['level']==$qr['level']){
+								echo "<option value='$qrs[level]' selected>$qrs[group_name]</option>";}
+							else {
+								echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
+							}
+						}
+						if($qr['level']==99 AND !$_GET['level'] == '99') $s="selected"; else $s="";
+						echo "<option value='99' $s>"._Public."</option>"
+					?>
+					</select>
+				</span>
 		  </div> 	
 		</div>
-	</div>	
+	</div>
+	
+	<!-- div class="category-table-option">
+	<?=Category; ?>:
+	<select class="data-table-option">
+		<option value="2" id="">All Aasdasdas asd asd</option>
+	</select>
+	<?=Author; ?>:
+	<select class="data-table-option">
+		<option value="2" id="">All</option>
+	</select>
+	<?=Access_Level; ?>:
+	<select class="data-table-option">
+		<option value="2" id="">All</option>
+	</select>
+	</div-->
+	
 	<table class="data">
 		<thead>
 			<tr>							
-				<th style="width:1% !important;" class="no">#</th>	
-				<th style="width:1% !important;" class="no" colspan="0" id="ck">  
-					<input type="checkbox" id="checkall"></th>		
+				<th style="width:1% !important;" class="no" colspan="0">  
+					<input type="checkbox" id="checkall" target="check[]"></th>		
 				<th style="width:30% !important;"><?php echo Article_Title; ?></th>
-				<th style="width:8% !important;" class="no" align="center"><?php echo Featured; ?></th>
-				<th style="width:8% !important;" class="no" align="center">Status</th>
-				<th style="width:10% !important;"><?php echo Category; ?></th>
-				<th style="width:10% !important;"><?php echo Author; ?></th>
-				<th style="width:13% !important;" align='center'><?php echo Date; ?></th>
-				<th style="width:5% !important;" align='center'>Hits</th>
+				<th style="width:8% !important;text-align:center" class="no" >Status</th>
+				<th style="width:15% !important;text-align:center" class='hidden-xs'><?php echo Category; ?></th>
+				<th style="width:12% !important;text-align:center" class='hidden-xs'><?php echo Author; ?></th>
+				<th style="width:12% !important;text-align:center" class='hidden-xs'><?php echo Access_Level; ?></th>
+				<th style="width:15% !important;text-align:center" class='hidden-xs'><?php echo Date; ?></th>
 			</tr>
 		</thead>		
 		<tbody>
-			<?php
-			if(isset($_REQUEST['cat'])) 
-				$cat = "category=".$_REQUEST['cat'];
-			else
-				$cat = $_REQUEST['cat'] = null;
-				
-			$sql = $db->select(FDBPrefix."article","*,DATE_FORMAT(date,'%Y-%m-%d <i>%H:%i:%s</i>') as date","$cat",'date DESC'); 
-			$no = 1;
-			
-			while($qr=@mysql_fetch_array($sql)) {
-				if(isset($cat)) $wcat = "&cat=$_REQUEST[cat]"; else $wcat = null;
-				$sql2 = $db->select(FDBPrefix."article_category","name","id=$qr[category]"); 
-				$category = mysql_fetch_array($sql2);
-				$category = $category['name'];
-				$aut = userInfo('user',$qr['author_id']); 
-					$author = $aut;
-				if(!empty($qr['author'])) 
-					$author=$qr['author'];
-					
-				if($qr['author_id'] == 0)
-					$author="<span title='Original by Null' class='tooltip'>Anonymous</span>";
-				else
-					$author="<span title='Original by $aut' class='tooltip'>$author</span>";
-					
-				/* logika status aktif atau tidak */
-				if($qr['status']==1)
-				{ $stat1 ="selected"; $stat2 ="";}							
-				else
-				{ $stat2 ="selected";$stat1 ="";}
-				
-				/* logika frontpages */
-				if($qr['featured']==1)
-				{ $fp1 ="selected"; $fp2 ="";}							
-				else
-				{ $fp2 ="selected";$fp1 ="";}
-				
-							
-							
-				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=article&act=edit&id=$qr[id]'>$qr[title]</a>";
-				$checkbox ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
-				
-				
-				if($_SESSION['USER_LEVEL'] != 1 AND $_SESSION['USER_ID'] != $qr['author_id'] AND $qr['author_id'] != 0) {
-					$name ="$qr[title]";
-					$checkbox = "<span class='icon lock'></lock>";
-					
-					$status ="
-					<label class='cs-enable $stat1'><span>On</span></label>
-					<label class='cs-disable $stat2'><span>Off</span></label>";
-					
-					$featured ="
-					<label class='cs-enable $fp1'><span>On</span></label>
-					<label class='cs-disable $fp2'><span>Off</span></label>";
-				
-				}
-					else {		
-
-					$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=article&act=edit&id=$qr[id]'>$qr[title]</a>";					
-					$status ="
-						<p class='switch'>
-							<label class='cb-enable $stat1'><span>On</span></label>
-							<label class='cb-disable $stat2'><span>Off</span></label>
-							<input type='text' value='$qr[id]' id='id' class='invisible'><input type='text' value='stat' id='type' class='invisible'>
-							<span class='load'>Loading...</span>
-						</p>";
-					$featured ="
-						<p class='switch'>
-							<label class='cb-enable $fp1'><span>Yes</span></label>
-							<label class='cb-disable $fp2'><span>No</span></label>
-							<input type='text' value='$qr[id]'  class='invisible' id='id'><input type='text' value='fp' id='type' class='invisible'>
-							<span class='load'>Loading...</span>
-						</p>";
-					
-					}
-				
-							
-							
-				echo "<tr><td>$no</td><td align='center'>$checkbox</td><td>$name</td><td align='center'>$featured</td><td  align='center'>$status</td><td>$category</td><td>$author</td><td align='center'>$qr[date]</td><td align='center'>$qr[hits]</td></tr>";
-				$no++;	
-			}					
-			?>				
+			<tr><td colspan="8" align="center">Loading...</td></tr>	
         </tbody>			
 	</table>
 </form>

@@ -1,214 +1,143 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
-* @description	
 **/
 
 defined('_FINDEX_') or die('Access Denied');
+if(!isset($_SESSION['THEME_WIDTH']) or checkMobile()) $_SESSION['THEME_WIDTH'] = null;
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>	
-	<title><?php echo SiteName; ?> Administrator</title>	
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />    
-	<meta http-equiv="imagetoolbar" content="no" />
-	<link rel="shortcut icon" href="<?php echo AdminPath; ?>/images/favicon.png" type="image/x-icon" />
-	<?php 
-		addCss(AdminPath.'/css/style.css'); 
-		addJs(AdminPath.'/js/jquery.min.js'); 
-		addJs(AdminPath.'/js/easy.js'); 
-		addJs(AdminPath.'/js/main.js'); 
-		addJs(AdminPath.'/js/table.js'); 
-		addJs(AdminPath.'/js/load.js'); 
-		addJs(AdminPath.'/js/inputtext.js'); 
-		require_once('plugins.php'); 	
-	?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+    <title><?php echo SiteName; ?> - AdminPanel</title>
+	<link rel="shortcut icon" href="<?php echo AdminPath;?>/images/favicon.png" />
+	<link href="<?php echo AdminPath; ?>/css/font/font-awesome.css" rel="stylesheet" />
+	<link href="<?php echo AdminPath; ?>/css/chosen.css" rel="stylesheet" />
+	<link href="<?php echo AdminPath; ?>/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="<?php echo AdminPath; ?>/css/datetimepicker.css" rel="stylesheet" />
+	<link href="<?php echo AdminPath; ?>/css/main.css" rel="stylesheet" />
+	<script src="<?php echo AdminPath; ?>/js/jquery.min.js"></script>
+	
 </head>
-<body>
-<div id="loading"></div>
-<?php  if(defined('BLANK_THEME') != 'hidden') { ?>
-<div id="header">
-  <div id="warp">
-	<div id="logo">
-		<h1><a href="index.php" title="Fix It Your Own!">Fiyo CMS</a></h1>
+<body class="<?php echo $_SESSION['THEME_WIDTH'];?>">
+<div id="alert"></div>
+<div id="wrap">
+	<div id="top">
+		<!-- .navbar -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+    <!-- Brand and toggle get grouped for better mobile display -->
+			<header class="navbar-header">
+				<a data-placement="bottom" class="side-bar changeSidebarPos">
+					<i class="icon-reorder"></i>
+				</a>
+				<a data-placement="bottom" class="side-bar right userSideBar">
+					<i class="icon-tasks"></i>
+				</a>
+				<span class="navbar-logo" href="index.php"></span>
+			</header>
+			
+			<div class="site-title">
+				<a href="<?php echo FUrl; ?>" target="_blank" data-placement="right" data-original-title="View Site" data-toggle="tooltip" ><?php echo SiteName; ?></a>
+			</div>
+			
+			<?php require('module/header.php'); ?>
+			
+		</nav>
+	<!-- /.navbar -->
 	</div>
-	<ul id="nav">
-		<li><a href="index.php" class='link' >Dashboard</a>
-		  <ul class="subnav">
-			<li <?php if($_SESSION['USER_LEVEL'] != 1) echo 'class="endsub"'; ?>><a href="?app=media" class='link' >Media Manager</a></li>
-			<?php if($_SESSION['USER_LEVEL'] == 1) : ?>
-			<li><a href="?app=addons" class='link' >AddOns Manager</a></li>
-			<li class="endsub"><a href="?app=config" class='link' >Site Configuration</a></li>
-			<?php endif; ?>
-          </ul>									
-		</li>			
-		<li><a class='link'  href="?app=article">Articles</a><sup><a class='link' href="?app=article&act=add" title="Add new article">+</a></sup>
-		  <ul class="subnav level2">
-			<li>
-				<a href='?app=article&act=category' class='link'>Article Categories</a>
-			</li>
-			<?php
-				$db = new FQuery();  
-				$db->connect(); 
-				$sql=$db->select(FDBPrefix.'article_category','*','parent_id=0',"name ASC"); 
-				$sum=mysql_num_rows($sql);
-				$no=1;
-				while($cat=mysql_fetch_array($sql)){
-						$sum2=angka(mysql_num_rows($sql));$sql2=$db->select(FDBPrefix.'article','*',"category=$cat[id]");$sum2=mysql_num_rows($sql2);
-						if($no==$sum) $cl=" class='endsub'"; else $cl='';
-						echo "<li$cl><a class='link'  href='?app=article&cat=$cat[id]'>$cat[name] <span class='total_article'>$sum2</span></a>";
-						sub_menu_category($cat['id']);
-						echo"</li>";
-						$no++;
-				}
-				?>
-              </ul>
-			</li>
-			<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
-			<li><a style="cursor:default" >Apps</a>
-				<ul class="subnav">
-					<?php
-					$db = new FQuery();  
-					$db->connect(); 
-					$sql=$db->select(FDBPrefix.'apps','*',"type = 1 or type = 2","name ASC");
-					$sum=mysql_num_rows($sql);
-					$no=1;
-					while($row=mysql_fetch_array($sql))				
-					{	
-						$fd=str_replace("app_","","$row[folder]");
-						if($no == $sum)
-							echo "<li class='endsub'><a class='link' href='?app=$fd'>$row[name]</a></li>";
-						else
-							echo "<li><a class='link' href='?app=$fd'>$row[name]</a></li>";
-						$no++;
-					}					
-					
-					?>
-				</ul>	
-			
-			
-			</li>
-			<?php endif; ?>
-			
-			<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
-			<li><a class='link'  href="?app=menu">Menus</a>
-				<ul class="subnav">
-				<li><a class='link'  href='?app=menu&act=category'>Menu Categories</a></li>
-					<?php
-					$db = new FQuery();  
-					$db->connect(); 
-					$sql2=$db->select(FDBPrefix.'menu_category'); 
-					$sum=mysql_num_rows($sql2);
-					$no=1;
-					while($menu=mysql_fetch_array($sql2))				
-					{	
-						$sqlm = $db->select(FDBPrefix.'menu','*',"category='$menu[category]'"); 						
-						$summ = angka(mysql_num_rows($sqlm));
-						$sqlh = $db->select(FDBPrefix.'menu','*',"category='$menu[category]' AND home=1"); 						
-						$sumh = angka(mysql_num_rows($sqlh));
-						if($no==$sum){$cls=" class='endsub'";} else $cls="";
-						if($sumh)
-							{$sump="<span class='as_home'>home</span>";}
-						else $sump="";
-						echo "<li$cls><a class='link'  href='?app=menu&cat=$menu[category]'>$menu[title]<span class='total_menu'>$summ</span>$sump</a></li>";
-						$no++;
-					}
-					?>
-                </ul>		
-			</li>
-			<?php endif; ?>
-			
-			<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
-			<li><a class='link'  href="?app=module">Modules</a></li>
-			
-			<?php endif; ?>
-			
-			<?php if($_SESSION['USER_LEVEL'] <= 2) : ?>
-			<li><a class='link'  href="?app=theme">Themes</a>
-				<ul class="subnav">
-					<li class="endsub"><a class='link'  href="?app=theme&act=admin">Admin Themes</a></li>
-                </ul></li>
-			
-			<?php endif; ?>
-			
-			<?php if($_SESSION['USER_LEVEL'] <= 3) : ?>
-			<li><a class='link' href="?app=user">Users</a>
-				<ul class="subnav">
-					<li class="endsub"><a class='link'  href="?app=user&act=group">User Group</a></li>
-                </ul>
-			</li>
-			
-			<?php endif; ?>
-		</ul>
-		
-		
-	<div id="tright">
-		<div id="preview">
-				<a href="<?php echo FUrl; ?>" target="_blank" title="View your live site"><div class="prev">View Site</div></a>
-		</div>
-			
-		<div id="profil">			
-			<ul id="nav">				
-				<li><a class='link' href="?app=user&act=edit&id=<?php echo $_SESSION['USER_ID'] ?>" class="user"><?php echo $_SESSION['USER']; ?></a><div class="img">
-				<?php
-				$autmail=	md5($_SESSION['USER_EMAIL']);
-					echo "<span class='gravatar' data-gravatar-hash=\"$autmail\"></span>";
-				?></div>
-					<ul class="subnav">
-						<li><a class='link'  href="?app=user&act=edit&id=<?php echo $_SESSION['USER_ID'];?>">Edit Profile</a></li>
-						<!-- <li><a class='link'  href="#">Your Article</a></li> -->
-						<li class="endsub"><form method="post"><input type="submit" name="fiyo_logout" value="Log Out" title="Click to logout" /></form></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-	</div>
-  </div>
-</div>
-
-<?php } ?>	
-<div id="warp2">
-	<div id="container" 
-<?php  if(defined('BLANK_THEME') == 'hidden') { echo "style='margin-top:0px !important'"; } ?>>
-		<div class="content">
-			<?php
-			loadAdminApps();	
-			?>
-		</div>	
-		
-<?php  if(defined('BLANK_THEME') != 'hidden') { ?>
-		<div id="footer">
-			<div><a id="gofull" class="tooltip link" title="change to full-view mode" ></a><a id="gowarp" class="tooltip link" title="change to warp-view mode"></a>Fiyo is Free CMS Under GNU GPL<span class="right">Admin Themes by Portofolio ID</span>
-			</div>			
-		</div>
-<?php } 
-		
-		
-		
-		?>	
-	</div>
-</div>
-
+    <!-- /#top -->
+    <div id="left">		
+		<!-- #menu -->
+        <?php require('module/menu.php'); ?>
+		<!-- /#menu -->
+    </div>
+     <!-- /#left -->
+	 
+	 
+     <!-- /#left -->
+	<div id="content">
+        <div class="main">
+			<div class="removeSidebar blocks"></div>
+            <div class="inner">
+				<div id="alert_top"></div>				
+				<div class="crumbs"> 
+					  <ul id="breadcrumbs" class="breadcrumb stats"> 
+						<li><a href="index.php"><i class="icon-home"></i>Dashboard</a></li>
+					  </ul> 
+					  <span class="calendar"> 
+							<?php echo date("l, d F Y"); ?>
+					  </span> 
+				</div>
+				
+				<div id="mainApps">
+				<?php loadAdminApps();?>
+				</div>
+				<div class="line-bottom">
+					<div class="crumbs"> 
+						<span class="right "><a href="http://www.fiyo.org/" target="_blank"><i class=" icon-globe"></i><?php echo Comunity ?></a> <span style="color:#ccc; margin: 2px;">//</span> 
+						<a href="http://docs.fiyo.org/" target="_blank"><i class="icon-book"></i><?php echo Documentation ?></a> <span style="color:#ccc; margin: 2px;">//</span> 
+						
+						<?php echo Version; ?> : <span class="version-val"><b><?php echo siteConfig('version'); ?></b></span>
+						
+						
+						</span>Generate Time : <span id="load-time"><?php
+						$end_time = microtime(TRUE);
+						echo substr($end_time - _START_TIME_,0,7);
+						?></span>s
+					</div>
+				</div>
+            </div>
+		<!-- end .inner -->
+        </div>
+        <!-- end .outer -->
+     </div>
+   <!-- end #content -->
+</div> 
+<?php include('module/modal.php'); ?>
+<!-- /#wrap -->
+<?php if(!checkMobile()) : ?>	
+<script src="<?php echo AdminPath; ?>/js/loader.js"></script>
+<?php else : ?>
+<script src="<?php echo AdminPath; ?>/js/loader.min.js"></script>
+<?php endif; ?>
+<script src="<?php echo AdminPath; ?>/js/main.js"></script>	
+<script src="<?php echo AdminPath; ?>/js/datatables.js"></script>
+<script src="<?php echo AdminPath; ?>/js/highcharts.js"></script>
+<script src="../plugins/plg_ckeditor/ckeditor.js"></script>	
+<?php addJs("apps/app_theme/libs/edit_area/edit_area_full.js"); ?>
 <script language="javascript" type="text/javascript">
-	$(window).load(function () {
-		if (navigator.onLine) {
-			$('.gravatar[data-gravatar-hash]').prepend(function(index){
+$(function() {	
+	var hash = $('.gravatar[data-gravatar-hash]').attr('data-gravatar-hash');
+	$.ajax({
+		url: 'http://gravatar.com/avatar/'+ hash +'?size=32' ,
+		type : 'GET',
+		timeout: 5000, 
+		error:function(data){
+			$('.gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="100" height="100" alt="" src="http://gravatar.com/avatar.php?size=100&gravatar_id=' + hash + '">'
-				})
-		}
-		else {
-			$('.gravatar[data-gravatar-hash]').prepend(function(index){
+				return '<img width="34" height="34" alt="" src="../apps/app_comment/images/user.png" >'; 
+			});	
+		},
+		success: function(data){
+			$('.gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="100" height="100" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
-			})			
+				return '<img width="34" height="34" alt="" src="http://gravatar.com/avatar.php?size=36&gravatar_id=' + hash + '">';
+			});
 		}
 	});
+	
+});	
 </script>
-
 </body>
 </html>

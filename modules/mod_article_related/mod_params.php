@@ -1,10 +1,10 @@
 <?php
 /**
-* @version		1.5.0
-* @package		Related Article
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-*/
+* @version		2.0
+* @package		Fiyo CMS
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
+**/
 
 defined('_FINDEX_') or die('Access Denied');
 
@@ -47,15 +47,18 @@ $(document).ready( function(){
 <input type="hidden" value="thumbW" name="nameParam5"/>
 <input type="hidden" value="thumbH" name="nameParam6"/>
 <input type="hidden" value="showImg" name="nameParam7"/>
-<li>
-<h3>Article Related Configutarion</h3>
-<div class="isi">
-	<div class="acmain open">
-		<table class="data2">
-		<tr>
-				<td class="djudul">Category</td>
+<div class="panel box">								
+	<header>
+		<a  data-parent="#accordion" class="accordion-toggle" data-toggle="collapse" href="#article_list" data-parent="#accordion">
+			<h5>Article Related Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
+		<table>
+			<tr>
+				<td class="row-title">Category</td>
 				<td>	
-					<select name="param1[]" multiple style="height:160px; width:120px; font-size:11px; font-family:Arial ; ">
+					<select name="param1[]" multiple style="height:160px; width:80%; font-size:11px; font-family:Arial ; ">
 					<?php	
 						$_GET['id']=0;
 						$db = new FQuery();  
@@ -80,7 +83,7 @@ $(document).ready( function(){
 				</td>
 			</tr>	
 			<tr>
-				<td class="djudul tooltip" title='<?php echo $filterTip; ?>'>Article Filter</td>
+				<td class="row-title" title='<?php echo $filterTip; ?>'>Article Filter</td>
 				<td>
 					<select name='param2' id='type'>
 					<option value="title" <?php echo @$b1;?>>Title</option>
@@ -89,14 +92,14 @@ $(document).ready( function(){
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip">Limit Item</td>
+				<td class="row-title">Limit Item</td>
 				<td>
 					<input value="<?php echo @$limit; ?>" name="param3" type="text" size="5" class='numeric'/>
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="djudul tooltip" title="Show gravatar image">Show Images</td>
+				<td class="row-title" title="Show gravatar image">Show Images</td>
 				<td>	
 					<p class="switch">
 						<input id="radio21"  value="1" name="param7" type="radio" <?php echo $swimg1;?> class="invisible">
@@ -108,25 +111,25 @@ $(document).ready( function(){
 			</tr>	
 			
 			<tr>
-				<td class="djudul tooltip">Line Height</td>
+				<td class="row-title">Line Height</td>
 				<td>
-					<input value="<?php echo @$height; ?>" name="param4" type="text" size="5" class='numeric'/>px
+					<input value="<?php echo @$height; ?>" name="param4" type="text" size="5" class='numeric spinner' style="width: 55px;" min="0"/> px
 				</td>
 			</tr>
 			
 		
 			
 			<tr>
-				<td class="djudul tooltip">Thumb Width</td>
+				<td class="row-title">Thumb Width</td>
 				<td>
-					<input value="<?php echo @$thumbW; ?>" name="param5" type="text" size="5" class='numeric'/>px
+					<input value="<?php echo @$thumbW; ?>" name="param5" type="number" size="5" class='numeric spinner' style="width: 55px;" min="0"/> px
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="djudul tooltip" >Thumb Height</td>
+				<td class="row-title">Thumb Height</td>
 				<td>
-					<input value="<?php echo @$thumbH; ?>" name="param6" type="text" size="5" class='numeric'/>px
+					<input value="<?php echo @$thumbH; ?>" name="param6" type="text" size="5" class='numeric spinner' style="width: 55px;" min="0"/> px
 				</td>
 			</tr>
 			
@@ -134,4 +137,3 @@ $(document).ready( function(){
 		</table>
 	</div>
 </div>
-</li>

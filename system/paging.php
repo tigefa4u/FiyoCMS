@@ -57,9 +57,9 @@ class paging{
             $sql .= ' ORDER BY '.$order;
 			
 		if($this->conn==null)
-			$result=mysql_query($sql);
+			$result = mysql_query($sql);
 		else
-			$result=mysql_query($sql, $this->conn);
+			$result = mysql_query($sql, $this->conn);
 		
 		if($rowsPerPage<1) $rowsPerPage = 1;
 		$totalRows = mysql_num_rows($result);
@@ -98,7 +98,7 @@ class paging{
 		$start=((($this->page%$this->maxPages==0) ? ($this->page/$this->maxPages) : intval($this->page/$this->maxPages)+1)-1)*$this->maxPages+1;
 		$end=((($start+$this->maxPages-1)<=$this->totalPages) ? ($start+$this->maxPages-1) : $this->totalPages);
 		
-		$paging='<ul class="paging">';
+		$paging='<ul class="paging pagination">';
 		if($this->page>1){			
 			$paging.='<li><a href="'.str_replace("?","",$link).'" title="First page">&lt;&lt;</a></li>';
 			$paging.='<li><a href="'.$link.$this->separator.'page='.($this->page-1).'" title="Previous page">&lt;</a></li>';

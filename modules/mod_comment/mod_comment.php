@@ -1,8 +1,8 @@
 <?php 
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Comments
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 **/
 
@@ -62,20 +62,30 @@ while($com=mysql_fetch_array($sql) AND $no < $item){
 	$no++;
 }				
 ?>
+
 <script>
-	$(document).ready(function() {
-		if (navigator.onLine) {
-			$('.mod-gravatar[data-gravatar-hash]').prepend(function(index){
+$(function() {	
+	var hash = $('.mod-gravatar[data-gravatar-hash]').attr('data-gravatar-hash');
+	$.ajax({
+		url: 'http://gravatar.com/avatar/'+ hash +'?size=36' ,
+		type : 'GET',
+		timeout: 5000, 
+		error:function(data){
+			$('.mod-gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="36" height="36" alt="" src="http://gravatar.com/avatar/'+hash+'?size=36">'
-			})
-		}
-		else 
-		{
-			$('.mod-gravatar[data-gravatar-hash]').prepend(function(index){
+				return '<img width="36" height="36" alt="" src="<?=FUrl;?>/apps/app_comment/images/user.png" >'; 
+			});	
+		},
+		success: function(data){
+			$('.mod-gravatar[data-gravatar-hash]').prepend(function(){
+				var img = $(this).find("img").length ;
+				if(img > 0) img.remove();
 				var hash = $(this).attr('data-gravatar-hash')
-				return '<img width="36" height="36" alt="" src="<?php echo FUrl; ?>apps/app_comment/images/user.png" >'
-			})	
+				return '<img width="36" height="36" alt="" src="http://gravatar.com/avatar.php?size=36&gravatar_id=' + hash + '">';
+			});
 		}
-	});
+	});	
+});		
 </script>

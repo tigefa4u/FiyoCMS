@@ -1,15 +1,14 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
 if(isset($article-> category)) :
-
 	$category 	= $article-> category;
 	$readmore	= $article-> readmore;
 	$catlink	= $article-> catlink;
@@ -58,6 +57,11 @@ if(isset($article-> category)) :
 			</div>	
 			<?php endfor; ?>	
 			
+			<!-- RSS Feed Icon -->
+			<?php if($article->show_rss) : ?>
+				<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
+			<?php endif; ?>
+			
 			<!-- Pagelinks -->
 			<?php if(!empty($pagelink)) : ?>
 			<div class="article-pagelink pagination">
@@ -65,11 +69,6 @@ if(isset($article-> category)) :
 			</div>
 			<?php endif; ?>	
 		</div>
-		
-		<!-- RSS Feed Icon -->
-		<?php if($article->show_rss) : ?>
-			<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
-		<?php endif; ?>
 		
 		
 	<!-- RSS Feed File Generator -->	
@@ -106,5 +105,5 @@ if(isset($article-> category)) :
 	<?php if(defined('Apps_Title')) : ?>
 			<h2><?php echo Apps_Title; ?></h2>
 	<?php endif; ?>
-	<h3>Sorry, no article in this category.!</h3>
+	<h3><?=Category_is_empty;?></h3>
 <?php endif; ?>

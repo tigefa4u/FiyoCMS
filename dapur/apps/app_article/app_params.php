@@ -1,11 +1,9 @@
-<?php 
+<?php
 /**
-* @name			Article
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -22,7 +20,6 @@ $imgH		= menu_param('imgH',menuParam);
 
 if(!is_numeric($imgW) or empty($imgW)) $imgW = 120;
 if(!is_numeric($imgH) or empty($imgH)) $imgH = 100;
-if(!is_numeric($intro) or empty($intro)) $intro = 0;
 
 $aId 	= link_param('id',$menuLink);
 $view 	= link_param('view',$menuLink);
@@ -37,20 +34,17 @@ else if($format=='blog') $format2='selected';
 else if($format=='list') $format3='selected';
 
 
+if(!is_numeric($intro) or empty($intro)) $intro = 5;
 if(!$per_page) $per_page=5;
 
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
-	var loading = $("#loading");
-	loading.fadeOut();
-	
-	$("#type").change(function(){	
-		var format = $("#format").val();
+	function changer() {
+	var format = $("#format").val();
 		var view = $("#view").val();
 		var type = $("#type").val();
 		var cate = $("#cat").val();
-		
 		if(type == 'featured' || type == 'category' || type == 'archives'){	
 			$(".image").removeClass("invisible");	
 			$(".intro").removeClass("invisible");	
@@ -79,17 +73,25 @@ $(document).ready(function(){
 				$("#link").val("?app=article&view="+type);
 					
 		}
-		else if(type =='item') {			
+		else if(type =='item') {
+			<?php if(@$_GET['view'] =='add' or @$_GET['act'] =='add') : ?>
 			$("#pg").val("");				
-			$("#link").val("");			
+			$("#link").val("");
+			<?php endif; ?>
 			$(".image").addClass("invisible");	
+			$(".intro").addClass("invisible");	
 			$(".format").addClass("invisible");	
 			$(".category").addClass("invisible");	
 			$(".per_page").addClass("invisible");		
 			$(".item").removeClass("invisible");	
-		}		
+		}	
+	}
+	
+	$("#type").change(function(){	
+		changer();
 	});
 	
+	changer();	
 				
 	$("#format").change(function(){	
 		var cate = $('#cat').val();				
@@ -107,7 +109,7 @@ $(document).ready(function(){
 				
 		
 		if(type == 'category') {
-			$("#link").val("?app=article&view="+type+"&id="+cate);
+			$("#link").val("?app=ar&view="+type+"&id="+cate);
 			$(".category").removeClass("invisible");	
 		}
 		else
@@ -139,12 +141,13 @@ $(document).ready(function(){
 				
 	}
   
-  	$(".pop_up2").click(function() {
+  	$(".popup").click(function() {
 		$.ajax({
 			url: "apps/app_article/controller/article_menu.php",
 			data: "access",
 			success: function(data){
 				$("#pages #page_id").html(data);
+				$("#pages #page_id").trigger("chosen:updated");
 			}
 		});
 	});	
@@ -161,14 +164,17 @@ $(document).ready(function(){
 <input type="hidden" name="nameParam8" value="panel_format" />
 <input type="hidden" name="nameParam9" value="show_rss" />
 				
-<li>
-	<h3>Menu Article</h3>
-	<div class="isi">
-		<div class="acmain open">
-			<table class="data2">				
+<div class="box">								
+	<header>
+		<a class="accordion-toggle" data-toggle="collapse" href="#article-parameter">
+			<h5>Article Parameter</h5>
+		</a>
+	</header>								
+	<div id="article-parameter" class="in">
+		<table>				
 			<!-- Menampilkan menu menurut kategori pilihan -->	
 			<tr>
-				<td class="djudul">Page Type</td>
+				<td class="row-title">Page Type</td>
 				<td>
 					<select id="type">
 						<option value='archives' <?php echo @$view1;?>>Archives</option>
@@ -179,8 +185,8 @@ $(document).ready(function(){
 				</td>
 			</tr>
 			<!-- Tipe tampilan menu -->
-			<tr class="format invisible">
-				<td class="djudul">Format Style</td>
+			<tr class="format">
+				<td class="row-title">Format Style</td>
 				<td>
 					<select id="format" name="param6">
 						<option value='default' <?php echo @$format1;?>>Default</option>
@@ -190,8 +196,8 @@ $(document).ready(function(){
 				</td>
 			</tr>	
 			<!-- Tipe tampilan menu -->
-			<tr class="category invisible">
-				<td class="djudul">Category</td>
+			<tr class="category">
+				<td class="row-title">Category</td>
 				<td>
 					<select id="cat">
 					<?php		
@@ -209,42 +215,42 @@ $(document).ready(function(){
 			</tr>	
 	
 					
-			<tr class="item invisible" >
-				<td class="djudul">Article</td>
+			<tr class="item" >
+				<td class="row-title">Article</td>
 				<td>
 					<input type="hidden" value="?app=article&view=item&id=<?php echo $id; ?>" id="pgs" size="20" readonly /> 
-					<input type="text" value="<?php echo oneQuery('article','id',$aId,'title'); ?>" id="pg" size="20" style="width: 70%" required readonly /> 
-					<a class="popup pop_up2" href="#pages" rel="width:940;height:400" style="margin-right:-20px; margin-left:5px">Select</a>
+					<input type="text" value="<?php echo FQuery('article',"id  = $aId",'title','hide'); ?>" id="pg" size="20" style="width: 70%" required readonly />
+					<a class="btn btn-primary btn-grad popup" data-toggle="modal" href="#selectArticle" rel="width:940;height:400"><?php echo Select; ?></a>
 			</tr>		
-			<tr class="image invisible" >
-				<td class="djudul">Images Width</td>
+			<tr class="image" >
+				<td class="row-title">Images Width</td>
 				<td>
-					<input type="text" name="param4" value="<?php echo $imgW; ?>" id="imgW" size="3" />px
+					<input type="number" class='spinner numeric' min="1" max="999" style="width: 50px" name="param4" value="<?php echo $imgW; ?>" id="imgW" /> px
 					</td>
 				</td>
 			</tr>
-			<tr class="image invisible">
-				<td class="djudul">Images Height</td>
+			<tr class="image">
+				<td class="row-title">Images Height</td>
 				<td>
-					<input type="text" name="param5" value="<?php echo $imgH; ?>" id="imgH" size="3" />px
+					<input type="number" class='spinner numeric' min="1" max="999" style="width: 50px"name="param5" value="<?php echo $imgH; ?>" id="imgH" /> px
 					</td>
 			</tr>	
 			
 			<!-- Tipe tampilan menu -->
 			<tr class="per_page">
-				<td class="djudul">Article per-page</td>
+				<td class="row-title">Article per-page</td>
 				<td>
-					<input type="text" name="param1" value="<?php echo $per_page; ?>"size="3" />
+					<input type="number" class='spinner numeric' name="param1" value="<?php echo $per_page; ?>" size="3" min="1" max="999" style="width: 50px" />
 				</td>
 			</tr>
-			<tr class="intro invisible">
-				<td class="djudul">Intro Item(s)</td>
+			<tr class="intro">
+				<td class="row-title">Intro Item(s)</td>
 				<td>
-					<input type="text" name="param7" value="<?php echo $intro; ?>"  size="3" />
+					<input type="number" class='spinner numeric' min="1" max="999" style="width: 50px" name="param7" value="<?php echo $intro; ?>"  size="3" />
 					</td>
 			</tr>
 			<tr class="per_page">
-				<td class="djudul">Show RSS Icon</td>
+				<td class="row-title">Show RSS Icon</td>
 				<td>	
 					<?php 
 							if($show_rss){$f1="selected checked"; $f0 = "";}
@@ -261,7 +267,7 @@ $(document).ready(function(){
 		
 			
 			<tr class="show_panel">
-				<td class="djudul">Show Panel</td>
+				<td class="row-title">Show Panel</td>
 				<td>	
 					<?php 
 							if($show_panel){$f1="selected checked"; $f0 = "";}
@@ -277,28 +283,43 @@ $(document).ready(function(){
 			</tr>
 			
 			<tr class="per_page">
-				<td class="djudul tooltip" title="%a = Author, %c = Category<br>%d = Day, %f = Day(1-31)<br>%m = Month, %n = Month(1-12)<br>%Y = Year(2), %y = Year(2)<br>%H = Hour(12), %h = Hour(24)<br>%i = Minutes, %s = Seconds<br>%p = AM / PM<br><hr>default : '<b>by %a on %f %m %y in %c</b>'">Panel Format</td>
+				<td class="row-title">Panel Format<i title="%a = Author, %c = Category<br>%d = Day, %f = Day(1-31)<br>%m = Month, %n = Month(1-12)<br>%Y = Year(2), %y = Year(2)<br>%H = Hour(12), %h = Hour(24)<br>%i = Minutes, %s = Seconds<br>%p = AM / PM<br><hr>default : '<b>by %a on %f %m %y in %c</b>'" class="icon-help"></i></td>
 				<td>
 					<input type="text" name="param8" value="<?php echo $panel_format; ?>" style="width:70%" />
 				</td>
 			</tr>	
 			<tr class="per_page">
-				<td class="djudul">Read More</td>
+				<td class="row-title">Read More Text</td>
 				<td>
-					<input type="text" name="param3" value="<?php echo $read_more; ?>" style="width:70%"/>
+					<input type="text" name="param3" value="<?php echo $read_more; ?>" style="min-width:40%"/>
 				</td>
 			</tr>	
 		</table>
-		</div>
 	</div>
-</li>
-
-
-<div class="popup_warp">
-	<div id="pages" class="pop_up" style="padding:10px">
-		<div id="page_id">	
-		
-		</div>
-	</div>	
 </div>
+
+
+
+<!-- #helpModal -->        
+<div id="selectArticle" class="modal fade bs-example-modal-lg">
+	<div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+			<h4 class="modal-title">Select Article</h4>
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	      </div>
+	      <div class="modal-body">
+			<div id="pages" class="pop_up">
+				<div id="page_id">
+				
+				</div>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->        
+<!-- /#helpModal -->
 

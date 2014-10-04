@@ -18,7 +18,6 @@
 
 if(empty($_SESSION['media_theme'])) $_SESSION['media_theme']="oxygen";
 $_CONFIG = array(
-
     'disabled' => false,
     'denyZipDownload' => false,
     'denyUpdateCheck' => true,

@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -12,17 +11,15 @@ defined('_FINDEX_') or die('Access Denied');
 ?>
 <form method="post">
 	<div id="app_header">
-		<div class="warp_app_header">
-			<div class="app_title"><?php echo Edit_Module; ?></div>		
+		<div class="warp_app_header">		
+			<div class="app_title"><?php echo Edit_Module; ?></div>			
 			<div class="app_link">	
-				<input type="submit" value="<?php echo Save; ?>" class="lbt save tooltip" title="<?php echo Save; ?>" name="apply_edit"/>
-				<hr class="lbt sparator tooltip">
-				<input type="submit" value="<?php echo Save & Close; ?>" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_edit"/>
-				<a class="lbt cancel tooltip link" href="?app=module" title="<?php echo Cancel; ?>"><?php echo Cancel; ?></a>
-				<hr class="lbt sparator tooltip">
-				<a class="lbt help popup tooltip" href="#helper" title="<?php echo Help; ?>"></a>
-				<div id="helper"><?php echo Add_Module_2_help; ?></div>
-			</div>		
+				<button type="submit" class="btn btn-success" title="<?php echo Save; ?>" value="<?php echo Save; ?>" name="apply_edit"><i class="icon-ok"></i> <?php echo Save; ?></button>	
+				<button type="submit" class="btn btn-metis-2" title="<?php echo Save_and_Quit; ?>" value="<?php echo Save_and_Quit; ?>" name="save_edit"><i class="icon-ok-sign"></i> <?php echo Save_and_Quit; ?></button>				
+				<a class="danger btn btn-default" href="?app=module" title="<?php echo Cancel; ?>">
+				<i class="icon-remove-sign"></i> <?php echo Cancel; ?></a>				
+			</div>
+			<?php printAlert(); ?>
 		</div>			 
 	</div>
 		

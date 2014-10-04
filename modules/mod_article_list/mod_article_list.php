@@ -25,6 +25,7 @@ else if($filter==2) $filter = "author_id = $value";
 $db = new FQuery();  
 $db->connect(); 	
 $level 	= Level_Access;
+if(!empty($filter) or !empty($filter) or !empty($filter)) :
 $sql = $db->select(FDBPrefix."article",'*',"$filter $level AND status=1","$type LIMIT $item");
 	
 echo '<ul class="mod-article-list">';
@@ -72,5 +73,9 @@ while($qr=mysql_fetch_array($sql)){
 	echo "<li><a title='berita lainya' href='$link' class='more tooltip'>Berita Lainya</a></li>";
 echo "</ul> ";	
 
+else :
+echo "Please check <b>article_list</b> parameter!";	
+
+endif;
 echo "";
 ?>

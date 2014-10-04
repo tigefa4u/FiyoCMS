@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -44,76 +43,54 @@ $editor = "../modules/$name/mod_editor.php";
 $param = $modParam = $qr['parameter'];
 define('modParam',$qr['parameter']);
 
-addJs("../plugins/plg_jquery_ui/autocomplete.js");
+if(!isset($module_name)) $module_name = "$name";
 ?>
-<script>
-$().ready(function() {	
-	$(".cb-enable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-disable',parent).removeClass('selected');
-			$(this).addClass('selected');
+<script>  
+$(function() {
+	$.ajax({
+        url: "apps/app_module/controller/spot_position.php",
+        success: function( data ) {
+            var availableTags = data.split(",");
+			$( "#position" ).autocomplete({
+			  source: availableTags,
+				minLength: 0,
+			});
+        }
+    });	
+	$(".popup").click(function(){		
+		$("#iframe").contents().find("a").click(function(e){			
+			e.preventDefault();
 		});
-		$(".cb-disable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-enable',parent).removeClass('selected');
-			$(this).addClass('selected');
-		});	
-		
-	$("#position").autocomplete("apps/app_module/controller/spot_position.php", {
-		width: 100
-  }); 
-  
-  $(".pop_up2").click(function() {
-		$.ajax({
-			url: "apps/app_module/controller/spot_position.php",
-			data: "type=spot",
-			success: function(data){
-				$("#posspot #posspot_id").html(data);
-			}
+		$("#iframe").contents().find(".theme-module").click(function(){
+			$('#position').val($(this).html());
+			$('#spotPosition').modal('hide');
 		});
-	});		
-});
-
-
-function disableselections() {
-	var e = document.getElementById('selections');
-	e.disabled = true;
-	var i = 0;
-	var n = e.options.length;
-	for (i = 0; i < n; i++) {
-	e.options[i].disabled = true;
-	e.options[i].selected = false;
-	}
-}
-
-function enableselections() {
-	var e = document.getElementById('selections');
-	e.disabled = false;
-	var i = 0;
-	var n = e.options.length;
-	for (i = 0; i < n; i++) {
-	e.options[i].disabled = false;
-		e.options[i].selected = true;
-	}
-}
+		$("#iframe").contents().find("*").click(function(){
+			$("#iframe").contents().find('embed').remove();
+		});
+		$("#iframe").contents().find('embed').remove();
+	});
+  });
 </script>
-<div class="cols">
-	<div class="col first panin">
-		<h3>Module Details</h3>
-		<div class="isi">
+<div class="col-lg-6 box-left">
+	<div class="box">								
+		<header class="dark">
+			<h5>Module Details</h5>
+		</header>								
+		<div>
 			<table class="data2">
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Type_tip; ?>"><?php echo Module_Type; ?></td>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Type_tip; ?>"><?php echo Module_Type; ?></span></td>
 				<td><b><i><?php echo $module_name; echo " (id=$qr[id])" ; ?></i></b>
 				<input type="hidden" name="mod_id" size="20" value="<?php echo $qr['id']; ?>">
 				<input type="hidden" name="folder" size="20" value="<?php echo $name; ?>"></td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Title_tip; ?>"><?php echo Module_Title; ?> *</td>
-				<td><input <?php   formRefill('title',$qr['name']) ; ?> type="text" name="title" size="20" required></td>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Title_tip; ?>"><?php echo Module_Title; ?></span></td>
+				<td><input <?php  formRefill('title',$qr['name']) ; ?> type="text" name="title"  style="min-width: 60%" size="20" required></td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Show_Title_tip; ?>"><?php echo Module_Show_Title; ?></td>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Show_Title_tip; ?>"><?php echo Module_Show_Title; ?></span></td>
 				<td>
 					<?php 
 					if($qr['show_title'] or $act == 'add'){$f1="selected checked"; $f0 = "";}
@@ -128,7 +105,7 @@ function enableselections() {
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Status_tip; ?>"><?php echo Active_Status; ?></td>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Status_tip; ?>"><?php echo Active_Status; ?></span></td>
 				<td><?php 
 					if($qr['status'] or $act == 'add'){$f1="selected checked"; $f0 = "";}
 					else {$f0="selected checked"; $f1= "";}
@@ -141,20 +118,25 @@ function enableselections() {
 					</p></td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Position_tip; ?>"><?php echo Position; ?> *</td>
-				<td><input value="<?php echo $qr['position'] ; ?>" type="text" size="13" name="position" id="position" required>
-				<?php if(file_exists("../themes/".siteConfig('site_theme')."/spot_position.php")) : ?>
-				<a class="popup pop_up2" href="#posspot" rel="width:637;height:500">Select Position</a>
-				<?php endif; ?>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Position_tip; ?>"><?php echo Position; ?></span></td>
+				<td>
+				<div class="input-append date input-group" style="  width: 160px;">
+					<input type="text" value="<?php echo $qr['position'] ; ?>" type="text" size="20" name="position" id="position" required class="form-control" style="border-radius: 3px 0 0 3px;">
+					<span class="add-on input-group-addon">
+					<a class="popup icon-magic tips" data-toggle="modal" href="#spotPosition" rel="width:940;height:400" title="<?php echo Select_position; ?>"></a>
+					</span>
+				 </div>
+				 
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Order_tip; ?>"><?php echo Module_Order; ?></td>
-				<td><input value="<?php echo $qr['short'] ; ?>" type="text" name="short" size="10" id="order" class="numeric"></td>
+				<td class="row-title"><span class="tips" title="<?php echo Module_Order_tip; ?>"><?php echo Module_Order; ?></span></td>
+				<td><input value="<?php echo $qr['short'] ; ?>" type="number" name="short" size="10" id="order" class="numeric spinner" style="width: 50px"  min="0"></td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Access_tip; ?>"><?php echo Access_Level; ?></td>
-				<td><select name="level">
+				<td class="row-title"><span class="tips" title="<?php echo Module_Access_tip; ?>"><?php echo Access_Level; ?></span></td>
+				<td>
+				<select name="level">
 				<?php
 					$db = new FQuery();  
 					$db->connect(); 
@@ -166,79 +148,86 @@ function enableselections() {
 							echo "<option value='$qrs[level]'>$qrs[group_name]</option>";
 						}
 					}
-					if($qr['level']==99 or !$id) $s="selected";else $s="";
+					if($qr[level]==99 or !$id) $s="selected";else $s="";
 					echo "<option value='99' $s>"._Public."</option>"
 				?>
 				</select></td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo Module_Pages_tip; ?>"><?php echo Module_Pages; ?></td><td>
-				<div style='padding: 1px 0 10px 0;'>
-				<label class="reset">
-				<input id="menus-select" type="radio" name="menus" onclick="enableselections();">Select All</input></label>
-				<label class="reset"><input id="menus-all" type="radio" name="menus" onclick="disableselections();">Clear All</input></label>
-				</div>
-				<select name="page[]" id="selections" class="inputbox" size="15" multiple="multiple" style="height:160px; width:170px; font-size:10px; font-family:Arial ; ">
+				<td class="row-title"><span class="tips" title="<?php echo Module_Pages_tip; ?>"><?php echo Module_Pages; ?></span></td>
+				<td>
+					<div class="selections" style=" max-width: 280px; font-size:12px; ">
+					<div style="overflow: hidden">
+					<label class="selections-all"><?php echo Select_all; ?></label>
+					<label class="selections-reset"><?php echo Reset_all; ?></label>
+					</div>
+					<div class="selections-box" style="height:150px; max-width: 280px; font-size:12px;  overflow-y: auto;">
 					<?php
-						$sql2 = $db->select(FDBPrefix.'menu_category'); 
+						$sql2 = $db->select(FDBPrefix.'menu_category','*',"category != 'adminpanel'"); 
 						while($qr2=mysql_fetch_array($sql2)){
-						echo "<optgroup label='$qr2[title]'>";
 							$sql3 = $db->select(FDBPrefix.'menu','*',"parent_id=0 AND category='$qr2[category]'",'short ASC'); 
+							if(!mysql_affected_rows()) continue;
+							echo "<h6>$qr2[title]</h6><ul class='selectbox' >";
 							while($qr3=mysql_fetch_array($sql3)){
 								$sel = multipleSelected($qr['page'],$qr3['id']);
-								echo "<option value='$qr3[id]' $sel id='selections'>$qr3[name] </option>";
+								if($sel =='selected' or !$qr) $sel = "class='active' checked";
+								$check = "<input $sel type='checkbox' name='page[]' value='$qr3[id]' rel='ck'>";
+								echo "<li value='$qr3[id]' $sel>$check $qr3[name] </li>";
 								option_sub_menu($qr3['id'],'','',$qr['page']);
 							}
-						echo "</optgroup>";
+						echo "</ul>";
 						}
 					?>
-					</select>
-					</td>
+					</div>
+					</div>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>	
+</div>	
+
+<div class="panel-group box-right" id="accordion">
+	<?php 
+		if(file_exists($params))require($params);
+		else $open =' open';
+	?>
+	<div class="panel box">								
+		<header>
+			<a class="accordion-toggle <?php if(file_exists($params)) echo "collapsed"; ?>" data-toggle="collapse" href="#menu-style" data-parent="#accordion">
+				<h5>Module Styling</h5>
+			</a>
+		</header>	
+		<div id="menu-style" class="<?php if(file_exists($params)) echo "collapse"; else echo "in"; ?>">
+			<table>
+				<tr>
+					<td class="row-title"><span class="tips"  title="<?php echo Add_css_class_tip; ?>">CSS Class</span></td>
+					<td><input value="<?php echo $css_class ; ?>" type="text" name="class" style="width: 60%;"></td>
+				</tr>
+				<tr>
+					<td class="row-title"><span class="tips"  title="<?php echo Add_css_style_tip; ?>">CSS Style</span></td>
+					<td><textarea type="text" name="style" rows="5" style="width: 90%; resize: vertical;"><?php echo $css_style; ?></textarea></td>
 				</tr>
 			</table>
 		</div>
 	</div>
-	
-	<div class="col noborder">		
-		<ul class="accordion">			  
-			<!-- Load module parameters -->
-				<?php 
-					if(file_exists($params))require($params);
-					else $open =' open';
-				?>				 
-				<!-- CSS Style --> 
-				<li>
-					<h3>Module Styling</h3>
-					<div class="isi">
-						<div class="acmain<?php echo @$open; ?>">
-						<table class="data2">
-							<tr>
-								<td class="djudul tooltip " title="<?php echo Add_css_class_tip; ?>">CSS Class</td>
-								<td><input value="<?php echo "$css_class" ; ?>" type="text" name="class" size="25"></td>
-							</tr>
-							<tr>
-								<td class="djudul tooltip " title="<?php echo Add_css_style_tip; ?>">CSS Style</td>
-								<td><textarea type="text" name="style" cols="23"><?php echo $css_style ; ?></textarea></td>
-							</tr>
-						</table>
-						</div>
-					</div>
-				  </li>				 				 
-			  </ul>			  
-			  <!-- ACCORDION END -->				
-		</div>		
+</div>
+
+
+
+<!-- #helpModal -->        
+<div id="spotPosition" class="modal fade bs-example-modal-lg">
+	<div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+			<h4 class="modal-title"><?php echo Module_Position; ?></h4>
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	      </div>
+			<div id="pages" class="pop_up">
+				<div id="page_id">
+					<iframe id="iframe" frameborder="0" src="<?php echo FUrl."?theme=module"; ?>" style="height:530px;width:100%; margin-bottom: -5px;"></iframe>
+				</div>
+			</div>
+	    </div>
 	</div>
-	<div class="cols">
-		<?php 
-			if(file_exists($editor)) require($editor);
-		?>	
-	</div>
-	
-	
-<div class="popup_warp">
-	<div id="posspot" class="pop_up" style="padding:10px">
-		<div id="posspot_id">
-		
-		</div>
-	</div>	
 </div>

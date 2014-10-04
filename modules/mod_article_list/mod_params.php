@@ -1,9 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -38,7 +38,7 @@ else {
 
 /********* tooltip language *************/
 if(siteConfig('lang') == 'id') {
-	$orderTip	= "Urutan artikel berdasarkan <i>terbaru, ter-hits, featured</i>";
+	$orderTip	= "Urutan artikel berdasarkan terbaru, terpopuler dan unggulan";
 	$filterTip	= "Menampilkan artikel berdasarkan kategori atau penulis";
 	$valueTip	= "Jenis untuk pilihan kategori atau penulis";
 	$itemTip	= "Jumlah artikel yang ingin ditampilkan";
@@ -46,7 +46,7 @@ if(siteConfig('lang') == 'id') {
 	$otherTip	= "Tampilkan link lainya";
 }
 else {
-	$orderTip 	= "Order articles by <i>newest, most hits, featured</i>";
+	$orderTip 	= "Order articles by newest, most hits and featured";
 	$filterTip	= "Featured articles by category or author";
 	$valueTip 	= "Type for a category or option writer";
 	$itemTip 	= "The number of articles you want to display";
@@ -57,42 +57,31 @@ else {
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#type").change(function(){
+	cOk();
+	$("#type").change(function(){		
+		cOk();
+	});	
+	function cOk() {
 		var tm = $("#type").val();	
 		if(tm==1){
-			$("#author").addClass("invisible");	
-			$("#author").removeAttr("name");	
-			$(".f3,#category").removeClass("invisible");
-			$("#category").attr("name","param3");	
+			$("#c-author").addClass("invisible");	
+			$("#c-author").removeAttr("name");	
+			$(".f3,#c-category").removeClass("invisible");
+			$("#c-category").attr("name","param3");	
 		}				
 		else if(tm==2){	
-			$(".f3,#author").removeClass("invisible");
-			$("#category").addClass("invisible");
-			$("#category").removeAttr("name");	
-			$("#author").attr("name","param3");	
+			$(".f3,#c-author").removeClass("invisible");
+			$("#c-category").addClass("invisible");
+			$("#c-category").removeAttr("name");	
+			$("#c-author").attr("name","param3");	
 		}
 		else {
 			$(".f3").addClass("invisible");	
-			$("#author").addClass("invisible");	
-			$("#author").removeAttr("name");	
-			$("#category").addClass("invisible");
+			$("#c-author").addClass("invisible");	
+			$("#c-author").removeAttr("name");	
+			$("#c-category").addClass("invisible");
 		}
-		
-	});	
-});
-</script>
-<script type="text/javascript">
-$(document).ready( function(){ 
-	$(".cb-enable").click(function(){
-		var parent = $(this).parents('.switch');
-		$('.cb-disable',parent).removeClass('selected');
-		$(this).addClass('selected');
-	});
-	$(".cb-disable").click(function(){
-		var parent = $(this).parents('.switch');
-		$('.cb-enable',parent).removeClass('selected');
-		$(this).addClass('selected');
-	});
+	}
 });
 </script>
 <input type="hidden" value="6" name="totalParam" />
@@ -102,13 +91,16 @@ $(document).ready( function(){
 <input type="hidden" name="nameParam4" value="item" />
 <input type="hidden" name="nameParam5" value="info" />
 <input type="hidden" name="nameParam6" value="other" />
-<li>
-	<h3>Article List Configuration</h3>
-	<div class="isi">
-		<div class="acmain open">
-			<table class="data2">				
+<div class="panel box">								
+	<header>
+		<a class="accordion-toggle" data-toggle="collapse" href="#article_list" data-parent="#accordion">
+				<h5>Article List Configuration</h5>
+		</a>
+	</header>
+	<div id="article_list" class="in">
+		<table>				
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $orderTip; ?>">Article Order</td>
+				<td class="row-title"><span class="tips" title="<?php echo $orderTip; ?>">Article Order</td>
 				<td>	
 					<select name='param1'>
 						<option value="1" <?php echo @$a1;?>>Latest</option>
@@ -119,7 +111,7 @@ $(document).ready( function(){
 			</tr>			
 			
 			<tr>
-				<td class="djudul tooltip" title='<?php echo $filterTip; ?>'>Article Filter</td>
+				<td class="row-title"><span class="tips" title='<?php echo $filterTip; ?>'>Article Filter</td>
 				<td>
 					<select name='param2' id='type'>
 					<option value="1" <?php echo @$b1;?>>Category</option>
@@ -129,8 +121,9 @@ $(document).ready( function(){
 				</td>
 			</tr>			
 			<tr <?php echo $filter3; ?> class="f3" >
-				<td class="djudul tooltip" title='<?php echo $valueTip; ?>'>Filter Value</td>
+				<td class="row-title"><span class="tips" title='<?php echo $valueTip; ?>'>Filter Value</td>
 				<td>	
+					<div  id="c-category">
 					<select id="category" <?php echo $filter1; ?>>
 					<?php	
 						$_GET['id']=0;
@@ -155,9 +148,10 @@ $(document).ready( function(){
 						}						
 					?>
 					</select>
-					
+					</div>
+					<div id="c-author">
 					<!-- Author Selector -->
-					<select id="author" <?php echo $filter2; ?> >
+					<select <?php echo $filter2; ?> >
 					<?php						
 						$db = new FQuery();  
 						$db->connect(); 						
@@ -173,17 +167,18 @@ $(document).ready( function(){
 						$qr3 = mysql_fetch_array($sql3);
 					?>
 					</select>
+					</div>
 				</td>
 			</tr>	
 			
 			<tr>
-				<td class="djudul tooltip" title='<?php echo $itemTip; ?>' >Item</td>
+				<td class="row-title"><span class="tips" title='<?php echo $itemTip; ?>' >Item</td>
 				<td>				
 					<input type="text" value="<?php echo $item; ?>" name="param4" size="7" />
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $infoTip; ?>">Information</td>
+				<td class="row-title"><span class="tips" title="<?php echo $infoTip; ?>">Information</td>
 				<td>	
 					<?php 
 					if($info){$f1="selected checked"; $f0 = "";}
@@ -198,7 +193,7 @@ $(document).ready( function(){
 				</td>
 			</tr>
 			<tr>
-				<td class="djudul tooltip" title="<?php echo $otherTip; ?>">Other Link</td>
+				<td class="row-title"><span class="tips" title="<?php echo $otherTip; ?>">Other Link</td>
 				<td>	
 					<?php 
 					if($other){$f1="selected checked"; $f0 = "";}
@@ -212,8 +207,6 @@ $(document).ready( function(){
 					</p>
 				</td>
 			</tr>				
-		</table>
-					
-		</div>	
+		</table>					
 	</div>	
-</li>
+</div>	

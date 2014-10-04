@@ -1,16 +1,15 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
 // Access only for Administrator
-if(empty($_SESSION['USER_LEVEL']) or $_SESSION['USER_LEVEL'] > 2)
+if($_SESSION['USER_LEVEL'] > 2)
 	redirect('index.php');
 	
 $db = new FQuery();  
@@ -49,24 +48,22 @@ if(isset($_POST['save_add']) or isset($_POST['apply_add'])){
 			$db = new FQuery();  
 			$db->connect(); 				
 			$sql = $db->select(FDBPrefix.'module','id','','id DESC' ); 
-			$qr=mysql_fetch_array($sql);
-			alert('loading');
-			alert('info',New_Module_Saved);
-			htmlRedirect('?app=module&act=edit&id='.$qr['id'],1);
+			$qr=mysql_fetch_array($sql);					
+			notice('success',New_Module_Saved);	
+			redirect('?app=module&act=edit&id='.$qr['id']);
 		}
 		elseif($qr AND isset($_POST['save_add'])) {
-			alert(loading);	
-			alert('info',New_Module_Saved);
+			notice('success',New_Module_Saved);
 			if($qr)
-			htmlRedirect('?app=module',1);
+			redirect('?app=module',1);
 		}
 		else {
-			alert('error',Status_Invalid);
+			$_SESSION['NOTICE_ADD'] = notice('error',Status_Invalid);
 		}					
 	}
 	else 
 	{			
-		alert('error',Status_Invalid);
+		$_SESSION['NOTICE_ADD'] = notice('error',Status_Invalid);
 	}	
 }	
 
@@ -111,48 +108,35 @@ if(isset($_POST['save_edit']) or isset($_POST['apply_edit'])){
 		"id=$_REQUEST[id]");
 			
 		if($qr AND isset($_POST['apply_edit'])){				
-			alert('info',Module_Saved);
+			notice('success',Module_Saved);
+			redirect(getUrl());
 		}
 		elseif($qr AND isset($_POST['save_edit'])) {
-			alert('loading');
-			alert('info',Module_Saved);
-			if($qr) htmlRedirect('?app=module',1);
+			notice('success',Module_Saved);
+			redirect('?app=module');
 		}
 		else {
-			alert('error',Status_Invalid);
+			notice('error',Status_Invalid);
 		}					
 	}
 	else {			
-		alert('error',Status_Invalid);
+		notice('error',Status_Invalid);
 	}	
 }
 
 /****************************************/
 /*			 Delete Module				*/
 /****************************************/
-if(isset($_POST['delete'])){
+if(isset($_POST['delete']) or isset($_POST['delete_confirm'])){
 	$source = @$_POST['check'];
 	$source = multipleSelect($source);
 	$delete = multipleDelete('module',$source);	
 	
 	if(isset($delete))
-		alert('info',Module_Deleted);
+		$_SESSION['NOTICE_REF'] = notice('info',Module_Deleted);
 	else
-		alert('error',Module_Not_Selected);
-}
-
-/****************************************/
-/*	    Enable and Disbale Module		*/
-/****************************************/
-if(isset($_REQUEST['act'])) {
-	if(!isset($_POST['delete']) AND $_REQUEST['act']=='enable'){
-		$db->update(FDBPrefix.'module',array('status'=>'0'),'id='.$_REQUEST['id']); 
-		alert('info',Status_Applied);
-	}
-	if(!isset($_POST['delete']) AND $_REQUEST['act']=='disable'){
-		$db->update(FDBPrefix.'module',array('status'=>'1'),'id='.$_REQUEST['id']); 
-		alert('info',Status_Applied);
-	}
+		$_SESSION['NOTICE_REF'] = notice('error',Module_Not_Selected);
+	redirect(getUrl());		
 }
 
 /****************************************/
@@ -164,7 +148,7 @@ if(!isset($_POST['save_edit']) AND !isset($_POST['apply_edit'])) {
 		$id = $_REQUEST['id'];
 		$react = oneQuery('module','id',$id,'id');
 		if(!isset($react)) header('location:?app=module');
-		}
+	}
 }
 
 function option_sub_menu($parent_id,$sub = null, $pre = null, $page) {
@@ -173,7 +157,9 @@ function option_sub_menu($parent_id,$sub = null, $pre = null, $page) {
 	$sql = $db->select(FDBPrefix."menu","*","parent_id=$parent_id");
 	while($qr=mysql_fetch_array($sql)){	
 		$sel = multipleSelected($page,$qr['id']);
-		echo "<option value='$qr[id]' $sel>$pre|_ $qr[name]</option>"; 
-		option_sub_menu($qr['id'],$sub+1,$pre."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",$page);	
+		if($sel =='selected' or !$page) $sel = "class='active' checked";
+		$check = "<input $sel type='checkbox' name='page[]' value='$qr[id]' rel='ck'>";
+		echo "<li value='$qr[id]' $sel>$pre&nbsp;&nbsp;|_ $check $qr[name]</li>"; 
+		option_sub_menu($qr['id'],$sub+1,"&nbsp;".$pre."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",$page);	
 	}			
 }	

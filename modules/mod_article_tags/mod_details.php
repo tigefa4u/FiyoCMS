@@ -6,7 +6,7 @@
 * @license		GNU/GPL, see LICENSE.txt
 */
 
-$module_desc 		= "Menampilkan daftar artikel sebelum dan sesudah";
+$module_desc 		= "Menampilkan artikel tags";
 
 $module_name		= 'Article Tags';
 $module_version		= '1.0.0';

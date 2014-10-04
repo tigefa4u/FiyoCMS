@@ -37,7 +37,7 @@ class searchArticle {
 		$article	= explode_query($q , 'article');
 		$title		= explode_query($q , 'title');
 		$author 	= explode_query($q , 'author');
-		$tag 		= explode_query($q , 'tag');
+		$tag 		= explode_query($q , 'tags');
 		
 		$condition 	= "$article $title $author $tag";
 		$user 		= FQuery('user',"`name` LIKE  '%$q%'",'id');

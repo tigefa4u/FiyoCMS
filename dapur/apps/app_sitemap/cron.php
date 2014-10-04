@@ -7,7 +7,7 @@
 	Tobias Kluge, enarion.net
 */
 
-require_once('apps/app_sitemap/inc/startup.php');
+require_once('inc/startup.php');
 
 // check settings
 if ($SETTINGS['website'] == "") {

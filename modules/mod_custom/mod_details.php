@@ -9,10 +9,10 @@
 defined('_FINDEX_') or die('Access Denied');
 
 if(siteConfig('lang') == 'id') {
-	$module_desc 	= "Dapat digunakan untuk menampilkan gambar, video, text, dll.<br>Modul ini mendukung kode HTML, JavaScript, JQuery and CSS";
+	$module_desc 	= "Dapat digunakan untuk menampilkan gambar, video, text, dll. Modul ini mendukung kode HTML, JavaScript, JQuery and CSS";
 }
 else {
-	$module_desc	= "Can be used to display images, video, text, etc.. <br> Module supports HTML code, JavaScript, JQuery and CSS";
+	$module_desc	= "Can be used to display images, video, text, etc. This module supports HTML code, JavaScript, JQuery and CSS";
 }
 
 $module_name			='Custom Module';

@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see license.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -15,27 +14,28 @@ $db ->connect();
 <form method="post">
 	<div id="app_header">
 		<div class="warp_app_header">		
-			<div class="app_title">Group Contact</div>
+			<div class="app_title"><?=New_Group;?></div>
 			<div class="app_link">			
-				<input type="submit" class="lbt save tooltip" title="<?php echo Save; ?>" name="add_group" />
-				<span class="lbt sparator"></span>
-				<input type="submit" class="lbt save_ref tooltip" title="<?php echo Save_and_Quit; ?>" name="save_add_group"/>
-				<a class="lbt cancel tooltip" href="?app=contact&act=group" title="<?php echo Cancel; ?>"></a>
-			</div>			
+				<button type="submit" class="delete btn btn-success" title="<?php echo Save; ?>" value="<?php echo Save; ?>" name="add_group"><i class="icon-ok"></i> <?php echo Save; ?></button>	
+				<button type="submit" class="delete btn btn-metis-2 " title="<?php echo Save_and_Quit; ?>" name="save_group"><i class="icon-ok-sign"></i> <?php echo Save_and_Quit; ?></button>
+				
+				<a class="danger btn btn-default" href="?app=contact&view=group" title="<?php echo Cancel; ?>"><i class="icon-remove-sign"></i> <?php echo Cancel; ?></a>
+			</div>	<?php printAlert(); ?>				
 		</div>
 	</div>   	
-	<div class="cols">
-		<div class="col first full">
-		<h3>Group Information</h3>
-			<div class="isi">
-				<table class="data2">
+	<div class="panel box"> 		
+		<header>
+			<h5>Umum</h5>
+		</header>
+		<div>
+			<table>
 					<tr>
-						<td class="djudul tooltip" title="<?php echo Group_Name; ?>"><?php echo Group_Name; ?> *</td>
-						<td><input type="text" name="name" size="20" ></td>
+						<td class="row-title"><span title="<?php echo Group_Name; ?>"><?php echo Group_Name; ?> </td>
+						<td><input type="text" name="name" size="20" required></td>
 					</tr>
 					<tr>
-						<td class="djudul tooltip" title="<?php echo Description; ?>"><?php echo Description; ?></td>
-						<td><input type="text" name="desc" size="50" ></td>
+						<td class="row-title"><span title="<?php echo Description; ?>"><?php echo Description; ?></td>						
+						<td><textarea name="desc" rows="3" cols="50"><?php formRefill('desc','','textarea'); ?></textarea></td>
 					</tr>
 				</table>
 			</div>

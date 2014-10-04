@@ -1,146 +1,151 @@
 <?php
 /**
-* @version		1.4.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
 
 ?>	
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {	
-		$(".cb-enable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-disable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', true);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_comment/controller/status.php",
-				data: type+"=1&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				}
-			});
-		});
-		
-		$(".cb-disable").click(function(){
-			var parent = $(this).parents('.switch');
-			$('.cb-enable',parent).removeClass('selected');
-			$(this).addClass('selected');
-			$('.checkbox',parent).attr('checked', false);
-			var id = $('#id',parent).attr('value');
-			var type = $('#type',parent).attr('value');
-			
-			$.ajax({
-				url: "apps/app_comment/controller/status.php",
-				data: type+"=0&id="+id,
-				success: function(data){
-				$("#stat").html(data);
-				var loadings = $("#stat");
-				loadings.hide();
-				loadings.fadeIn();	
-				setTimeout(function(){
-					$('#stat').fadeOut(1000, function() {
-					});				
-				}, 3000);
-				
-				}
-			});
-		});
+$(function() {		
+	$("#form").submit(function(e){
+		e.preventDefault();
+		var ff = this;
+		var checked = $('input[name="check_comment[]"]:checked').length > 0;
+		if(checked) {	
+			$('#confirmDelete').modal('show');	
+			$('#confirm').on('click', function(){
+				ff.submit();
+			});		
+		} else {
+			noticeabs("<?php echo alert('error',Please_Select_Delete); ?>");
+			$('input[name="check_comment[]"]').next().addClass('input-error');
+			return false;
+		}
+	});
 	
-		oTable = $('table').dataTable({	
+	if ($.isFunction($.fn.dataTable)) {		
+		$('table.data').show();
+		oTable = $('table.data').dataTable({
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "apps/app_comment/controller/list_comment.php",
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
-			"aaSorting": [[1, "asc" ]]	
-		});
+			"fnDrawCallback": function( oSettings ) {	
+				$("tr").click(function(e){
+					var i =$("td:first-child",this).find("input[type='checkbox']");					
+					var c = i.is(':checked');
+					selectCheck();
+					if($(e.target).is('.switch *, a[href]')) {					   
+					} else {
+						if(c) {
+							i.prop('checked', 0);		
+							$(this).removeClass('active');			
+						}
+						else {
+							i.prop('checked', 1);
+							$(this).addClass('active');
+						}
+					}
+				});		
+				$('[data-toggle=tooltip]').tooltip();
+				$('[data-tooltip=tooltip]').tooltip();
+				$('.tips').tooltip();
+				
+				$(".activator label").click(function(){ 
+					var parent = $(this).parents('.switch');
+					var id = $('.number',parent).attr('value');	
+					var value = $('.type',parent).attr('value');
+					if(value == 1) value = 0; else value = 1;
+					$.ajax({
+						url: "apps/app_comment/controller/comment_status.php",
+						data: "stat="+value+"&id="+id,
+						success: function(data){
+							$('.type',parent).attr('value',0);					
+							notice(data);		
+						}
+					});
+				});
+							
+				$(".cb-enable").click(function(){		
+					var parent = $(this).parents('.switch');
+					$('.cb-disable',parent).removeClass('selected');
+					$(this).addClass('selected');
+					$('.checkbox',parent).attr('checked', false);	
+				});
+				$(".cb-disable").click(function(){		
+					var parent = $(this).parents('.switch');
+					$('.cb-enable',parent).removeClass('selected');
+					$(this).addClass('selected');
+					$('.checkbox',parent).attr('checked', false);	
+				});
 		
-		$('#checkall').click(function(){
-		        $(this).parents('form:eq(0)').find(':checkbox').attr('checked', this.checked);
+				
+				$('input[type="checkbox"],input[type="radio"]').wrap("<label>");
+				$('input[type="checkbox"],input[type="radio"]').after("<span class='input-check'>");
+				$('table.data tbody a[href]').on('click', function(e){
+				   if ($(this).attr('target') !== '_blank'){
+					e.preventDefault();	
+					loadUrl(this);
+				   }				
+				});
+			}
 		});
-		
-		$("#form").submit(function(e){
-		if (!confirm("Are you sure want to delete selected item(s)?"))
-			{
-				e.preventDefault();
-				return;
-			} 
-		});
-	});
-
+		$('table.data th input[type="checkbox"]').parents('th').unbind('click.DT');
+		if ($.isFunction($.fn.chosen) ) {
+			$("select").chosen({disable_search_threshold: 10});
+		}				
+	}
+});
 </script>
 <div id="stat"></div>
 <form method="post" id="form">
 	<div id="app_header">
 		<div class="warp_app_header">		
-		  <div class="app_title">Comment Manager</div>
+		  <div class="app_title"><?php echo Article_Comments; ?></div>
 		  <div class="app_link">			
-			<input type="submit" class="lbt delete tooltip" title="<?php echo Delete; ?>" value="ok" name="delete"/>	
+			<!--button type="submit" class="btn btn-success" title="<?php echo Save; ?>" value="<?php echo Approve; ?>" name="approve_comment"><i class="icon-ok"></i> <?php echo Approve; ?></button-->	
+			<button type="submit" class="delete btn btn-danger btn-sm btn-grad" title="<?php echo Delete; ?>" value="<?php echo Delete; ?>" name="delete_category"><i class="icon-trash"></i> &nbsp;<?php echo Delete; ?></button>
 			<a class="lbt setting tooltip link" href="?app=comment&act=config" title="<?php echo Configuration; ?>"></a>
-			<hr class="lbt sparator tooltip">
-			<a class="lbt help popup tooltip" href="#helper" title="<?php echo Help; ?>"></a>	
-			<div id="helper"><?php echo Comment_help; ?></div>
 		  </div> 	
+		  <?php printAlert('NOTICE_REF'); ?>
 		</div>
 	</div>
 	<table class="data">
 		<thead>
-			<tr>								  
-				<th width="3%" class="no">#</th>	
-				<th width="3%" class="no" colspan="0" id="ck">  
-					<input type="checkbox" id="checkall"></th>		
-				<th style="width:20% !important;"><?php echo Name; ?></th>
-				<th style="width:20% !important;">Email</th>
-				<th style="width:11% !important;" class="no" align='center'>Status</th>
-				<th style="width:50% !important;" class="no"><?php echo Comment; ?></th>
+			<tr>								  	
+				<th style="width:1% !important;" class="no" colspan="0" id="ck">  
+					<input type="checkbox" id="checkall" target="check_comment[]"></th>		
+				<th style="width:18% !important;"><?php echo Author; ?></th>
+				<th style="width:5% !important;" class="no"><?php echo Status; ?></th>
+				<th style="width:30% !important;"><?php echo Comment; ?></th>
+				<th style="width:30% !important;" ><?php echo Article_Title; ?></th>
+				<th style="width:15% !important;text-align:center" ><?php echo Date; ?></th>
 			</tr>
 		</thead>		
 		<tbody>
-			<?php
-			$db = new FQuery();  
-			$db->connect(); 				
-			$no=1;				
-			$sql = $db->select(FDBPrefix.'comment','*','',"id DESC");while($qr=mysql_fetch_array($sql)){
-
-				/* logika status aktif atau tidak */
-				if($qr['status']==1)
-				{ $stat1 ="selected"; $stat2 ="";}							
-				else
-				{ $stat2 ="selected";$stat1 ="";}
-						
-				$status ="
-				<p class='switch'>
-					<label class='cb-enable $stat1'><span>Show</span></label>
-					<label class='cb-disable $stat2'><span>Hide</span></label>
-					<input type='text' value='$qr[id]' id='id' class='invisible'><input type='text' value='stat' id='type' class='invisible'>
-				</p>";						
-							
-				$name ="<a class='tooltip ctedit' title='".Edit."' href='?app=comment&act=edit&id=$qr[id]'>$qr[name]</a>";
-				
-				$check ="<input type='checkbox' name='check[]' value='$qr[id]' rel='ck'>";
-				$link = str_replace("http://".FUrl,"",make_permalink($qr['link']));
-				$comm = htmlentities(htmlToText($qr['comment']));
-				$comm = substr($comm,0,60);
-				
-				$comm = "<a href='".make_permalink($qr['link'])."#comment-$qr[clink]' target='_blank' class='tooltip outlink' title='".See_comments."'>$comm . . .</a> ";
-				echo "<tr>";
-				echo "<td>$no</td><td align='center'>$check</td><td>$name</td><td>$qr[email]</td><td align='center'>$status</td><td>$comm</td>";
-				echo "</tr>";
-			$no++;	
-			}			
-			?>
+			<tr><td colspan="6" align="center">Loading...</td></tr>	
         </tbody>			
 	</table>
 </form>
+
+<div class="modal fade" id="confirmDelete" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true" style="display:none">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header"><h4 class="modal-title"><?php echo Delete_Confirmation; ?></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="question"><?php echo Sure_want_delete; ?></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo Cancel; ?></button>
+        <button type="button" class="btn btn-danger btn-grad" id="confirm" name="delete_comment"><?php echo Delete; ?></button>	
+      </div>
+    </div>
+  </div>
+</div>

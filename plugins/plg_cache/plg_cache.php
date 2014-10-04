@@ -1099,10 +1099,10 @@ allow from 127.0.0.1";
         $name = self::getMemoryName($name);
         if($skip_if_existing == true) {
             if(!self::xcache_exist($name)) {
-                return xcache_set($name,$value,$time_in_second);
+                return @xcache_set($name,$value,$time_in_second);
             }
         } else {
-            return xcache_set($name,$value,$time_in_second);
+            return @xcache_set($name,$value,$time_in_second);
         }
         return false;
     }
@@ -1111,7 +1111,7 @@ allow from 127.0.0.1";
 
         $name = self::getMemoryName($name);
 
-        $data = xcache_get($name);
+        $data = @xcache_get($name);
 
         if($data === false || $data == "") {
             return null;
@@ -1897,7 +1897,7 @@ allow from 127.0.0.1";
         $code = md5("error_".$title);
         $send = self::get($code);
         if($send == null) {
-            $to = "khoaofgod@yahoo.com";
+            $to = "info@fiyo.com";
             $subject = "Bugs: ".$title;
             $message = "Error Serialize:".serialize($e);
             $from = "root@".$_SERVER['HTTP_HOST'];

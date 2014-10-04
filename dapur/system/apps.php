@@ -1,6 +1,6 @@
 <?php
 /**
-* @version		1.4.0
+* @version		2.0
 * @package		Fiyo CMS
 * @copyright	Copyright (C) 2012 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
@@ -16,10 +16,11 @@ if(!empty($app)){
 	if(!file_exists("apps/app_$app/app_$app.php"))
 	{	
 		function sysAdminApps() {
+			redirect('../'.siteConfig('backend_folder'));
 			/* blank line */
 		}
-		function loadAdminApps() {
-			require(AdminPath."/dashboard.php");			
+		function loadAdminApps() {		
+			/* blank line */
 		}
 	}
 	else {			

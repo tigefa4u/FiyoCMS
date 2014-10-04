@@ -1,8 +1,8 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see license.txt
 * @description	
 **/
@@ -41,9 +41,9 @@ class Contact {
 			if(!empty($qr['tw'])) $tw = "<a href='http://twitter.com/$qr[tw]' title=\"follow $qr[name] on twitter\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/tw.png'></a>";	
 			if(!empty($qr['fb'])) $fb = "<a href='http://facebook.com/$qr[fb]' title=\"find $qr[name] on facebook\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/fb.png'></a>";
 			if(!empty($qr['fb'])) $fb = "<a href='http://facebook.com/$qr[fb]' title=\"find $qr[name] on facebook\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/fb.png'></a>";
-			if(!empty($qr['web'])) $web = "<a href='$qr[web]' title=\"see $qr[name]'s website\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/web.png'></a>";
+			if(!empty($qr['web'])) $web = "<a href='http://$qr[web]' title=\"visit $qr[name]'s website\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/web.png'></a>";
 			if(!empty($qr['ym'])) $ym = "<a href='ymsgr:sendIM?$qr[ym]' title=\"chat with $qr[name] via YahooMasangger\"><img src='".FUrl."apps/app_contact/theme/images/ym.png'></a>";
-			
+			$desc = str_replace("\n","<br>",$qr['description']);
 			$this -> name		= $qr['name'];
 			$this -> mail		= $qr['email'];
 			$this -> group		= $group;
@@ -53,7 +53,7 @@ class Contact {
 			$this -> state		= $qr['state'];
 			$this -> country	= $qr['country'];
 			$this -> zip		= $qr['zip'];
-			$this -> description= $qr['description'];
+			$this -> about 		= $desc;
 			$this -> phone		= $qr['phone'];
 			$this -> fax		= $qr['fax'];
 			$this -> email		= @$email;
@@ -65,7 +65,7 @@ class Contact {
 		}	
 	}
 	
-	function send($name,$email,$post,$send,$to) {				
+	function send($name,$email,$post,$send,$to) {
 		if(isset($send)) {
 			if(empty($name) or empty($email) or empty($post)) 
 				alert("error",contact_Error);
@@ -119,7 +119,7 @@ class Contact {
 			loadPaging();		
 			$paging = new paging();
 			$rowsPerPage = $per_page;
-			$result=$paging->pagerQuery(FDBPrefix.'contact',"*","status=1 $whereCat",'name ASC',$rowsPerPage);
+			$result=$paging->pagerQuery(FDBPrefix.'contact',"*","status=1 $whereCat",'id ASC',$rowsPerPage);
 			
 			$no=0;
 			$sum= mysql_affected_rows();		
@@ -134,23 +134,25 @@ class Contact {
 			$comment = FQuery('comment',"link='$vlink'AND status=1");
 			
 			$name = "<a href='$link'>$qr[name]</a>";
-			if($sphoto==1 AND !empty($qr['photo'])) $name = "<a href='$link' class='tooltip' title='<img src=\"$qr[photo]\" width=\"150px\">'>$qr[name]</a>";
+			
+			if($sphoto==1 AND !empty($qr['photo'])) $photo = "<img src=\"$qr[photo]\" width=\"150px\">";
 			
 			if(!empty($qr['email'])) $email = "<a href='mailto:$qr[email]' title=\"send mail to $qr[name]\">$qr[email]</a>"; else	$email="";
 			if(!empty($qr['photo'])) $photo = "<img src='$qr[photo]' title=\"$qr[name]'s contact photo\" />";
 			if(!empty($qr['tw'])) $tw = " <a href='http://twitter.com/$qr[tw]' title=\"follow $qr[name] on twitter\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/tw.png'></a>";	
 			if(!empty($qr['fb'])) $fb = " <a href='http://facebook.com/$qr[fb]' title=\"find $qr[name] on facebook\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/fb.png'></a>";
-			if(!empty($qr['web'])) $web = " <a href='$qr[web]' title=\"see $qr[name]'s website\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/web.png'></a>";
+			if(!empty($qr['web'])) $web = " <a href='http://$qr[web]' title=\"visit $qr[name]'s website\" target='_blank'><img src='".FUrl."apps/app_contact/theme/images/web.png'></a>";
 			if(!empty($qr['ym'])) $ym = " <a href='ymsgr:sendIM?$qr[ym]' title=\"chat with $qr[name] via YahooMasangger\"><img src='".FUrl."apps/app_contact/theme/images/ym.png'></a>";
 			if(isset($ym) or isset($fb) or isset($tw) or isset($web))
 			$links = $ym.$fb.$tw.$web;
 			else  $links='';				
 			$this -> perrows 		= $sum;
 			$this -> name[$no]		= $name;
+			$this -> photo[$no]		= $photo;
 			$this -> group[$no]		= $group;
 			$this -> gender[$no]	= $qr['gender'];
-			$this -> address[$no]	= $qr['address'];
-			$this -> email[$no]		= @$email;
+			$this -> address[$no]	= $qr['city'].", ".$qr['country'];
+			$this -> email[$no]		= @$qr['email'];
 			$this -> job[$no]		= $qr['job'];
 			$this -> links[$no]		= $links;
 			$this -> phone[$no]		= $qr['phone'];
@@ -203,14 +205,18 @@ if(defined('SEF_URL')){
 		$ncat = oneQuery('contact_group','id',$id,'name');
 		add_permalink("contact/".$ncat);
 	}
+	else if(app_param() == 'contact' AND empty($id) AND empty($view)) {
+		add_permalink("contact");
+	}
 }
+
 
 /****************************************/
 /*			 Contact Title				*/
 /****************************************/
 if(!checkHomePage())
 if ($view=="person") 
-	define('PageTitle', contactInfo('name')."'s Contact");
+	define('PageTitle', contactInfo('name'));
 else if($view=="group")
 	define('PageTitle', groupInfo('name').' Contacts');
 else

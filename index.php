@@ -8,7 +8,7 @@
 
 //set session start
 session_start();
-
+ob_start();
 //flag for main file
 define( '_FINDEX_', 1 );
 

@@ -1,9 +1,9 @@
-<?php 
+<?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -58,8 +58,12 @@ if(isset($article-> category)) :
 			</div>
 			<?php endif; ?>	
 			<?php endfor; ?>	
+						
+			<!-- RSS Feed Icon -->
+			<?php if($article->show_rss) : ?>
+				<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
+			<?php endif; ?>
 			
-						<div class="clearfix">&nbsp;</div>
 			<!-- Pagelinks -->
 			<?php if(!empty($pagelink)) : ?>
 			<div class="article-pagelink pagination">
@@ -68,10 +72,6 @@ if(isset($article-> category)) :
 			<?php endif; ?>	
 		</div>		
 
-		<!-- RSS Feed Icon -->
-		<?php if($article->show_rss) : ?>
-			<a href="<?php echo $article-> rssLink ; ?>" title="Read <?php echo $category[0]; ?>'s RSS Feed" class="article-rss">RSS</a>	
-		<?php endif; ?>
 		
 	<!-- RSS Feed File Generator -->	
 	<?php elseif(_FEED_ == 'rss') : 
@@ -82,6 +82,7 @@ if(isset($article-> category)) :
 		// add channel information 
 		$xml->addChild('channel'); 
 		$xml->channel->addChild('title', $article -> rssTitle);
+		
 		$xml->channel->addChild('link', $article -> rssLink); 
 		$xml->channel->addChild('description', $article -> rssDesc); 
 		$xml->channel->addChild('pubDate', date(DATE_RSS)); 
@@ -107,5 +108,5 @@ if(isset($article-> category)) :
 	<?php if(defined('Apps_Title')) : ?>
 			<h2><?php echo Apps_Title; ?></h2>
 	<?php endif; ?>
-	<h3>Sorry, no article in this category.!</h3>
+	<h3><?=Category_is_empty;?></h3>
 <?php endif; ?>

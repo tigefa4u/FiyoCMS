@@ -1,9 +1,9 @@
 <?php
 /**
 * @name			Module Statistic
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
+* @copyright	Copyright (C) 2014 Fiyo CMS.
 * @license		GNU/GPL, see LICENSE.txt
 */
 
@@ -38,6 +38,7 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $yesterday; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
+		
 		<?php if($tw) { ?>
 		<tr>
 			<td>
@@ -45,6 +46,7 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $thisweek; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
+		
 		<?php if($lw) { ?>
 		<tr>
 			<td>
@@ -52,6 +54,7 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $lastweek; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
+		
 		<?php if($tm) { ?>
 		<tr>
 			<td>
@@ -59,6 +62,7 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $thismonth; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
+		
 		<?php if($lm) { ?>
 		<tr>
 			<td>
@@ -66,6 +70,7 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $lastmonth; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
+		
 		<?php if($tg) { ?>
 		<tr>
 			<td>
@@ -73,13 +78,14 @@ require_once("mod_system.php");
 			<td style="text-align:right"><?php echo $total; ?><!-- visitor --></td>
 		</tr>
 		<?php } ?>
-		<?php if($info) { ?>
 		
+		<?php if($info) { ?>		
 		<tr>
 			<td colspan='2' style="text-align:center">
 			<div style="border-top: 1px solid #ccc; border-bottom: 1px solid #fff;"></div>
 			<?php echo $html ?></td>
-		<?php } ?>
 		</tr>
+		<?php } ?>
+		
 	</tbody>
 </table>

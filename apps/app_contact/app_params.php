@@ -1,10 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see license.php
-* @description	
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -138,11 +137,13 @@ $(document).ready(function(){
 <input type="hidden" name="nameParam9" value="show_job" />
 <input type="hidden" name="nameParam10" value="show_photo" />
 				
-<li>
-	<h3>Menu Contact</h3>
-		<div class="isi">
-			<div class="acmain open">
-			<table class="data2">				
+<div class="box">								
+	<header>
+		<a class="accordion-toggle" data-toggle="collapse" href="#article-parameter">
+			<h5>Contact Parameter</h5>
+		</a>
+	</header>								
+	<div id="article-parameter" class="in">		
 			<!-- Menampilkan menu menurut kategori pilihan -->	
 			<tr>
 				<td class="djudul">Page Type</td>
@@ -326,9 +327,8 @@ $(document).ready(function(){
 			</tr>
 			
 		</table>
-		</div>
 	</div>
-</li>
+</div>
 
 
 <div class="popup_warp">

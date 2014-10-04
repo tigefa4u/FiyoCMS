@@ -1,9 +1,9 @@
 <?php
 /**
-* @version		1.5.0
+* @version		2.0
 * @package		Fiyo CMS
-* @copyright	Copyright (C) 2012 Fiyo CMS.
-* @license		GNU/GPL, see LICENSE.txt
+* @copyright	Copyright (C) 2014 Fiyo CMS.
+* @license		GNU/GPL, see LICENSE.
 **/
 
 defined('_FINDEX_') or die('Access Denied');
@@ -16,8 +16,13 @@ require_once ('../system/user.php');
 require_once ('../system/site.php');
 require_once ('function.php');
 
+//check table setting
+$r = mysql_query("SHOW TABLES LIKE '".FDBPrefix."setting'");
+mysql_num_rows($r) or die(alert("error","Table setting is not found. Please check <b>DBPrefix</b> on file config.php!",true,true));
+
 //set default timezone
-date_default_timezone_set(siteConfig('timezone'));
+$time = siteConfig('timezone');
+if($time) date_default_timezone_set(siteConfig('timezone'));
 
 //memuat file bahasa jika ditemukan
 loadLang("system");

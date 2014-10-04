@@ -16,7 +16,7 @@ if($_SESSION['USER_LEVEL'] <= 4) {
 
 	if(isset($_POST['art_title']) AND !empty($_POST['art_title'])) {
 		$title = $_POST['art_title'];
-		$title = htmlentities($title);
+		$title =  str_replace('"',"'",$title);
 		$qr=$db->update(FDBPrefix.'article',array("title"=>"$title","editor"=>$_SESSION['USER_ID']),"id=$_POST[id]"); 
 		if(@$qr)
 			echo "Saved";

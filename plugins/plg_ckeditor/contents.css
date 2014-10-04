@@ -8,14 +8,13 @@ body
 	/* Font */
 	font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
 	font-size: 12px;
-
 	/* Text color */
-	color: #333;
-	
+	color: #333;	
 	/* Remove the background color to make it transparent */
 	background-color: #fff;
-
+	padding-right: 10px;
 	margin: 0;
+	padding: 0 8px;
 }
 .cke_editable
 {
@@ -34,7 +33,9 @@ blockquote
 	border-color: #ccc;
 	border-width: 0;
 }
-
+.cke_contents.cke_reset {
+	margin-left: 0;
+}
 .cke_contents_ltr blockquote
 {
 	padding-left: 20px;
